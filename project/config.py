@@ -5,8 +5,9 @@ WINGMAN_DATA_DIR_NAME = 'wingman-data'
 WINGMAN_PRJ_DIR_NAME = 'wingman-projects'
 
 INTENTS_FILE_NAME = 'intents.json'
+ACTIONS_FILE_NAME = 'actions.json'
 
-WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME], 'actions': [], 'storys': [], 'rules': [], 'models': []}
+WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME], 'actions': [ACTIONS_FILE_NAME], 'storys': [], 'rules': [], 'models': []}
 
 WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
 WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'

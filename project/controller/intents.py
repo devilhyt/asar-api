@@ -6,7 +6,7 @@ from pathlib import Path
 from project import util
 import json
 
-prj_root = Path(f'{WINGMAN_PRJ_DIR}')
+prj_root = Path(WINGMAN_PRJ_DIR)
 
 
 class IntentsAPI(MethodView):
