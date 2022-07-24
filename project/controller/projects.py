@@ -1,12 +1,12 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from project.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_SUB
+from project.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT
 from pathlib import Path
 import shutil
 from project import util
 
-prj_root = Path(f'{WINGMAN_PRJ_DIR}')
+prj_root = Path(WINGMAN_PRJ_DIR)
 
 class ProjectsAPI(MethodView):
     """Wingman Projects API"""
@@ -30,7 +30,7 @@ class ProjectsAPI(MethodView):
             prj_dir = prj_root.joinpath(f'{projectName}')
             prj_dir.mkdir(parents=True)
             
-            for dir, files in WINGMAN_PRJ_SUB.items():
+            for dir, files in WINGMAN_PRJ_STRUCT.items():
                 sub_dir = prj_dir.joinpath(f'{dir}')
                 sub_dir.mkdir(parents=True)
                 for f in files:

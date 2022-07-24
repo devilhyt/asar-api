@@ -1,7 +1,7 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from project.config import WINGMAN_PRJ_DIR
+from project.config import WINGMAN_PRJ_DIR, INTENTS_FILE_NAME
 from pathlib import Path
 from project import util
 import json
@@ -13,7 +13,7 @@ class IntentsAPI(MethodView):
     """Wingman Intents API"""
 
     @jwt_required()
-    def get(self, projectName, intentName=None):
+    def get(self, projectName, intentName):
         """
             intentName
                 None: Retrieve All Intent Names
@@ -25,14 +25,14 @@ class IntentsAPI(MethodView):
                 util.check_name(intentName)
 
                 intents_file = prj_root.joinpath(
-                    projectName, 'intents', 'intents.json')
-                
+                    projectName, 'intents', INTENTS_FILE_NAME)
+
                 with open(intents_file, 'r', encoding="utf-8") as json_file:
                     intents_json = json.load(json_file)
-                    
+
                 intent = intents_json[intentName]
             except Exception as e:
-                response = jsonify({'msg': str(e), 'projectName': projectName})
+                response = jsonify({'msg': str(e)})
                 return response, 400
             else:
                 return jsonify(intent), 200
@@ -41,15 +41,15 @@ class IntentsAPI(MethodView):
                 util.check_name(projectName)
 
                 intents_file = prj_root.joinpath(
-                    projectName, 'intents', 'intents.json')
+                    projectName, 'intents', INTENTS_FILE_NAME)
 
                 with open(intents_file, 'r', encoding="utf-8") as json_file:
                     intents_json = json.load(json_file)
             except Exception as e:
-                response = jsonify({'msg': str(e), 'projectName': projectName})
+                response = jsonify({'msg': str(e)})
                 return response, 400
             else:
-                return jsonify({'intentName': list(intents_json.keys()), 'projectName': projectName}), 200
+                return jsonify({'intentName': list(intents_json.keys())}), 200
 
     @jwt_required()
     def post(self, projectName):
@@ -62,7 +62,7 @@ class IntentsAPI(MethodView):
             util.check_name(intentName)
 
             intents_file = prj_root.joinpath(
-                projectName, 'intents', 'intents.json')
+                projectName, 'intents', INTENTS_FILE_NAME)
 
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
@@ -75,12 +75,10 @@ class IntentsAPI(MethodView):
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
         except Exception as e:
-            response = jsonify(
-                {'msg': str(e), 'projectName': projectName, 'intentName': intentName})
+            response = jsonify({'msg': str(e)})
             return response, 400
         else:
-            response = jsonify(
-                {"msg": "OK", "projectName": projectName, 'intentName': intentName})
+            response = jsonify({"msg": "OK"})
             return response, 200
 
     @jwt_required()
@@ -94,7 +92,7 @@ class IntentsAPI(MethodView):
             util.check_name(intentName)
 
             intents_file = prj_root.joinpath(
-                projectName, 'intents', 'intents.json')
+                projectName, 'intents', INTENTS_FILE_NAME)
 
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
@@ -104,12 +102,10 @@ class IntentsAPI(MethodView):
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
         except Exception as e:
-            response = jsonify(
-                {"msg": str(e), "projectName": projectName, 'intentName': intentName})
+            response = jsonify({"msg": str(e)})
             return response, 400
         else:
-            response = jsonify(
-                {"msg": "OK", "projectName": projectName, 'intentName': intentName})
+            response = jsonify({"msg": "OK"})
             return response, 200
 
     @jwt_required()
@@ -121,7 +117,7 @@ class IntentsAPI(MethodView):
             util.check_name(intentName)
 
             intents_file = prj_root.joinpath(
-                projectName, 'intents', 'intents.json')
+                projectName, 'intents', INTENTS_FILE_NAME)
 
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
@@ -131,19 +127,19 @@ class IntentsAPI(MethodView):
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
         except Exception as e:
-            response = jsonify(
-                {"msg": str(e), "projectName": projectName, 'intentName': intentName})
+            response = jsonify({"msg": str(e)})
             return response, 400
         else:
-            response = jsonify(
-                {"msg": "OK", "projectName": projectName, 'intentName': intentName})
+            response = jsonify({"msg": "OK"})
             return response, 200
 
 
 def init(app: Flask):
 
     intents_view = IntentsAPI.as_view('intents_api')
+    app.add_url_rule('/projects/<string:projectName>/intents',
+                     defaults={'intentName': None}, view_func=intents_view, methods=['GET'])
     app.add_url_rule('/projects/<string:projectName>/intents', view_func=intents_view,
-                     methods=['GET', 'POST'])
+                     methods=['POST'])
     app.add_url_rule('/projects/<string:projectName>/intents/<string:intentName>',
                      view_func=intents_view, methods=['GET', 'PUT', 'DELETE'])

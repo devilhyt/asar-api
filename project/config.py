@@ -3,7 +3,10 @@ import datetime
 WINGMAN_ROOT = 'C:/Users/DevilHYT/Desktop/github/wingman-api'
 WINGMAN_DATA_DIR_NAME = 'wingman-data'
 WINGMAN_PRJ_DIR_NAME = 'wingman-projects'
-WINGMAN_PRJ_SUB = {'intents': ['intents.json'], 'actions': [], 'storys': [], 'rules': [], 'models': []}
+
+INTENTS_FILE_NAME = 'intents.json'
+
+WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME], 'actions': [], 'storys': [], 'rules': [], 'models': []}
 
 WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
 WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'
