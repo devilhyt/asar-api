@@ -1,0 +1,14 @@
+{
+    "intent_1": {
+        "examples": [
+            "string_1",
+            "string_2"
+        ]
+    },
+    "intent_2": {
+        "examples": [
+            "string_1",
+            "string_2"
+        ]
+    }
+}

@@ -5,3 +5,6 @@ project.controller.auth.init(app)
 
 import project.controller.projects
 project.controller.projects.init(app)
+
+import project.controller.intents
+project.controller.intents.init(app)

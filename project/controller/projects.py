@@ -1,14 +1,12 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from project.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_SUB_DIR
+from project.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_SUB
 from pathlib import Path
 import shutil
+from project import util
 
-project_dir = Path(WINGMAN_PRJ_DIR)
-
-project_dir.mkdir(parents=True, exist_ok=True)
-
+prj_root = Path(f'{WINGMAN_PRJ_DIR}')
 
 class ProjectsAPI(MethodView):
     """Wingman Projects API"""
@@ -17,20 +15,30 @@ class ProjectsAPI(MethodView):
     def get(self):
         """Retrieve All Project Names"""
 
-        subdirs = [d.stem for d in project_dir.iterdir() if d.is_dir()]
-        return jsonify(projectName=subdirs)
+        prj_names = [d.stem for d in prj_root.iterdir() if d.is_dir()]
+        return jsonify(projectName=prj_names)
 
     @jwt_required()
     def post(self):
-        """Create A New Project"""
+        """Create A Project"""
 
         try:
             projectName = request.json.get("projectName", None)
             
-            ProjectsAPI.check_name(projectName)  
+            util.check_name(projectName)
             
-            for sub in WINGMAN_PRJ_SUB_DIR:
-                project_dir.joinpath(f'{projectName}/{sub}').mkdir(parents=True)
+            prj_dir = prj_root.joinpath(f'{projectName}')
+            prj_dir.mkdir(parents=True)
+            
+            for dir, files in WINGMAN_PRJ_SUB.items():
+                sub_dir = prj_dir.joinpath(f'{dir}')
+                sub_dir.mkdir(parents=True)
+                for f in files:
+                    sub_file = sub_dir.joinpath(f'{f}')
+                    sub_file.touch()
+                    if sub_file.suffix == '.json':
+                        sub_file.write_text('{}')
+            
         except Exception as e:
             response = jsonify({"msg": str(e), "projectName": projectName})
             return response, 400
@@ -45,11 +53,11 @@ class ProjectsAPI(MethodView):
         try:
             newProjectName = request.json.get("newProjectName", None)
             
-            ProjectsAPI.check_name(projectName)
-            ProjectsAPI.check_name(newProjectName)
+            util.check_name(projectName)
+            util.check_name(newProjectName)
             
-            target = project_dir.joinpath(newProjectName)
-            project_dir.joinpath(projectName).rename(target)
+            target = prj_root.joinpath(newProjectName)
+            prj_root.joinpath(projectName).rename(target)
         except Exception as e:
             response = jsonify({"msg": str(e), "projectName": projectName, "newProjectName": newProjectName})
             return response, 400
@@ -62,8 +70,8 @@ class ProjectsAPI(MethodView):
         """Delete A Project"""
 
         try:
-            ProjectsAPI.check_name(projectName)
-            p = project_dir.joinpath(projectName)
+            util.check_name(projectName)
+            p = prj_root.joinpath(projectName)
             shutil.rmtree(p)
         except Exception as e:
             response = jsonify({"msg": str(e), "projectName": projectName})
@@ -71,15 +79,10 @@ class ProjectsAPI(MethodView):
         else:
             response = jsonify({"msg": "OK", "projectName": projectName})
             return response, 200
-                
-    @staticmethod
-    def check_name(name: str):
-        """avoid relative path"""
-        
-        if ".." in name:
-            raise ValueError('Invalid project name')
 
 def init(app: Flask):
+    prj_root.mkdir(parents=True, exist_ok=True)
+    
     projects_view = ProjectsAPI.as_view('projects_api')
     app.add_url_rule('/projects', view_func=projects_view,
                      methods=['GET', 'POST'])
