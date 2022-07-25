@@ -13,23 +13,23 @@ class IntentsAPI(MethodView):
     """Wingman Intents API"""
 
     @jwt_required()
-    def get(self, projectName, intentName):
+    def get(self, project_name, intent_name):
         """
-            intentName
+            intent_name
                 None: Retrieve All Intent Names
                 An intent name: Get An intent
         """
-        if intentName:
+        if intent_name:
             try:
-                util.check_name(projectName)
+                util.check_name(project_name)
 
                 intents_file = prj_root.joinpath(
-                    projectName, 'intents', INTENTS_FILE_NAME)
+                    project_name, 'intents', INTENTS_FILE_NAME)
 
                 with open(intents_file, 'r', encoding="utf-8") as json_file:
                     intents_json = json.load(json_file)
 
-                intent = intents_json[intentName]
+                intent = intents_json[intent_name]
             except Exception as e:
                 response = jsonify({'msg': str(e)})
                 return response, 400
@@ -37,10 +37,10 @@ class IntentsAPI(MethodView):
                 return jsonify(intent), 200
         else:
             try:
-                util.check_name(projectName)
+                util.check_name(project_name)
 
                 intents_file = prj_root.joinpath(
-                    projectName, 'intents', INTENTS_FILE_NAME)
+                    project_name, 'intents', INTENTS_FILE_NAME)
 
                 with open(intents_file, 'r', encoding="utf-8") as json_file:
                     intents_json = json.load(json_file)
@@ -48,28 +48,32 @@ class IntentsAPI(MethodView):
                 response = jsonify({'msg': str(e)})
                 return response, 400
             else:
-                return jsonify({'intentName': list(intents_json.keys())}), 200
+                return jsonify({'intent_name': list(intents_json.keys())}), 200
 
     @jwt_required()
-    def post(self, projectName):
+    def post(self, project_name):
         """Create An intent"""
 
         try:
-            intentName = request.json.get('intentName', None)
+            intent_name = request.json.get('intent_name', None)
 
-            util.check_name(projectName)
-
+            util.check_name(project_name)
+            
+            # check intent_name
+            if intent_name is None:
+                raise ValueError('Missing Intent Name')
+            
             intents_file = prj_root.joinpath(
-                projectName, 'intents', INTENTS_FILE_NAME)
+                project_name, 'intents', INTENTS_FILE_NAME)
 
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
 
-            if intentName not in intents_json:
-                intents_json[intentName] = None
-            else:
+            # check intent_name
+            if intent_name in intents_json:
                 raise ValueError('Intent already exist')
 
+            intents_json[intent_name] = None
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
         except Exception as e:
@@ -80,21 +84,21 @@ class IntentsAPI(MethodView):
             return response, 200
 
     @jwt_required()
-    def put(self, projectName, intentName):
+    def put(self, project_name, intent_name):
         """Update A Intent"""
 
         try:
             body = request.json
 
-            util.check_name(projectName)
+            util.check_name(project_name)
 
             intents_file = prj_root.joinpath(
-                projectName, 'intents', INTENTS_FILE_NAME)
+                project_name, 'intents', INTENTS_FILE_NAME)
 
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
 
-            intents_json[intentName] = body
+            intents_json[intent_name] = body
 
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
@@ -106,19 +110,19 @@ class IntentsAPI(MethodView):
             return response, 200
 
     @jwt_required()
-    def delete(self, projectName, intentName):
+    def delete(self, project_name, intent_name):
         """Delete A Project"""
 
         try:
-            util.check_name(projectName)
+            util.check_name(project_name)
 
             intents_file = prj_root.joinpath(
-                projectName, 'intents', INTENTS_FILE_NAME)
+                project_name, 'intents', INTENTS_FILE_NAME)
 
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
 
-            del intents_json[intentName]
+            del intents_json[intent_name]
 
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
@@ -133,9 +137,9 @@ class IntentsAPI(MethodView):
 def init(app: Flask):
 
     intents_view = IntentsAPI.as_view('intents_api')
-    app.add_url_rule('/projects/<string:projectName>/intents',
-                     defaults={'intentName': None}, view_func=intents_view, methods=['GET'])
-    app.add_url_rule('/projects/<string:projectName>/intents', view_func=intents_view,
+    app.add_url_rule('/projects/<string:project_name>/intents',
+                     defaults={'intent_name': None}, view_func=intents_view, methods=['GET'])
+    app.add_url_rule('/projects/<string:project_name>/intents', view_func=intents_view,
                      methods=['POST'])
-    app.add_url_rule('/projects/<string:projectName>/intents/<string:intentName>',
+    app.add_url_rule('/projects/<string:project_name>/intents/<string:intent_name>',
                      view_func=intents_view, methods=['GET', 'PUT', 'DELETE'])
