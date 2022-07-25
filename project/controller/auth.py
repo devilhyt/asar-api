@@ -4,9 +4,7 @@ from flask_jwt_extended import current_user, jwt_required, create_access_token, 
 from project.public import jwt, app
 from project.models.user import User
 
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
+from datetime import datetime, timedelta, timezone
 
 
 class AuthAPI(MethodView):
@@ -41,7 +39,8 @@ class AuthAPI(MethodView):
 
 def init(app: Flask):
     auth_view = AuthAPI.as_view('auth_api')
-    app.add_url_rule('/auth', view_func=auth_view, methods=['GET', 'POST', 'DELETE'])
+    app.add_url_rule('/auth', view_func=auth_view,
+                     methods=['GET', 'POST', 'DELETE'])
 
 
 # @jwt.user_identity_loader
