@@ -22,7 +22,6 @@ class IntentsAPI(MethodView):
         if intentName:
             try:
                 util.check_name(projectName)
-                util.check_name(intentName)
 
                 intents_file = prj_root.joinpath(
                     projectName, 'intents', INTENTS_FILE_NAME)
@@ -59,7 +58,6 @@ class IntentsAPI(MethodView):
             intentName = request.json.get('intentName', None)
 
             util.check_name(projectName)
-            util.check_name(intentName)
 
             intents_file = prj_root.joinpath(
                 projectName, 'intents', INTENTS_FILE_NAME)
@@ -89,7 +87,6 @@ class IntentsAPI(MethodView):
             body = request.json
 
             util.check_name(projectName)
-            util.check_name(intentName)
 
             intents_file = prj_root.joinpath(
                 projectName, 'intents', INTENTS_FILE_NAME)
@@ -114,7 +111,6 @@ class IntentsAPI(MethodView):
 
         try:
             util.check_name(projectName)
-            util.check_name(intentName)
 
             intents_file = prj_root.joinpath(
                 projectName, 'intents', INTENTS_FILE_NAME)
