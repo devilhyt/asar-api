@@ -4,19 +4,21 @@ WINGMAN_ROOT = 'C:/Users/DevilHYT/Desktop/github/wingman-api'
 WINGMAN_DATA_DIR_NAME = 'wingman-data'
 WINGMAN_PRJ_DIR_NAME = 'wingman-projects'
 
+WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
+WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'
+
 INTENTS_FILE_NAME = 'intents.json'
 ACTIONS_FILE_NAME = 'actions.json'
 STORYS_FILE_NAME = 'storys.json'
 RULES_FILE_NAME = 'rules.json'
 
-WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME], 
-                      'actions': [ACTIONS_FILE_NAME], 
-                      'storys': [STORYS_FILE_NAME], 
-                      'rules': [RULES_FILE_NAME], 
-                      'models': []}
+INTENT_KEYS = ['examples', 'use_entities', 'ignore_entities']
 
-WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
-WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'
+WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME],
+                      'actions': [ACTIONS_FILE_NAME],
+                      'storys': [STORYS_FILE_NAME],
+                      'rules': [RULES_FILE_NAME],
+                      'models': []}
 
 
 class DevelopmentConfig(object):
