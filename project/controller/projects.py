@@ -15,6 +15,7 @@ class ProjectsAPI(MethodView):
     def get(self):
         """Retrieve All Project Names"""
 
+        # Implement
         prj_names = [d.stem for d in prj_root.iterdir() if d.is_dir()]
         return jsonify(project_name=prj_names)
 
@@ -25,8 +26,10 @@ class ProjectsAPI(MethodView):
         try:
             project_name = request.json.get("project_name", None)
             
+            # Validity check
             util.check_name(project_name)
             
+            # Implement
             prj_dir = prj_root.joinpath(f'{project_name}')
             prj_dir.mkdir(parents=True)
             
@@ -53,9 +56,11 @@ class ProjectsAPI(MethodView):
         try:
             new_project_name = request.json.get("new_project_name", None)
             
+            # Validity check
             util.check_name(project_name)
             util.check_name(new_project_name)
             
+            # Implement
             target = prj_root.joinpath(new_project_name)
             prj_root.joinpath(project_name).rename(target)
         except Exception as e:
@@ -70,7 +75,10 @@ class ProjectsAPI(MethodView):
         """Delete A Project"""
 
         try:
+            # Validity check
             util.check_name(project_name)
+            
+            # Implement
             p = prj_root.joinpath(project_name)
             shutil.rmtree(p)
         except Exception as e:

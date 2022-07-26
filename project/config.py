@@ -13,6 +13,10 @@ STORYS_FILE_NAME = 'storys.json'
 RULES_FILE_NAME = 'rules.json'
 
 INTENT_KEYS = ['examples', 'use_entities', 'ignore_entities']
+INTENT_KEYS_ADDED = ['new_intent_name']
+
+ACTION_KEYS = ['action_type', 'data']
+ACTION_KEYS_ADDED = ['new_action_name']
 
 WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME],
                       'actions': [ACTIONS_FILE_NAME],

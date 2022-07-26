@@ -8,3 +8,6 @@ project.controller.projects.init(app)
 
 import project.controller.intents
 project.controller.intents.init(app)
+
+import project.controller.actions
+project.controller.actions.init(app)
