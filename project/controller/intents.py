@@ -76,31 +76,31 @@ class IntentsAPI(MethodView):
     @jwt_required()
     def put(self, project_name, intent_name):
         """Update A Intent"""
-
+        
         try:
-            new_intent_name = request.json.get('new_intent_name', None)
+            content = request.json
+            new_intent_name = content.pop('new_intent_name', None)
+            
+            # Validity check
             util.check_name(project_name)
+            util.check_key(INTENT_KEYS, content)
 
             intents_file = prj_root.joinpath(
                 project_name, 'intents', INTENTS_FILE_NAME)
             with open(intents_file, 'r', encoding="utf-8") as json_file:
                 intents_json = json.load(json_file)
             
-            # check intent_name
             if intent_name not in intents_json:
                 raise ValueError('Intent does not exist')
-
-            if new_intent_name:
+            elif new_intent_name:
                 if new_intent_name in intents_json:
-                    raise ValueError('Intent already exist')
-                
-                intents_json[new_intent_name] = intents_json.pop(intent_name)
-            else:
-                content = request.json
-
-                util.check_key(INTENT_KEYS, content)
-
+                    raise ValueError('Duplicate names are not allowed')
+            
+            # implement
+            if content:
                 intents_json[intent_name] = content
+            if new_intent_name:
+                intents_json[new_intent_name] = intents_json.pop(intent_name)
                 
             with open(intents_file, 'w', encoding="utf-8") as json_file:
                 json.dump(intents_json, json_file, indent=4)
@@ -110,6 +110,41 @@ class IntentsAPI(MethodView):
         else:
             response = jsonify({"msg": "OK"})
             return response, 200
+
+
+        # try:
+        #     new_intent_name = request.json.get('new_intent_name', None)
+        #     util.check_name(project_name)
+
+        #     intents_file = prj_root.joinpath(
+        #         project_name, 'intents', INTENTS_FILE_NAME)
+        #     with open(intents_file, 'r', encoding="utf-8") as json_file:
+        #         intents_json = json.load(json_file)
+            
+        #     # check intent_name
+        #     if intent_name not in intents_json:
+        #         raise ValueError('Intent does not exist')
+
+        #     if new_intent_name:
+        #         if new_intent_name in intents_json:
+        #             raise ValueError('Intent already exist')
+                
+        #         intents_json[new_intent_name] = intents_json.pop(intent_name)
+        #     else:
+        #         content = request.json
+
+        #         util.check_key(INTENT_KEYS, content)
+
+        #         intents_json[intent_name] = content
+                
+        #     with open(intents_file, 'w', encoding="utf-8") as json_file:
+        #         json.dump(intents_json, json_file, indent=4)
+        # except Exception as e:
+        #     response = jsonify({"msg": str(e)})
+        #     return response, 400
+        # else:
+        #     response = jsonify({"msg": "OK"})
+        #     return response, 200
 
     @jwt_required()
     def delete(self, project_name, intent_name):

@@ -3,8 +3,14 @@ from flask import request
 
 if __name__ == '__main__':
     
-    @app.route("/")
-    def hello_world():
+    @app.get("/")
+    def hello_world_get():
+        print(request.args.get('mode'))
+        return "<p>Hello, World!</p>"
+
+    @app.post("/")
+    def hello_world_post():
+        print(request.get_json())
         print(request.args.get('mode'))
         return "<p>Hello, World!</p>"
     
