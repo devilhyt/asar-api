@@ -1,0 +1,43 @@
+{
+    "title": "response",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "text": {
+                "type": "string"
+            },
+            "condition": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "null"
+                    }
+                }
+            },
+            "button": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "string"
+                        },
+                        "payload": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "image": {
+                "type": "string"
+            }
+        }
+    }
+}
