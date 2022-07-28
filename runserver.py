@@ -1,4 +1,4 @@
-from project import app
+from wingman_api import app
 from flask import request
 
 if __name__ == '__main__':
