@@ -1,9 +1,9 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from project.config import WINGMAN_PRJ_DIR, INTENTS_FILE_NAME, INTENT_KEYS, INTENT_KEYS_ADDED
+from wingman_api.config import WINGMAN_PRJ_DIR, INTENTS_FILE_NAME, INTENT_KEYS, INTENT_KEYS_ADDED
 from pathlib import Path
-from project import util
+from wingman_api import util
 import json
 
 prj_root = Path(WINGMAN_PRJ_DIR)
@@ -81,7 +81,7 @@ class IntentsAPI(MethodView):
 
     @jwt_required()
     def put(self, project_name, intent_name):
-        """Update A Intent"""
+        """Update An Intent"""
         
         try:
             content = request.json
@@ -119,7 +119,7 @@ class IntentsAPI(MethodView):
 
     @jwt_required()
     def delete(self, project_name, intent_name):
-        """Delete A Project"""
+        """Delete An Intent"""
 
         try:
             # Validity check
@@ -146,8 +146,12 @@ def init(app: Flask):
 
     intents_view = IntentsAPI.as_view('intents_api')
     app.add_url_rule('/projects/<string:project_name>/intents',
-                     defaults={'intent_name': None}, view_func=intents_view, methods=['GET'])
-    app.add_url_rule('/projects/<string:project_name>/intents', view_func=intents_view,
+                     defaults={'intent_name': None}, 
+                     view_func=intents_view, 
+                     methods=['GET'])
+    app.add_url_rule('/projects/<string:project_name>/intents', 
+                     view_func=intents_view,
                      methods=['POST'])
     app.add_url_rule('/projects/<string:project_name>/intents/<string:intent_name>',
-                     view_func=intents_view, methods=['GET', 'PUT', 'DELETE'])
+                     view_func=intents_view, 
+                     methods=['GET', 'PUT', 'DELETE'])

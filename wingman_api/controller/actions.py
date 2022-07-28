@@ -1,9 +1,9 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from project.config import WINGMAN_PRJ_DIR, ACTIONS_FILE_NAME, ACTION_KEYS, ACTION_KEYS_ADDED, WINGMAN_ROOT
+from wingman_api.config import WINGMAN_PRJ_DIR, ACTIONS_FILE_NAME, ACTION_KEYS, ACTION_KEYS_ADDED, WINGMAN_ROOT
 from pathlib import Path
-from project import util
+from wingman_api import util
 import json
 
 prj_root = Path(WINGMAN_PRJ_DIR)
@@ -184,16 +184,21 @@ def init(app: Flask):
 
     actions_view = ActionsAPI.as_view('actions_api')
     app.add_url_rule('/projects/<string:project_name>/actions',
-                     defaults={'action_name': None}, view_func=actions_view, methods=['GET'])
-    app.add_url_rule('/projects/<string:project_name>/actions', view_func=actions_view,
+                     defaults={'action_name': None}, 
+                     view_func=actions_view, methods=['GET'])
+    app.add_url_rule('/projects/<string:project_name>/actions', 
+                     view_func=actions_view,
                      methods=['POST'])
     app.add_url_rule('/projects/<string:project_name>/actions/<string:action_name>',
-                     view_func=actions_view, methods=['GET', 'PUT', 'DELETE'])
+                     view_func=actions_view, 
+                     methods=['GET', 'PUT', 'DELETE'])
 
     action_type_view = ActionTypeAPI.as_view('action_type_api')
     app.add_url_rule('/actions/types',
-                     view_func=action_type_view, methods=['GET'])
+                     view_func=action_type_view, 
+                     methods=['GET'])
     
     action_schema_view = ActionSchemaAPI.as_view('action_schema_api')
     app.add_url_rule('/actions/schema/<string:type_name>',
-                     view_func=action_schema_view, methods=['GET'])
+                     view_func=action_schema_view, 
+                     methods=['GET'])

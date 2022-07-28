@@ -1,10 +1,10 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from project.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT
+from wingman_api.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT
 from pathlib import Path
 import shutil
-from project import util
+from wingman_api import util
 
 prj_root = Path(WINGMAN_PRJ_DIR)
 

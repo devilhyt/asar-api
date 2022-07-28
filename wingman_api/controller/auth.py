@@ -1,8 +1,8 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
-from project.public import jwt, app
-from project.models.user import User
+from wingman_api.public import jwt, app
+from wingman_api.models.user import User
 
 from datetime import datetime, timedelta, timezone
 
@@ -42,15 +42,6 @@ def init(app: Flask):
     app.add_url_rule('/auth', view_func=auth_view,
                      methods=['GET', 'POST', 'DELETE'])
 
-
-# @jwt.user_identity_loader
-# def user_identity_lookup(user):
-#     """
-#         Register a callback function that takes whatever object is passed in as the identity when creating JWTs and converts it to a JSON serializable format
-#     """
-#     return user.id
-
-
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     """
@@ -78,3 +69,10 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         # Case where there is not a valid JWT. Just return the original response
         return response
+
+# @jwt.user_identity_loader
+# def user_identity_lookup(user):
+#     """
+#         Register a callback function that takes whatever object is passed in as the identity when creating JWTs and converts it to a JSON serializable format
+#     """
+#     return user.id

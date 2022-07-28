@@ -1,4 +1,4 @@
-from project.public import db
+from wingman_api.public import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
