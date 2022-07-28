@@ -1,12 +1,11 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from wingman_api.config import WINGMAN_PRJ_DIR, ACTIONS_FILE_NAME, ACTION_KEYS, ACTION_KEYS_ADDED, WINGMAN_ROOT
+from wingman_api.config import WINGMAN_ROOT
 from pathlib import Path
-from wingman_api import util
 import json
+from wingman_api.utils.project import Project
 
-prj_root = Path(WINGMAN_PRJ_DIR)
 actions_root = Path(WINGMAN_ROOT, 'project', 'assets', 'actions')
 
 
@@ -21,30 +20,13 @@ class ActionsAPI(MethodView):
             If action_name is not None, then get an action.
         """
         try:
+            prj = Project(project_name)
             if action_name:
-                # Validity check
-                util.check_name(project_name)
-
-                # Implement
-                actions_file = prj_root.joinpath(
-                    project_name, 'actions', ACTIONS_FILE_NAME)
-                with open(actions_file, 'r', encoding="utf-8") as json_file:
-                    actions_json = json.load(json_file)
-
-                action_obj = actions_json[action_name]
-
+                action_obj = prj.action.content[action_name]
                 return jsonify(action_obj), 200
             else:
-                # Validity check
-                util.check_name(project_name)
-
-                # Implement
-                actions_file = prj_root.joinpath(
-                    project_name, 'actions', ACTIONS_FILE_NAME)
-                with open(actions_file, 'r', encoding="utf-8") as json_file:
-                    actions_json = json.load(json_file)
-
-                return jsonify({'action_name': list(actions_json.keys())}), 200
+                action_names = prj.action.names
+                return jsonify({'action_name': action_names}), 200
         except Exception as e:
             response = jsonify({'msg': str(e)})
             return response, 400
@@ -54,26 +36,10 @@ class ActionsAPI(MethodView):
         """Create An action"""
 
         try:
+            prj = Project(project_name)
             content = request.json
             action_name = content.pop('action_name', None)
-
-            # Validity check
-            util.check_name(project_name)
-            if action_name is None:
-                raise ValueError('Missing Action Name')
-
-            actions_file = prj_root.joinpath(
-                project_name, 'actions', ACTIONS_FILE_NAME)
-            with open(actions_file, 'r', encoding="utf-8") as json_file:
-                actions_json = json.load(json_file)
-
-            if action_name in actions_json:
-                raise ValueError('Action already exist')
-
-            # Implement
-            actions_json[action_name] = content
-            with open(actions_file, 'w', encoding="utf-8") as json_file:
-                json.dump(actions_json, json_file, indent=4)
+            prj.action.create(action_name, content)
         except Exception as e:
             response = jsonify({'msg': str(e)})
             return response, 400
@@ -86,32 +52,10 @@ class ActionsAPI(MethodView):
         """Update A Intent"""
 
         try:
+            prj = Project(project_name)
             content = request.json
             new_action_name = content.pop('new_action_name', None)
-
-            # Validity check
-            util.check_name(project_name)
-            util.check_key(ACTION_KEYS + ACTION_KEYS_ADDED, content)
-
-            actions_file = prj_root.joinpath(
-                project_name, 'actions', ACTIONS_FILE_NAME)
-            with open(actions_file, 'r', encoding="utf-8") as json_file:
-                actions_json = json.load(json_file)
-
-            if action_name not in actions_json:
-                raise ValueError('Action does not exist')
-            elif new_action_name:
-                if new_action_name in actions_json:
-                    raise ValueError('Duplicate names are not allowed')
-
-            # Implement
-            if content:
-                actions_json[action_name] = content
-            if new_action_name:
-                actions_json[new_action_name] = actions_json.pop(action_name)
-
-            with open(actions_file, 'w', encoding="utf-8") as json_file:
-                json.dump(actions_json, json_file, indent=4)
+            prj.action.update(action_name, new_action_name, content)
         except Exception as e:
             response = jsonify({"msg": str(e)})
             return response, 400
@@ -124,18 +68,8 @@ class ActionsAPI(MethodView):
         """Delete A Project"""
 
         try:
-            # Validity check
-            util.check_name(project_name)
-
-            # Implement
-            actionss_file = prj_root.joinpath(
-                project_name, 'actions', ACTIONS_FILE_NAME)
-            with open(actionss_file, 'r', encoding="utf-8") as json_file:
-                actions_json = json.load(json_file)
-
-            del actions_json[action_name]
-            with open(actionss_file, 'w', encoding="utf-8") as json_file:
-                json.dump(actions_json, json_file, indent=4)
+            prj = Project(project_name)
+            prj.action.delete(action_name)
         except Exception as e:
             response = jsonify({"msg": str(e)})
             return response, 400
