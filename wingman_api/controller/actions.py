@@ -6,7 +6,7 @@ from wingman_api.config import WINGMAN_ROOT
 from pathlib import Path
 import json
 
-actions_root = Path(WINGMAN_ROOT, 'project', 'assets', 'actions')
+actions_root = Path(WINGMAN_ROOT, 'wingman_api', 'assets', 'actions')
 
 
 class ActionsAPI(MethodView):
