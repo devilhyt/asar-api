@@ -9,8 +9,8 @@ import json
 actions_root = Path(WINGMAN_ROOT, 'wingman_api', 'assets', 'actions')
 
 
-class ActionsAPI(MethodView):
-    """Wingman Actions API"""
+class ActionAPI(MethodView):
+    """Wingman Action API"""
 
     @jwt_required()
     def get(self, project_name, action_name):
@@ -91,16 +91,16 @@ class ActionSchemaAPI(MethodView):
 
 def init(app: Flask):
 
-    actions_view = ActionsAPI.as_view('actions_api')
+    action_view = ActionAPI.as_view('action_api')
     app.add_url_rule('/projects/<string:project_name>/actions',
                      defaults={'action_name': None},
-                     view_func=actions_view,
+                     view_func=action_view,
                      methods=['GET'])
     app.add_url_rule('/projects/<string:project_name>/actions',
-                     view_func=actions_view,
+                     view_func=action_view,
                      methods=['POST'])
     app.add_url_rule('/projects/<string:project_name>/actions/<string:action_name>',
-                     view_func=actions_view,
+                     view_func=action_view,
                      methods=['GET', 'PUT', 'DELETE'])
 
     action_type_view = ActionTypeAPI.as_view('action_type_api')

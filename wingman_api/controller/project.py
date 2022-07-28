@@ -4,8 +4,8 @@ from flask_jwt_extended import jwt_required
 from wingman_api.models.project import Project
 
 
-class ProjectsAPI(MethodView):
-    """Wingman Projects API"""
+class ProjectAPI(MethodView):
+    """Wingman Project API"""
 
     @jwt_required()
     def get(self):
@@ -41,8 +41,9 @@ class ProjectsAPI(MethodView):
 
 
 def init(app: Flask):
-    projects_view = ProjectsAPI.as_view('projects_api')
-    app.add_url_rule('/projects', view_func=projects_view,
+    project_view = ProjectAPI.as_view('project_api')
+    app.add_url_rule('/projects', view_func=project_view,
                      methods=['GET', 'POST'])
     app.add_url_rule('/projects/<string:project_name>',
-                     view_func=projects_view, methods=['PUT', 'DELETE'])
+                     view_func=project_view, 
+                     methods=['PUT', 'DELETE'])

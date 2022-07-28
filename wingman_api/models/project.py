@@ -4,7 +4,8 @@ import shutil
 from wingman_api.config import (
     WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT,
     INTENTS_FILE_NAME, INTENT_KEYS, INTENT_KEYS_ADDED,
-    ACTIONS_FILE_NAME, ACTION_KEYS, ACTION_KEYS_ADDED)
+    ACTIONS_FILE_NAME, ACTION_KEYS, ACTION_KEYS_ADDED,
+    STORIES_FILE_NAME, STORY_KEYS, STORY_KEYS_ADDED)
 
 
 class Project:
@@ -16,6 +17,7 @@ class Project:
         self.prj_path = Path(WINGMAN_PRJ_DIR, project_name)
         self.intent = Intent(self.prj_path)
         self.action = Action(self.prj_path)
+        self.story = Story(self.prj_path)
 
     @staticmethod
     def names() -> tuple:
@@ -126,3 +128,8 @@ class Action(FileBasis):
     def __init__(self, prj_path: Path) -> None:
         super().__init__(prj_path.joinpath('actions', ACTIONS_FILE_NAME),
                          keys=ACTION_KEYS + ACTION_KEYS_ADDED)
+        
+class Story(FileBasis):
+    def __init__(self, prj_path: Path) -> None:
+        super().__init__(prj_path.joinpath('stories', STORIES_FILE_NAME),
+                         keys=STORY_KEYS + STORY_KEYS_ADDED)

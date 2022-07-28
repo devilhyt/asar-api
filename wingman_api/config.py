@@ -9,7 +9,7 @@ WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'
 
 INTENTS_FILE_NAME = 'intents.json'
 ACTIONS_FILE_NAME = 'actions.json'
-STORYS_FILE_NAME = 'storys.json'
+STORIES_FILE_NAME = 'stories.json'
 RULES_FILE_NAME = 'rules.json'
 
 INTENT_KEYS = ['examples', 'use_entities', 'ignore_entities']
@@ -18,9 +18,14 @@ INTENT_KEYS_ADDED = ['new_intent_name']
 ACTION_KEYS = ['action_type', 'data']
 ACTION_KEYS_ADDED = ['new_action_name']
 
+STORY_KEYS = ['nodes', 'edges', 'position', 'zoom']
+STORY_KEYS_ADDED = ['new_story_name']
+RULE_KEYS = ['nodes', 'edges', 'position', 'zoom']
+RULE_KEYS_ADDED = ['new_rule_name']
+
 WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME],
                       'actions': [ACTIONS_FILE_NAME],
-                      'storys': [STORYS_FILE_NAME],
+                      'stories': [STORIES_FILE_NAME],
                       'rules': [RULES_FILE_NAME],
                       'models': []}
 

@@ -4,8 +4,8 @@ from flask_jwt_extended import jwt_required
 from wingman_api.models.project import Project
 
 
-class IntentsAPI(MethodView):
-    """Wingman Intents API"""
+class IntentAPI(MethodView):
+    """Wingman Intent API"""
 
     @jwt_required()
     def get(self, project_name, intent_name):
@@ -53,14 +53,14 @@ class IntentsAPI(MethodView):
 
 def init(app: Flask):
 
-    intents_view = IntentsAPI.as_view('intents_api')
+    intent_view = IntentAPI.as_view('intent_api')
     app.add_url_rule('/projects/<string:project_name>/intents',
                      defaults={'intent_name': None},
-                     view_func=intents_view,
+                     view_func=intent_view,
                      methods=['GET'])
     app.add_url_rule('/projects/<string:project_name>/intents',
-                     view_func=intents_view,
+                     view_func=intent_view,
                      methods=['POST'])
     app.add_url_rule('/projects/<string:project_name>/intents/<string:intent_name>',
-                     view_func=intents_view,
+                     view_func=intent_view,
                      methods=['GET', 'PUT', 'DELETE'])
