@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from .config import DevelopmentConfig
 from flask_sqlalchemy import SQLAlchemy
@@ -10,3 +10,7 @@ app.config.from_object(DevelopmentConfig)
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({"msg":str(e)}), 400

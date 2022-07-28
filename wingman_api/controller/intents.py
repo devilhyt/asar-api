@@ -14,63 +14,41 @@ class IntentsAPI(MethodView):
             If intent_name is None, then Retrieve All Intent Names.\n
             If intent_name is not None, then Get An intent.
         """
-        try:
-            prj = Project(project_name)
-            if intent_name:
-                intent_obj = prj.intent.content[intent_name]
-                return jsonify(intent_obj), 200
-            else:
-                intent_names = prj.intent.names
-                return jsonify({'intent_names': intent_names}), 200
-        except Exception as e:
-            response = jsonify({'msg': str(e)})
-            return response, 400
+
+        prj = Project(project_name)
+        if intent_name:
+            intent_obj = prj.intent.content[intent_name]
+            return jsonify(intent_obj), 200
+        else:
+            intent_names = prj.intent.names
+            return jsonify({'intent_names': intent_names}), 200
 
     @jwt_required()
     def post(self, project_name):
         """Create An intent"""
 
-        try:
-            prj = Project(project_name)
-            intent_name = request.json.get('intent_name', None)
-
-            prj.intent.create(intent_name)
-        except Exception as e:
-            response = jsonify({'msg': str(e)})
-            return response, 400
-        else:
-            response = jsonify({"msg": "OK"})
-            return response, 200
+        prj = Project(project_name)
+        intent_name = request.json.get('intent_name', None)
+        prj.intent.create(intent_name)
+        return jsonify({"msg": "OK"}), 200
 
     @jwt_required()
     def put(self, project_name, intent_name):
         """Update An Intent"""
 
-        try:
-            prj = Project(project_name)
-            content = request.json
-            new_intent_name = content.pop('new_intent_name', None)
-            prj.intent.update(intent_name, new_intent_name, content)
-        except Exception as e:
-            response = jsonify({"msg": str(e)})
-            return response, 400
-        else:
-            response = jsonify({"msg": "OK"})
-            return response, 200
+        prj = Project(project_name)
+        content = request.json
+        new_intent_name = content.pop('new_intent_name', None)
+        prj.intent.update(intent_name, new_intent_name, content)
+        return jsonify({"msg": "OK"}), 200
 
     @jwt_required()
     def delete(self, project_name, intent_name):
         """Delete An Intent"""
 
-        try:
-            prj = Project(project_name)
-            prj.intent.delete(intent_name)
-        except Exception as e:
-            response = jsonify({"msg": str(e)})
-            return response, 400
-        else:
-            response = jsonify({"msg": "OK"})
-            return response, 200
+        prj = Project(project_name)
+        prj.intent.delete(intent_name)
+        return jsonify({"msg": "OK"}), 200
 
 
 def init(app: Flask):
