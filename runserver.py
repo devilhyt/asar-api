@@ -3,6 +3,7 @@ from flask import request
 
 if __name__ == '__main__':
     
+    # test page
     @app.get("/")
     def hello_world_get():
         print(request.args.get('mode'))
