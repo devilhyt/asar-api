@@ -12,5 +12,6 @@ db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
 @app.errorhandler(Exception)
-def handle_exception(e):
+def handle_exception(e : Exception):
+    print(e)
     return jsonify({"msg":str(e)}), 400
