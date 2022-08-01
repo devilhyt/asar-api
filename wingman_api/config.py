@@ -1,8 +1,8 @@
 import datetime
 
 WINGMAN_ROOT = 'C:/Users/DevilHYT/Desktop/github/wingman-api'
-WINGMAN_DATA_DIR_NAME = 'wingman-data'
-WINGMAN_PRJ_DIR_NAME = 'wingman-projects'
+WINGMAN_DATA_DIR_NAME = 'wingman_data'
+WINGMAN_PRJ_DIR_NAME = 'wingman_projects'
 
 WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
 WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'

@@ -1,7 +1,7 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
-from wingman_api.public import jwt, app
+from wingman_api.main import jwt, app
 from wingman_api.models.user import User
 
 from datetime import datetime, timedelta, timezone
