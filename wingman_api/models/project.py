@@ -13,7 +13,6 @@ class Project:
 
     def __init__(self, project_name) -> None:
         self.prj_root.mkdir(parents=True, exist_ok=True)
-        Project.check_relpath(project_name)
         self.prj_path = Path(WINGMAN_PRJ_DIR, project_name)
         self.intent = Intent(self.prj_path)
         self.action = Action(self.prj_path)
@@ -25,7 +24,6 @@ class Project:
 
     @staticmethod
     def create(project_name) -> None:
-        Project.check_relpath(project_name)
         prj_dir = Project.prj_root.joinpath(project_name)
         prj_dir.mkdir(parents=True)
 
@@ -39,21 +37,11 @@ class Project:
                     sub_file.write_text('{}')
 
     def rename(self, new_project_name) -> None:
-        Project.check_relpath(new_project_name)
         target = self.prj_root.joinpath(new_project_name)
         self.prj_path.rename(target)
 
     def delete(self) -> None:
         shutil.rmtree(self.prj_path)
-
-    @staticmethod
-    def check_relpath(name: str):
-        """avoid relative path"""
-
-        check_list = ['..', '/', '\\', ':']
-        if any(elem in name for elem in check_list):
-            raise ValueError('Cannot use relative path')
-
 
 class FileBasis():
     def __init__(self, file: Path, keys: list) -> None:
@@ -133,3 +121,22 @@ class Story(FileBasis):
     def __init__(self, prj_path: Path) -> None:
         super().__init__(prj_path.joinpath('stories', STORIES_FILE_NAME),
                          keys=STORY_KEYS + STORY_KEYS_ADDED)
+        
+from pydantic import BaseModel, validator
+
+class ProjectSchema(BaseModel):
+    project_name : str
+    
+    @validator('*')
+    def check_relpath(cls, v):
+        """avoid relative path"""
+
+        check_list = ['.', '/', '\\', ':']
+        if any(elem in v for elem in check_list):
+            raise ValueError('Cannot use relative path')
+        return v
+
+class ProjectSchemaUpdate(ProjectSchema):
+    new_project_name : str
+
+

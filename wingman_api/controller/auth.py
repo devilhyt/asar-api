@@ -20,11 +20,11 @@ class AuthAPI(MethodView):
         password = request.json.get("password", None)
 
         # Validation
-        user_data = UserSchema(username=username, password=password)
+        valid_data = UserSchema(username=username, password=password)
 
         # Implement
-        user = User.query.filter_by(username=user_data.username,
-                                    password=user_data.password).one_or_none()
+        user = User.query.filter_by(username=valid_data.username,
+                                    password=valid_data.password).one_or_none()
         if not user:
             return jsonify("Wrong username or password"), 400
 

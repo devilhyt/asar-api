@@ -35,7 +35,7 @@ class IntentAPI(MethodView):
     @jwt_required()
     def put(self, project_name, intent_name):
         """Update An Intent"""
-
+        
         prj = Project(project_name)
         content = request.json
         new_intent_name = content.pop('new_intent_name', None)
