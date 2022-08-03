@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
 from wingman_api.main import jwt, app
-from wingman_api.models.user import User
+from wingman_api.models.user import User, UserSchema
 
 from datetime import datetime, timedelta, timezone
 
@@ -14,16 +14,20 @@ class AuthAPI(MethodView):
         return jsonify(id=current_user.id, username=current_user.username)
 
     def post(self):
-        """get current user info"""
+        """login"""
+        # Receive
         username = request.json.get("username", None)
         password = request.json.get("password", None)
 
-        user = User.query.filter_by(
-            username=username, password=password).one_or_none()
+        # Validation
+        user_data = UserSchema(username=username, password=password)
+
+        # Implement
+        user = User.query.filter_by(username=user_data.username,
+                                    password=user_data.password).one_or_none()
         if not user:
             return jsonify("Wrong username or password"), 400
 
-        # Notice that we are passing in the actual sqlalchemy user object here
         access_token = create_access_token(identity=user.id)
         response = jsonify(access_token=access_token)
         set_access_cookies(response, access_token)
@@ -31,7 +35,7 @@ class AuthAPI(MethodView):
 
     @jwt_required()
     def delete(self):
-        """get current user info"""
+        """logout"""
         response = jsonify({"msg": "logout successful"})
         unset_jwt_cookies(response)
         return response
@@ -41,6 +45,8 @@ def init(app: Flask):
     auth_view = AuthAPI.as_view('auth_api')
     app.add_url_rule('/auth', view_func=auth_view,
                      methods=['GET', 'POST', 'DELETE'])
+    
+
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -69,10 +75,3 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         # Case where there is not a valid JWT. Just return the original response
         return response
-
-# @jwt.user_identity_loader
-# def user_identity_lookup(user):
-#     """
-#         Register a callback function that takes whatever object is passed in as the identity when creating JWTs and converts it to a JSON serializable format
-#     """
-#     return user.id
