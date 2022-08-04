@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
 import wingman_api.controller.auth
-wingman_api.controller.auth.init(app)
+wingman_api.controller.auth.init(app, db)
 wingman_api.controller.project.init(app)
 wingman_api.controller.intent.init(app)
 wingman_api.controller.action.init(app)

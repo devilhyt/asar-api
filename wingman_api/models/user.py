@@ -13,7 +13,6 @@ class UserSchema(BaseModel, extra=Extra.forbid):
     password : str
 
 def init():
-    db.create_all()
     db.session.add(User(username="admin", password="admin"))
     db.session.add(User(username="user", password="user"))
     db.session.commit()

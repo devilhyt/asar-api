@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
 from wingman_api.main import jwt, app
 from wingman_api.models.user import User, UserSchema
-
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, timezone
 
 
@@ -38,7 +38,8 @@ class AuthAPI(MethodView):
         return response
 
 
-def init(app: Flask):
+def init(app: Flask, db: SQLAlchemy):
+    db.create_all()
     auth_view = AuthAPI.as_view('auth_api')
     app.add_url_rule('/auth', view_func=auth_view,
                      methods=['GET', 'POST', 'DELETE'])

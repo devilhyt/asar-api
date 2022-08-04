@@ -23,7 +23,7 @@ class DevelopmentConfig(object):
     """Flask Config"""
 
     SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///user.db'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}/user.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
     JWT_TOKEN_LOCATION = ['headers', 'cookies', 'query_string', 'json']
