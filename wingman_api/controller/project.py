@@ -1,7 +1,7 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from wingman_api.models.project import Project, ProjectSchema, ProjectSchemaUpdate
+from wingman_api.models.project import Project
 
 
 class ProjectAPI(MethodView):
@@ -19,11 +19,10 @@ class ProjectAPI(MethodView):
         """Create A Project"""
 
         # Receive
-        project_name = request.json.get("project_name", None)
-        # Validation
-        valid_data = ProjectSchema(project_name=project_name)
+        project_name = request.json.get('project_name', None)
         # Implement
-        Project.create(valid_data.project_name)
+        prj = Project(project_name)
+        prj.create()
         return jsonify({"msg": "OK"}), 200
 
     @jwt_required()
@@ -31,22 +30,18 @@ class ProjectAPI(MethodView):
         """Update A Project"""
 
         # Receive
-        new_project_name = request.json.get("new_project_name", None)
-        # Validation
-        valid_data = ProjectSchemaUpdate(project_name=project_name, new_project_name=new_project_name)
+        new_project_name = request.json.get('new_project_name', None)
         # Implement
-        prj = Project(valid_data.project_name)
-        prj.rename(valid_data.new_project_name)
+        prj = Project(project_name)
+        prj.rename(new_project_name)
         return jsonify({"msg": "OK"}), 200
 
     @jwt_required()
     def delete(self, project_name):
         """Delete A Project"""
-
-        # Validation
-        valid_data = ProjectSchema(project_name=project_name)
+        
         # Implement
-        prj = Project(valid_data.project_name)
+        prj = Project(project_name)
         prj.delete()
         return jsonify({"msg": "OK"}), 200
 

@@ -17,9 +17,10 @@ class ActionAPI(MethodView):
         """
         :param action_name:
             If action_name is None, then retrieve all action names.\n
-            If action_name is not None, then get an action.
+            If action_name is not None, then get an action object.
         """
 
+        # Implement
         prj = Project(project_name)
         if action_name:
             action_obj = prj.action.content[action_name]
@@ -32,9 +33,11 @@ class ActionAPI(MethodView):
     def post(self, project_name):
         """Create An action"""
 
-        prj = Project(project_name)
+        # Receive
         content = request.json
         action_name = content.pop('action_name', None)
+        # Implement
+        prj = Project(project_name)
         prj.action.create(action_name, content)
         return jsonify({"msg": "OK"}), 200
 
@@ -42,9 +45,11 @@ class ActionAPI(MethodView):
     def put(self, project_name, action_name):
         """Update A Intent"""
 
-        prj = Project(project_name)
+        # Receive
         content = request.json
         new_action_name = content.pop('new_action_name', None)
+        # Implement
+        prj = Project(project_name)
         prj.action.update(action_name, new_action_name, content)
         return jsonify({"msg": "OK"}), 200
 
@@ -52,6 +57,7 @@ class ActionAPI(MethodView):
     def delete(self, project_name, action_name):
         """Delete A Project"""
 
+        # Implement
         prj = Project(project_name)
         prj.action.delete(action_name)
         return jsonify({"msg": "OK"}), 200

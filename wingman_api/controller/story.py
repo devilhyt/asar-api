@@ -15,6 +15,7 @@ class StoryAPI(MethodView):
             If story_name is not None, then get a story.
         """
 
+        # Implement
         prj = Project(project_name)
         if story_name:
             story_obj = prj.story.content[story_name]
@@ -27,8 +28,10 @@ class StoryAPI(MethodView):
     def post(self, project_name):
         """Create a story"""
 
-        prj = Project(project_name)
+        # Receive
         story_name = request.json.get('story_name', None)
+        # Implement
+        prj = Project(project_name)
         prj.story.create(story_name)
         return jsonify({"msg": "OK"}), 200
 
@@ -36,9 +39,11 @@ class StoryAPI(MethodView):
     def put(self, project_name, story_name):
         """Update a story"""
 
-        prj = Project(project_name)
+        # Receive
         content = request.json
         new_story_name = content.pop('new_story_name', None)
+        # Implement
+        prj = Project(project_name)
         prj.story.update(story_name, new_story_name, content)
         return jsonify({"msg": "OK"}), 200
 
@@ -46,6 +51,7 @@ class StoryAPI(MethodView):
     def delete(self, project_name, story_name):
         """Delete a story"""
 
+        # Implement
         prj = Project(project_name)
         prj.story.delete(story_name)
         return jsonify({"msg": "OK"}), 200

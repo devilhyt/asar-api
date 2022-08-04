@@ -1,7 +1,7 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
-from wingman_api.models.project import Project
+from wingman_api.models.project import Project, ProjectSchema
 
 
 class IntentAPI(MethodView):
@@ -12,12 +12,13 @@ class IntentAPI(MethodView):
         """
         :param intent_name:
             If intent_name is None, then Retrieve All Intent Names.\n
-            If intent_name is not None, then Get An intent.
+            If intent_name is not None, then get an intent object.
         """
-
+        
+        # Implement
         prj = Project(project_name)
         if intent_name:
-            intent_obj = prj.intent.content[intent_name]
+            intent_obj = prj.intent.get(intent_name)
             return jsonify(intent_obj), 200
         else:
             intent_names = prj.intent.names
@@ -26,9 +27,11 @@ class IntentAPI(MethodView):
     @jwt_required()
     def post(self, project_name):
         """Create An intent"""
-
-        prj = Project(project_name)
+        
+        # Receive
         intent_name = request.json.get('intent_name', None)
+        # Implement
+        prj = Project(project_name)
         prj.intent.create(intent_name)
         return jsonify({"msg": "OK"}), 200
 
@@ -36,9 +39,11 @@ class IntentAPI(MethodView):
     def put(self, project_name, intent_name):
         """Update An Intent"""
         
-        prj = Project(project_name)
+        # Receive
         content = request.json
         new_intent_name = content.pop('new_intent_name', None)
+        # Implement
+        prj = Project(project_name)
         prj.intent.update(intent_name, new_intent_name, content)
         return jsonify({"msg": "OK"}), 200
 
@@ -46,6 +51,7 @@ class IntentAPI(MethodView):
     def delete(self, project_name, intent_name):
         """Delete An Intent"""
 
+        # Implement
         prj = Project(project_name)
         prj.intent.delete(intent_name)
         return jsonify({"msg": "OK"}), 200

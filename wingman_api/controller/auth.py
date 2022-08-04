@@ -16,12 +16,9 @@ class AuthAPI(MethodView):
     def post(self):
         """login"""
         # Receive
-        username = request.json.get("username", None)
-        password = request.json.get("password", None)
-
+        content = request.json
         # Validation
-        valid_data = UserSchema(username=username, password=password)
-
+        valid_data = UserSchema(**content)
         # Implement
         user = User.query.filter_by(username=valid_data.username,
                                     password=valid_data.password).one_or_none()

@@ -1,9 +1,18 @@
 from pathlib import Path
-from wingman_api.config import (
-    STORIES_FILE_NAME, STORY_KEYS, STORY_KEYS_ADDED)
+from wingman_api.config import STORIES_FILE_NAME
 from .file_basis import FileBasis
+from pydantic import BaseModel
+from typing import Optional
+
 
 class Story(FileBasis):
     def __init__(self, prj_path: Path) -> None:
         super().__init__(prj_path.joinpath('stories', STORIES_FILE_NAME),
-                         keys=STORY_KEYS + STORY_KEYS_ADDED)
+                         object_schema=StoryObjectSchema)
+
+
+class StoryObjectSchema(BaseModel):
+    nodes: Optional[list]
+    edges: Optional[list]
+    position: Optional[list]
+    zoom: Optional[int]

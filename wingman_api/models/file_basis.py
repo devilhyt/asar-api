@@ -1,10 +1,33 @@
 from pathlib import Path
 import json
+from typing import Optional
+from pydantic import BaseModel, validator
+
+
+class GeneralNameSchema(BaseModel):
+    name: str
+    new_name: Optional[str]
+
+    @validator('*')
+    def check_name(cls, v) -> str:
+        check_list = ['.', ' ', '\\', ':']
+        if v and any(elem in v for elem in check_list):
+            raise ValueError('Invalid name')
+        return v
+
+
+class GeneralObjectSchema(BaseModel):
+    pass
+
 
 class FileBasis():
-    def __init__(self, file: Path, keys: list) -> None:
+    def __init__(self,
+                 file: Path,
+                 name_schema=GeneralNameSchema,
+                 object_schema=GeneralObjectSchema) -> None:
         self.file = file
-        self.keys = keys
+        self.name_schema = name_schema
+        self.object_schema = object_schema
 
     @property
     def content(self) -> dict:
@@ -14,29 +37,34 @@ class FileBasis():
     def names(self) -> tuple:
         return tuple(self.content.keys())
 
+    def get(self, name: str):
+        # Validate
+        valid_data = self.name_schema(name=name)
+        # Implement
+        return self.content[name]
+
     def create(self, name: str, input_content: dict = {}) -> None:
-        # Validity check
-        self.check_key(input_content)
-        if name is None:
-            raise ValueError(f'Missing {self.__class__.__name__} Name')
+        # Validate
+        valid_data = self.name_schema(name=name)
+        valid_object = self.object_schema(**input_content)
         content = self.content
         if name in content:
             raise ValueError(f'{self.__class__.__name__} already exist')
-
         # Implement
         content[name] = input_content
         self.write_json(content)
 
     def update(self, name, new_name, input_content) -> None:
-        # Validity check
-        self.check_key(input_content)
+        # Validate
+        valid_data = self.name_schema(name=name, new_name=new_name)
+        if input_content:
+            valid_object = self.object_schema(**input_content)
         content = self.content
         if name not in content:
             raise ValueError(f'{self.__class__.__name__} does not exist')
         elif new_name:
             if new_name in content:
                 raise ValueError('Duplicate names are not allowed')
-
         # Implement
         if input_content:
             content[name] = input_content
@@ -45,6 +73,9 @@ class FileBasis():
         self.write_json(content)
 
     def delete(self, name) -> None:
+        # Validate
+        valid_data = self.name_schema(name=name)
+        # Implement
         content = self.content
         del content[name]
         self.write_json(content)
@@ -57,8 +88,3 @@ class FileBasis():
     def write_json(self, f_json: dict) -> dict:
         with open(self.file, 'w', encoding="utf-8") as f:
             json.dump(f_json, f, indent=4)
-
-    def check_key(self, content: dict):
-        """avoid invalid keys"""
-        if any(key not in self.keys for key in content):
-            raise ValueError('Invalid Key')

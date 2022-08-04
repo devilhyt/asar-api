@@ -1,5 +1,5 @@
 from wingman_api.main import db
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 from typing import Optional
 
 class User(db.Model):
@@ -7,7 +7,7 @@ class User(db.Model):
     username = db.Column(db.Text, nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)
     
-class UserSchema(BaseModel):
+class UserSchema(BaseModel, extra=Extra.forbid):
     id : Optional[int]
     username : str
     password : str
