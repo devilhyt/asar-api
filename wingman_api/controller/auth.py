@@ -1,7 +1,7 @@
 from flask.views import MethodView
 from flask import Flask, jsonify, request
 from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
-from wingman_api.main import jwt, app
+from wingman_api.main import jwt, db
 from wingman_api.models.user import User, UserSchema
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, timezone
@@ -38,11 +38,28 @@ class AuthAPI(MethodView):
         return response
 
 
-def init(app: Flask, db: SQLAlchemy):
-    db.create_all()
+def init(app: Flask):
+    db.create_all(app=app)
     auth_view = AuthAPI.as_view('auth_api')
     app.add_url_rule('/auth', view_func=auth_view,
                      methods=['GET', 'POST', 'DELETE'])
+    @app.after_request
+    def refresh_expiring_jwts(response):
+        """
+            Using an `after_request` callback, we refresh any token that is within 30 minutes of expiring. 
+            Change the timedeltas to match the needs of your application.
+        """
+        try:
+            exp_timestamp = get_jwt()["exp"]
+            now = datetime.now(timezone.utc)
+            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            if target_timestamp > exp_timestamp:
+                access_token = create_access_token(identity=get_jwt_identity())
+                set_access_cookies(response, access_token)
+            return response
+        except (RuntimeError, KeyError):
+            # Case where there is not a valid JWT. Just return the original response
+            return response
     
 
 
@@ -55,21 +72,3 @@ def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return User.query.filter_by(id=identity).one_or_none()
 
-
-@app.after_request
-def refresh_expiring_jwts(response):
-    """
-        Using an `after_request` callback, we refresh any token that is within 30 minutes of expiring. 
-        Change the timedeltas to match the needs of your application.
-    """
-    try:
-        exp_timestamp = get_jwt()["exp"]
-        now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-        if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
-            set_access_cookies(response, access_token)
-        return response
-    except (RuntimeError, KeyError):
-        # Case where there is not a valid JWT. Just return the original response
-        return response
