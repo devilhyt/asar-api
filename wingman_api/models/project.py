@@ -1,5 +1,5 @@
-from pathlib import Path
 import shutil
+from pathlib import Path
 from pydantic import BaseModel, validator
 from wingman_api.config import (WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT)
 from .intent import Intent

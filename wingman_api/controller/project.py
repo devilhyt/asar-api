@@ -1,5 +1,5 @@
-from flask.views import MethodView
 from flask import Flask, jsonify, request
+from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from wingman_api.models.project import Project
 

@@ -1,10 +1,10 @@
-from flask.views import MethodView
+import json
+from pathlib import Path
 from flask import Flask, jsonify, request
+from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from wingman_api.models.project import Project
 from wingman_api.config import WINGMAN_ROOT
-from pathlib import Path
-import json
 
 actions_root = Path(WINGMAN_ROOT, 'wingman_api', 'assets', 'actions')
 

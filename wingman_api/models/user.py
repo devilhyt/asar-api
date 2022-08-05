@@ -1,6 +1,6 @@
-from wingman_api.main import db
-from pydantic import BaseModel, Extra
 from typing import Optional
+from pydantic import BaseModel, Extra
+from wingman_api.public import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

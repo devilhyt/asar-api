@@ -1,8 +1,8 @@
+from typing import Optional
 from pathlib import Path
+from pydantic import BaseModel
 from wingman_api.config import STORIES_FILE_NAME
 from .file_basis import FileBasis
-from pydantic import BaseModel
-from typing import Optional
 
 
 class Story(FileBasis):
