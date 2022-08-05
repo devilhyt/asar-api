@@ -1,4 +1,4 @@
-from typing import (Optional, List)
+from typing import Optional, List
 from pathlib import Path
 from pydantic import BaseModel, root_validator
 from wingman_api.config import INTENTS_FILE_NAME
