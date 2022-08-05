@@ -108,12 +108,10 @@ def init(app: Flask):
     app.add_url_rule('/projects/<string:project_name>/actions/<string:action_name>',
                      view_func=action_view,
                      methods=['GET', 'PUT', 'DELETE'])
-
     action_type_view = ActionTypeAPI.as_view('action_type_api')
     app.add_url_rule('/actions/types',
                      view_func=action_type_view,
                      methods=['GET'])
-
     action_schema_view = ActionSchemaAPI.as_view('action_schema_api')
     app.add_url_rule('/actions/schema/<string:type_name>',
                      view_func=action_schema_view,
