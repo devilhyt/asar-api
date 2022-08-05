@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from .config import DevelopmentConfig
 
-app = Flask(__name__)
+app = Flask(__name__.split('.')[0])
 app.config.from_object(DevelopmentConfig)
 
 cors = CORS(app, supports_credentials=True)
@@ -14,6 +14,7 @@ jwt = JWTManager(app)
 # cors.init_app(app)
 # db.init_app(app)
 # jwt.init_app(app)
+
 
 @app.errorhandler(Exception)
 def handle_exception(e: Exception):
