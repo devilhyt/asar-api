@@ -95,7 +95,7 @@ class ActionSchemaAPI(MethodView):
         return jsonify(schema_json), 200
 
 
-def init(app: Flask):
+def init_app(app: Flask):
 
     action_view = ActionAPI.as_view('action_api')
     app.add_url_rule('/projects/<string:project_name>/actions',

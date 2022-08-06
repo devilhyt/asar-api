@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
 from wingman_api.models.user import User, UserSchema
-from wingman_api.public import app, db, jwt
+from wingman_api.extensions import db, jwt
 
 
 class AuthAPI(MethodView):
@@ -37,13 +37,14 @@ class AuthAPI(MethodView):
         return response
 
 
-def init(app: Flask):
-    db.create_all()
+def init_app(app: Flask):
+    db.create_all(app=app)
     auth_view = AuthAPI.as_view('auth_api')
     app.add_url_rule('/auth', view_func=auth_view,
                      methods=['GET', 'POST', 'DELETE'])
-    
-@app.after_request
+    app.after_request(refresh_expiring_jwts)
+
+
 def refresh_expiring_jwts(response):
     """
         Using an `after_request` callback, we refresh any token that is within 30 minutes of expiring. 
@@ -61,6 +62,7 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original response
         return response
 
+
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     """
@@ -69,6 +71,3 @@ def user_lookup_callback(_jwt_header, jwt_data):
     """
     identity = jwt_data["sub"]
     return User.query.filter_by(id=identity).one_or_none()
-    
-
-

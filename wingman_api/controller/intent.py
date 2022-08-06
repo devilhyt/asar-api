@@ -57,7 +57,7 @@ class IntentAPI(MethodView):
         return jsonify({"msg": "OK"}), 200
 
 
-def init(app: Flask):
+def init_app(app: Flask):
 
     intent_view = IntentAPI.as_view('intent_api')
     app.add_url_rule('/projects/<string:project_name>/intents',

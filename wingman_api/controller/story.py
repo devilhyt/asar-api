@@ -57,7 +57,7 @@ class StoryAPI(MethodView):
         return jsonify({"msg": "OK"}), 200
 
 
-def init(app: Flask):
+def init_app(app: Flask):
 
     story_view = StoryAPI.as_view('story_api')
     app.add_url_rule('/projects/<string:project_name>/stories',
