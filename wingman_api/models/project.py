@@ -5,6 +5,7 @@ from wingman_api.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT
 from .intent import Intent
 from .action import Action
 from .story import Story
+from .rule import Rule
 
 
 class Project:
@@ -19,6 +20,7 @@ class Project:
         self.intent = Intent(self.prj_path)
         self.action = Action(self.prj_path)
         self.story = Story(self.prj_path)
+        self.rule = Rule(self.prj_path)
 
     @staticmethod
     def names() -> tuple:

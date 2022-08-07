@@ -16,7 +16,7 @@ class ActionAPI(MethodView):
     def get(self, project_name, action_name):
         """
         :param action_name:
-            If action_name is None, then retrieve all action names.\n
+            If action_name is None, then get the names of all actions.\n
             If action_name is not None, then get an action object.
         """
 

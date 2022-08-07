@@ -11,8 +11,8 @@ class StoryAPI(MethodView):
     def get(self, project_name, story_name):
         """
         :param story_name:
-            If story_name is None, then retrieve all story names.\n
-            If story_name is not None, then get a story.
+            If story_name is None, then get the names of all stories.\n
+            If story_name is not None, then get a story object.
         """
 
         # Implement

@@ -11,7 +11,7 @@ class IntentAPI(MethodView):
     def get(self, project_name, intent_name):
         """
         :param intent_name:
-            If intent_name is None, then Retrieve All Intent Names.\n
+            If intent_name is None, then get the names of all intents.\n
             If intent_name is not None, then get an intent object.
         """
         

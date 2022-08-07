@@ -7,6 +7,7 @@ import wingman_api.controller.project
 import wingman_api.controller.intent
 import wingman_api.controller.action
 import wingman_api.controller.story
+import wingman_api.controller.rule
 
 
 def create_app(config=DevelopmentConfig):
@@ -22,4 +23,5 @@ def create_app(config=DevelopmentConfig):
     wingman_api.controller.intent.init_app(app)
     wingman_api.controller.action.init_app(app)
     wingman_api.controller.story.init_app(app)
+    wingman_api.controller.rule.init_app(app)
     return app
