@@ -39,14 +39,14 @@ class FileBasis():
 
     def get(self, name: str):
         # Validate
-        valid_data = self.name_schema(name=name)
+        _ = self.name_schema(name=name)
         # Implement
         return self.content[name]
 
     def create(self, name: str, input_content: dict = {}) -> None:
         # Validate
-        valid_data = self.name_schema(name=name)
-        valid_object = self.object_schema(**input_content)
+        _ = self.name_schema(name=name)
+        _ = self.object_schema(**input_content)
         content = self.content
         if name in content:
             raise ValueError(f'{self.__class__.__name__} already exist')
@@ -56,9 +56,9 @@ class FileBasis():
 
     def update(self, name, new_name, input_content) -> None:
         # Validate
-        valid_data = self.name_schema(name=name, new_name=new_name)
+        _ = self.name_schema(name=name, new_name=new_name)
         if input_content:
-            valid_object = self.object_schema(**input_content)
+            _ = self.object_schema(**input_content)
         content = self.content
         if name not in content:
             raise ValueError(f'{self.__class__.__name__} does not exist')
@@ -74,7 +74,7 @@ class FileBasis():
 
     def delete(self, name) -> None:
         # Validate
-        valid_data = self.name_schema(name=name)
+        _ = self.name_schema(name=name)
         # Implement
         content = self.content
         del content[name]

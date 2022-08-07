@@ -12,7 +12,7 @@ class Project:
 
     def __init__(self, project_name) -> None:
         # Validate
-        valid_data = ProjectSchema(project_name=project_name)
+        _ = ProjectNameSchema(project_name=project_name)
         # Implement
         self.prj_root.mkdir(parents=True, exist_ok=True)
         self.prj_path = self.prj_root.joinpath(project_name)
@@ -38,7 +38,7 @@ class Project:
 
     def rename(self, new_project_name) -> None:
         # Validate
-        valid_data = ProjectUpdateSchema(new_project_name=new_project_name)
+        _ = ProjectUpdateSchema(new_project_name=new_project_name)
         # Implement
         target = self.prj_root.joinpath(new_project_name)
         self.prj_path.rename(target)
@@ -48,7 +48,10 @@ class Project:
 
 
 def check_relpath(name: str) -> str:
-    """avoid relative path"""
+    """
+    Validator
+    avoid relative path
+    """
 
     check_list = ['.', '/', '\\', ':']
     if any(elem in name for elem in check_list):
@@ -56,7 +59,7 @@ def check_relpath(name: str) -> str:
     return name
 
 
-class ProjectSchema(BaseModel):
+class ProjectNameSchema(BaseModel):
     project_name: str
 
     _validate_project_name = validator(

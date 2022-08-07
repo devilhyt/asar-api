@@ -9,14 +9,14 @@ class ProjectAPI(MethodView):
 
     @jwt_required()
     def get(self):
-        """Retrieve All Project Names"""
+        """Get the names of all projects"""
 
         project_names = Project.names()
         return jsonify({"project_names": project_names})
 
     @jwt_required()
     def post(self):
-        """Create A Project"""
+        """Create a project"""
 
         # Receive
         project_name = request.json.get('project_name', None)

@@ -1,6 +1,12 @@
 from flask import Flask
 from .config import DevelopmentConfig
 from .extensions import cors, db, jwt
+import wingman_api.public
+import wingman_api.controller.auth
+import wingman_api.controller.project
+import wingman_api.controller.intent
+import wingman_api.controller.action
+import wingman_api.controller.story
 
 
 def create_app(config=DevelopmentConfig):
@@ -9,13 +15,6 @@ def create_app(config=DevelopmentConfig):
     db.init_app(app)
     jwt.init_app(app)
     cors.init_app(app)
-
-    import wingman_api.public
-    import wingman_api.controller.auth
-    import wingman_api.controller.project
-    import wingman_api.controller.intent
-    import wingman_api.controller.action
-    import wingman_api.controller.story
 
     wingman_api.public.init_app(app)
     wingman_api.controller.auth.init_app(app)
