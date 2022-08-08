@@ -29,7 +29,7 @@ class RuleAPI(MethodView):
         """Create a rule"""
 
         # Receive
-        rule_name = request.json.get('rule_name', None)
+        rule_name = request.json.get('rule_name')
         # Implement
         prj = Project(project_name)
         prj.rule.create(rule_name)

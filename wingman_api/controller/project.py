@@ -19,7 +19,7 @@ class ProjectAPI(MethodView):
         """Create a project"""
 
         # Receive
-        project_name = request.json.get('project_name', None)
+        project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
         prj.create()
@@ -30,7 +30,7 @@ class ProjectAPI(MethodView):
         """Update A Project"""
 
         # Receive
-        new_project_name = request.json.get('new_project_name', None)
+        new_project_name = request.json.get('new_project_name')
         # Implement
         prj = Project(project_name)
         prj.rename(new_project_name)

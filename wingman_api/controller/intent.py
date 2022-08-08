@@ -29,7 +29,7 @@ class IntentAPI(MethodView):
         """Create An intent"""
         
         # Receive
-        intent_name = request.json.get('intent_name', None)
+        intent_name = request.json.get('intent_name')
         # Implement
         prj = Project(project_name)
         prj.intent.create(intent_name)

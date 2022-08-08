@@ -49,7 +49,7 @@ class Project:
         shutil.rmtree(self.prj_path)
 
 
-def check_relpath(name: str) -> str:
+def check_name(name: str) -> str:
     """
     Validator
     avoid relative path
@@ -57,7 +57,7 @@ def check_relpath(name: str) -> str:
 
     check_list = ['.', '/', '\\', ':']
     if any(elem in name for elem in check_list):
-        raise ValueError('Cannot use relative path')
+        raise ValueError('Invalid name')
     return name
 
 
@@ -65,11 +65,11 @@ class ProjectNameSchema(BaseModel):
     project_name: str
 
     _validate_project_name = validator(
-        'project_name', allow_reuse=True)(check_relpath)
+        'project_name', allow_reuse=True)(check_name)
 
 
 class ProjectUpdateSchema(BaseModel):
     new_project_name: str
 
     _validate_new_project_name = validator(
-        'new_project_name', allow_reuse=True)(check_relpath)
+        'new_project_name', allow_reuse=True)(check_name)

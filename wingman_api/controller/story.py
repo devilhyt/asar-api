@@ -29,7 +29,7 @@ class StoryAPI(MethodView):
         """Create a story"""
 
         # Receive
-        story_name = request.json.get('story_name', None)
+        story_name = request.json.get('story_name')
         # Implement
         prj = Project(project_name)
         prj.story.create(story_name)
