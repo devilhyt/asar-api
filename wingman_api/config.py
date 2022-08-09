@@ -20,7 +20,7 @@ ACTIONS_FILE_NAME = 'actions.json'
 STORIES_FILE_NAME = 'stories.json'
 RULES_FILE_NAME = 'rules.json'
 TOKENS_FILE_NAME = 'tokens.json'
-
+JIEBA_DICT_NAME = 'userdict.txt'
 
 class DevelopmentConfig(object):
     """Flask Config"""

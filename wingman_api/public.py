@@ -2,7 +2,7 @@ from flask import Flask, jsonify, current_app, request
 
 
 def init_app(app: Flask):
-    # app.before_request(request_info)
+    app.before_request(request_info)
     app.register_error_handler(Exception, handle_exception)
 
     # test page
@@ -21,8 +21,8 @@ def init_app(app: Flask):
 
 def request_info():
     try:
-        current_app.logger.debug(f'\nview_args: {request.view_args}\
-                                   \ndata     : {request.data}')
+        current_app.logger.debug(f'\n  view_args: {request.view_args}\
+                                   \n  data     : {request.data}')
     except:
         pass
 
