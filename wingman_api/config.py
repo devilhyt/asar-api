@@ -1,3 +1,4 @@
+from flask import Flask
 import datetime
 
 WINGMAN_ROOT = 'C:/Users/DevilHYT/Desktop/github/wingman-api'
@@ -11,11 +12,13 @@ INTENTS_FILE_NAME = 'intents.json'
 ACTIONS_FILE_NAME = 'actions.json'
 STORIES_FILE_NAME = 'stories.json'
 RULES_FILE_NAME = 'rules.json'
+TOKENS_FILE_NAME = 'tokens.json'
 
 WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME],
                       'actions': [ACTIONS_FILE_NAME],
                       'stories': [STORIES_FILE_NAME],
                       'rules': [RULES_FILE_NAME],
+                      'tokens': [TOKENS_FILE_NAME],
                       'models': []}
 
 
@@ -30,3 +33,6 @@ class DevelopmentConfig(object):
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=1)
+    
+def init_app(app:Flask):
+    app.json.sort_keys = False

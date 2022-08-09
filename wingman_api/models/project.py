@@ -6,7 +6,7 @@ from .intent import Intent
 from .action import Action
 from .story import Story
 from .rule import Rule
-
+from .token import Token
 
 class Project:
     prj_root = Path(WINGMAN_PRJ_DIR)
@@ -21,6 +21,7 @@ class Project:
         self.action = Action(self.prj_path)
         self.story = Story(self.prj_path)
         self.rule = Rule(self.prj_path)
+        self.token = Token(self.prj_path)
 
     @staticmethod
     def names() -> tuple:
@@ -40,7 +41,7 @@ class Project:
 
     def rename(self, new_project_name) -> None:
         # Validate
-        _ = ProjectUpdateSchema(new_project_name=new_project_name)
+        _ = ProjectNameSchema(project_name=new_project_name)
         # Implement
         target = self.prj_root.joinpath(new_project_name)
         self.prj_path.rename(target)
@@ -49,27 +50,14 @@ class Project:
         shutil.rmtree(self.prj_path)
 
 
-def check_name(name: str) -> str:
-    """
-    Validator
-    avoid relative path
-    """
-
-    check_list = ['.', '/', '\\', ':']
-    if any(elem in name for elem in check_list):
-        raise ValueError('Invalid name')
-    return name
-
 
 class ProjectNameSchema(BaseModel):
     project_name: str
 
-    _validate_project_name = validator(
-        'project_name', allow_reuse=True)(check_name)
+    @validator('project_name')
+    def check_name(cls, name: str):
+        check_list = ['.', '/', '\\', ':']
+        if any(elem in name for elem in check_list):
+            raise ValueError('Invalid name')
+        return name
 
-
-class ProjectUpdateSchema(BaseModel):
-    new_project_name: str
-
-    _validate_new_project_name = validator(
-        'new_project_name', allow_reuse=True)(check_name)
