@@ -2,7 +2,7 @@ from flask import Flask, jsonify, current_app, request
 
 
 def init_app(app: Flask):
-    app.before_request(request_info)
+    # app.before_request(request_info)
     app.register_error_handler(Exception, handle_exception)
 
     # test page
@@ -13,10 +13,10 @@ def init_app(app: Flask):
     @app.post("/<string:test_string>")
     def hello_world_post(test_string):
         return "<p>Hello, World!</p>"
-    
+
     @app.get("/json")
     def json_test():
-        return [{'a':1},{'b':2}]
+        return [{'a': 1}, {'b': 2}]
 
 
 def request_info():

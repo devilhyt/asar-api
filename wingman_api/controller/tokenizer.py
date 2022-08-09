@@ -15,8 +15,8 @@ class TokenizerAPI(MethodView):
         sentence = request.json.get('sentence')
         # Implement
         tokenized = jieba.tokenize(sentence)
-        tokens = [{'word': word, 'start': start, 'end': end} for (word, start, end) in tokenized]
-        return jsonify({"tokens": tokens}), 200
+        tokens = [{'token': token, 'start': start, 'end': end} for (token, start, end) in tokenized]
+        return jsonify(tokens), 200
 
 
 def init_app(app: Flask):
