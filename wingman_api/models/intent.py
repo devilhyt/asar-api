@@ -1,13 +1,15 @@
 from typing import Optional, List
 from pathlib import Path
 from pydantic import BaseModel, root_validator
-from wingman_api.config import INTENTS_FILE_NAME
+from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
 from .file_basis import FileBasis
 
 
 class Intent(FileBasis):
     def __init__(self, prj_path: Path) -> None:
-        super().__init__(file=prj_path.joinpath('intents', INTENTS_FILE_NAME),
+        super().__init__(prj_path=prj_path,
+                         dir_name=INTENTS_DIR_NAME,
+                         file_name=INTENTS_FILE_NAME,
                          object_schema=IntentObjectSchema)
 
 

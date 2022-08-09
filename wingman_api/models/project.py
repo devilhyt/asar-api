@@ -1,12 +1,13 @@
 import shutil
 from pathlib import Path
 from pydantic import BaseModel, validator
-from wingman_api.config import WINGMAN_PRJ_DIR, WINGMAN_PRJ_STRUCT
+from wingman_api.config import WINGMAN_PRJ_DIR, MODELS_DIR_NAME
 from .intent import Intent
 from .action import Action
 from .story import Story
 from .rule import Rule
 from .token import Token
+
 
 class Project:
     prj_root = Path(WINGMAN_PRJ_DIR)
@@ -28,16 +29,13 @@ class Project:
         return tuple([d.stem for d in Project.prj_root.iterdir() if d.is_dir()])
 
     def create(self) -> None:
-        self.prj_path.mkdir(parents=True)
-
-        for dir, files in WINGMAN_PRJ_STRUCT.items():
-            sub_dir = self.prj_path.joinpath(dir)
-            sub_dir.mkdir(parents=True)
-            for f in files:
-                sub_file = sub_dir.joinpath(f)
-                sub_file.touch()
-                if sub_file.suffix == '.json':
-                    sub_file.write_text('{}')
+        self.prj_path.mkdir(parents=True, exist_ok=False)
+        self.intent.init()
+        self.action.init()
+        self.story.init()
+        self.rule.init()
+        self.token.init()
+        self.prj_path.joinpath(MODELS_DIR_NAME).mkdir()
 
     def rename(self, new_project_name) -> None:
         # Validate
@@ -50,7 +48,6 @@ class Project:
         shutil.rmtree(self.prj_path)
 
 
-
 class ProjectNameSchema(BaseModel):
     project_name: str
 
@@ -60,4 +57,3 @@ class ProjectNameSchema(BaseModel):
         if any(elem in name for elem in check_list):
             raise ValueError('Invalid name')
         return name
-

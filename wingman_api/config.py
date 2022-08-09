@@ -8,18 +8,18 @@ WINGMAN_PRJ_DIR_NAME = 'wingman_projects'
 WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
 WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'
 
+INTENTS_DIR_NAME = 'intents'
+ACTIONS_DIR_NAME = 'actions'
+STORIES_DIR_NAME = 'stories'
+RULES_DIR_NAME = 'rules'
+TOKENS_DIR_NAME = 'tokens'
+MODELS_DIR_NAME = 'models'
+
 INTENTS_FILE_NAME = 'intents.json'
 ACTIONS_FILE_NAME = 'actions.json'
 STORIES_FILE_NAME = 'stories.json'
 RULES_FILE_NAME = 'rules.json'
 TOKENS_FILE_NAME = 'tokens.json'
-
-WINGMAN_PRJ_STRUCT = {'intents': [INTENTS_FILE_NAME],
-                      'actions': [ACTIONS_FILE_NAME],
-                      'stories': [STORIES_FILE_NAME],
-                      'rules': [RULES_FILE_NAME],
-                      'tokens': [TOKENS_FILE_NAME],
-                      'models': []}
 
 
 class DevelopmentConfig(object):

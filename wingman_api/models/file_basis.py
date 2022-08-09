@@ -22,10 +22,13 @@ class GeneralObjectSchema(BaseModel):
 
 class FileBasis():
     def __init__(self,
-                 file: Path,
+                 prj_path: Path,
+                 dir_name: str,
+                 file_name: str,
                  name_schema=GeneralNameSchema,
                  object_schema=GeneralObjectSchema) -> None:
-        self.file = file
+        self.dir = prj_path.joinpath(dir_name)
+        self.file = self.dir.joinpath(file_name)
         self.name_schema = name_schema
         self.object_schema = object_schema
 
@@ -36,6 +39,11 @@ class FileBasis():
     @property
     def names(self) -> tuple:
         return tuple(self.content.keys())
+    
+    def init(self) -> None:
+        self.dir.mkdir(parents=True)
+        self.file.touch()
+        self.file.write_text('{}')
 
     def get(self, name: str):
         # Validate

@@ -1,13 +1,15 @@
 from typing import Optional
 from pathlib import Path
 from pydantic import BaseModel, conlist
-from wingman_api.config import RULES_FILE_NAME
+from wingman_api.config import RULES_DIR_NAME, RULES_FILE_NAME
 from .file_basis import FileBasis
 
 
 class Rule(FileBasis):
     def __init__(self, prj_path: Path) -> None:
-        super().__init__(prj_path.joinpath('rules', RULES_FILE_NAME),
+        super().__init__(prj_path=prj_path,
+                         dir_name=RULES_DIR_NAME,
+                         file_name=RULES_FILE_NAME,
                          object_schema=RuleObjectSchema)
 
 
