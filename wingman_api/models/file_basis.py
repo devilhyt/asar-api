@@ -95,4 +95,4 @@ class FileBasis():
 
     def write_json(self, f_json: dict) -> dict:
         with open(self.file, 'w', encoding="utf-8") as f:
-            json.dump(f_json, f, indent=4)
+            json.dump(f_json, f, indent=4, ensure_ascii=False)

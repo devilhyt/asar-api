@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from pathlib import Path
 from pydantic import BaseModel
 from wingman_api.config import TOKENS_DIR_NAME, TOKENS_FILE_NAME
@@ -14,4 +14,4 @@ class Token(FileBasis):
 
 
 class TokenObjectSchema(BaseModel):
-    ...
+    frequency: Optional[int]

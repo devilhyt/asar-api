@@ -18,22 +18,10 @@ class TokenizerAPI(MethodView):
         tokens = [{'word': word, 'start': start, 'end': end} for (word, start, end) in tokenized]
         return jsonify({"tokens": tokens}), 200
 
-    @jwt_required()
-    def put(self, project_name):
-        """Update tokens"""
-        
-        # Receive
-        content = request.json
-        # tokens = content.pop('tokens', None)
-        # # Implement
-        # prj = Project(project_name)
-        # prj.token.update('tokens', None, tokens)
-        return jsonify({"msg": "OK"}), 200
-
 
 def init_app(app: Flask):
 
     intent_view = TokenizerAPI.as_view('tokenizer_api')
     app.add_url_rule('/projects/<string:project_name>/tokenizer',
                      view_func=intent_view,
-                     methods=['POST', 'PUT'])
+                     methods=['POST'])

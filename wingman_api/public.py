@@ -13,6 +13,10 @@ def init_app(app: Flask):
     @app.post("/<string:test_string>")
     def hello_world_post(test_string):
         return "<p>Hello, World!</p>"
+    
+    @app.get("/json")
+    def json_test():
+        return [{'a':1},{'b':2}]
 
 
 def request_info():

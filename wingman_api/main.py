@@ -9,6 +9,7 @@ import wingman_api.controller.intent
 import wingman_api.controller.action
 import wingman_api.controller.story
 import wingman_api.controller.rule
+import wingman_api.controller.token
 import wingman_api.controller.tokenizer
 
 
@@ -27,5 +28,6 @@ def create_app(config=DevelopmentConfig):
     wingman_api.controller.action.init_app(app)
     wingman_api.controller.story.init_app(app)
     wingman_api.controller.rule.init_app(app)
+    wingman_api.controller.token.init_app(app)
     wingman_api.controller.tokenizer.init_app(app)
     return app
