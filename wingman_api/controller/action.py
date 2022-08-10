@@ -11,33 +11,30 @@ actions_root = Path(WINGMAN_ROOT, 'wingman_api', 'assets', 'actions')
 
 class ActionAPI(MethodView):
     """Wingman Action API"""
+    decorators = [jwt_required()]
 
-    @jwt_required()
     def get(self, project_name, action_name):
         """
         :param action_name:
             If action_name is None, then get the names of all actions.\n
             If action_name is not None, then get an action object.
         """
-
         # Receive
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if action_name:
-            action_obj = prj.action.content[action_name]
+            action_obj = prj.action.get(action_name)
             return jsonify(action_obj), 200
         elif mode == 'name':
             action_names = prj.action.names
-            return jsonify({'action_name': action_names}), 200
+            return jsonify(action_names), 200
         else:
             actions = prj.action.content
             return jsonify(actions), 200
 
-    @jwt_required()
     def post(self, project_name):
         """Create An action"""
-
         # Receive
         content = request.json
         action_name = content.pop('action_name', None)
@@ -46,10 +43,8 @@ class ActionAPI(MethodView):
         prj.action.create(action_name, content)
         return jsonify({"msg": "OK"}), 200
 
-    @jwt_required()
     def put(self, project_name, action_name):
         """Update A Intent"""
-
         # Receive
         content = request.json
         new_action_name = content.pop('new_action_name', None)
@@ -58,10 +53,8 @@ class ActionAPI(MethodView):
         prj.action.update(action_name, new_action_name, content)
         return jsonify({"msg": "OK"}), 200
 
-    @jwt_required()
     def delete(self, project_name, action_name):
         """Delete A Project"""
-
         # Implement
         prj = Project(project_name)
         prj.action.delete(action_name)
@@ -71,10 +64,8 @@ class ActionAPI(MethodView):
 class ActionTypeAPI(MethodView):
     """Wingman Action Type API"""
 
-    @jwt_required()
     def get(self):
         """Get the names of all action types"""
-
         # Implement
         type_names = [d.stem for d in actions_root.iterdir() if d.is_dir()]
         return jsonify({'type_names': type_names})
@@ -83,10 +74,8 @@ class ActionTypeAPI(MethodView):
 class ActionSchemaAPI(MethodView):
     """Wingman Action Schema API"""
 
-    @jwt_required()
     def get(self, type_name):
         """Get the schema of an action type"""
-
         type_names = [d.stem for d in actions_root.iterdir() if d.is_dir()]
         if type_name not in type_names:
             raise ValueError('Action type does not exist')

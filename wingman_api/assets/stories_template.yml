@@ -1,0 +1,22 @@
+version: version
+stories:
+  - story: story_name
+    steps:
+      - intent: intent_name
+        entities:
+          - entity_name: value
+      - action: action_name
+      - slot_was_set:
+          - slot_name: value
+      # vue flow分支
+      - checkpoint: checkpoint_name
+      # block內多選項
+      - or:
+          - intent: intent_name
+          - intent: intent_name_2
+      # block內多選項
+      - or:
+          - slot_was_set:
+              - slot_name: value
+          - slot_was_set:
+              - slot_name_2: value
