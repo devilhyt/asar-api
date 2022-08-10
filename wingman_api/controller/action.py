@@ -20,14 +20,19 @@ class ActionAPI(MethodView):
             If action_name is not None, then get an action object.
         """
 
+        # Receive
+        mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if action_name:
             action_obj = prj.action.content[action_name]
             return jsonify(action_obj), 200
-        else:
+        elif mode == 'name':
             action_names = prj.action.names
             return jsonify({'action_name': action_names}), 200
+        else:
+            actions = prj.action.content
+            return jsonify(actions), 200
 
     @jwt_required()
     def post(self, project_name):

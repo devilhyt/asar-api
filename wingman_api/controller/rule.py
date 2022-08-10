@@ -15,14 +15,19 @@ class RuleAPI(MethodView):
             If rule_name is not None, then get a rule object.
         """
 
+        # Receive
+        mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if rule_name:
             rule_obj = prj.rule.content[rule_name]
             return jsonify(rule_obj), 200
-        else:
+        elif mode == 'name':
             rule_names = prj.rule.names
             return jsonify({'rule_names': rule_names}), 200
+        else:
+            rules = prj.rule.content
+            return jsonify(rules), 200
 
     @jwt_required()
     def post(self, project_name):

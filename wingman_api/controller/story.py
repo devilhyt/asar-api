@@ -14,15 +14,20 @@ class StoryAPI(MethodView):
             If story_name is None, then get the names of all stories.\n
             If story_name is not None, then get a story object.
         """
-
+        
+        # Receive
+        mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if story_name:
             story_obj = prj.story.content[story_name]
             return jsonify(story_obj), 200
-        else:
+        elif mode == 'name':
             story_names = prj.story.names
             return jsonify({'story_names': story_names}), 200
+        else:
+            stories = prj.story.content
+            return jsonify(stories), 200
 
     @jwt_required()
     def post(self, project_name):

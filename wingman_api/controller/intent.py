@@ -15,19 +15,24 @@ class IntentAPI(MethodView):
             If intent_name is not None, then get an intent object.
         """
         
+        # Receive
+        mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if intent_name:
             intent_obj = prj.intent.get(intent_name)
             return jsonify(intent_obj), 200
-        else:
+        elif mode == 'name':
             intent_names = prj.intent.names
             return jsonify({'intent_names': intent_names}), 200
+        else:
+            intents = prj.intent.content
+            return jsonify(intents), 200
 
     @jwt_required()
     def post(self, project_name):
         """Create An intent"""
-        
+
         # Receive
         intent_name = request.json.get('intent_name')
         # Implement
@@ -38,7 +43,7 @@ class IntentAPI(MethodView):
     @jwt_required()
     def put(self, project_name, intent_name):
         """Update An Intent"""
-        
+
         # Receive
         content = request.json
         new_intent_name = content.pop('new_intent_name', None)
