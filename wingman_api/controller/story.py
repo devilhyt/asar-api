@@ -9,24 +9,24 @@ class StoryAPI(MethodView):
     decorators = [jwt_required()]
 
     def get(self, project_name, story_name):
-        """
+        """Get stories
         :param story_name:
-            If story_name is None, then get the names of all stories.\n
-            If story_name is not None, then get a story object.
+            If story_name is None, then return all stories.\n
+            Else, then return a story object.
         """
         # Receive
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if story_name:
-            story_obj = prj.story.get(story_name)
-            return jsonify(story_obj), 200
+            obj = prj.story.get(story_name)
+            return jsonify(obj), 200
         elif mode == 'name':
-            story_names = prj.story.names
-            return jsonify(story_names), 200
+            names = prj.story.names
+            return jsonify(names), 200
         else:
-            stories = prj.story.content
-            return jsonify(stories), 200
+            content = prj.story.content
+            return jsonify(content), 200
 
     def post(self, project_name):
         """Create a story"""
@@ -56,7 +56,6 @@ class StoryAPI(MethodView):
 
 
 def init_app(app: Flask):
-
     story_view = StoryAPI.as_view('story_api')
     app.add_url_rule('/projects/<string:project_name>/stories',
                      defaults={'story_name': None},

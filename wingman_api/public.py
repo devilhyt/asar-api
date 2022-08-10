@@ -20,6 +20,7 @@ def init_app(app: Flask):
 
 
 def request_info():
+    """Debugger for request info"""
     try:
         current_app.logger.debug(f'\n  view_args: {request.view_args}\
                                    \n  data     : {request.data}\

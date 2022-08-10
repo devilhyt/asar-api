@@ -1,12 +1,18 @@
 from datetime import datetime, timedelta, timezone
 from flask import Flask, jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import current_user, jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies, get_jwt, get_jwt_identity
+from flask_jwt_extended import (current_user,
+                                jwt_required,
+                                create_access_token,
+                                set_access_cookies,
+                                unset_jwt_cookies, get_jwt,
+                                get_jwt_identity)
 from wingman_api.models.user import User, UserSchema
 from wingman_api.extensions import db, jwt
 
 
 class AuthAPI(MethodView):
+    """Wingman Auth API"""
     @jwt_required()
     def get(self):
         """get current user info"""

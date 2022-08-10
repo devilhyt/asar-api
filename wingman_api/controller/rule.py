@@ -9,24 +9,24 @@ class RuleAPI(MethodView):
     decorators = [jwt_required()]
 
     def get(self, project_name, rule_name):
-        """
+        """Get rules
         :param rule_name:
-            If rule_name is None, then get the names of all rules.\n
-            If rule_name is not None, then get a rule object.
+            If rule_name is None, then return all rules.\n
+            Else, then return a rule object.
         """
         # Receive
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if rule_name:
-            rule_obj = prj.rule.get(rule_name)
-            return jsonify(rule_obj), 200
+            obj = prj.rule.get(rule_name)
+            return jsonify(obj), 200
         elif mode == 'name':
-            rule_names = prj.rule.names
-            return jsonify(rule_names), 200
+            names = prj.rule.names
+            return jsonify(names), 200
         else:
-            rules = prj.rule.content
-            return jsonify(rules), 200
+            content = prj.rule.content
+            return jsonify(content), 200
 
     def post(self, project_name):
         """Create a rule"""
@@ -56,7 +56,6 @@ class RuleAPI(MethodView):
 
 
 def init_app(app: Flask):
-
     rule_view = RuleAPI.as_view('rule_api')
     app.add_url_rule('/projects/<string:project_name>/rules',
                      defaults={'rule_name': None},

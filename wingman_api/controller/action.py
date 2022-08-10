@@ -14,24 +14,24 @@ class ActionAPI(MethodView):
     decorators = [jwt_required()]
 
     def get(self, project_name, action_name):
-        """
+        """Get actions
         :param action_name:
-            If action_name is None, then get the names of all actions.\n
-            If action_name is not None, then get an action object.
+            If action_name is None, then return all actions.\n
+            Else, then return an action object.
         """
         # Receive
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if action_name:
-            action_obj = prj.action.get(action_name)
-            return jsonify(action_obj), 200
+            obj = prj.action.get(action_name)
+            return jsonify(obj), 200
         elif mode == 'name':
-            action_names = prj.action.names
-            return jsonify(action_names), 200
+            names = prj.action.names
+            return jsonify(names), 200
         else:
-            actions = prj.action.content
-            return jsonify(actions), 200
+            content = prj.action.content
+            return jsonify(content), 200
 
     def post(self, project_name):
         """Create An action"""
@@ -90,7 +90,6 @@ class ActionSchemaAPI(MethodView):
 
 
 def init_app(app: Flask):
-
     action_view = ActionAPI.as_view('action_api')
     app.add_url_rule('/projects/<string:project_name>/actions',
                      defaults={'action_name': None},

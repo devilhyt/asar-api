@@ -9,24 +9,24 @@ class TokenAPI(MethodView):
     decorators = [jwt_required()]
 
     def get(self, project_name, token_name):
-        """
+        """Get tokens
         :param token_name:
-            If token_name is None, then get the names of all tokens.\n
-            If token_name is not None, then get an token object.
+            If token_name is None, then return all tokens.\n
+            Else, then return an token object.
         """
         # Receive
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if token_name:
-            token_obj = prj.token.get(token_name)
-            return jsonify(token_obj), 200
+            obj = prj.token.get(token_name)
+            return jsonify(obj), 200
         elif mode == 'name':
-            token_names = prj.token.names
-            return jsonify(token_names), 200
+            names = prj.token.names
+            return jsonify(names), 200
         else:
-            tokens = prj.token.content
-            return jsonify(tokens), 200
+            content = prj.token.content
+            return jsonify(content), 200
 
     def post(self, project_name):
         """Create a token"""
@@ -57,7 +57,6 @@ class TokenAPI(MethodView):
 
 
 def init_app(app: Flask):
-
     token_view = TokenAPI.as_view('token_api')
     app.add_url_rule('/projects/<string:project_name>/tokens',
                      defaults={'token_name': None},

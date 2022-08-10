@@ -9,27 +9,27 @@ class IntentAPI(MethodView):
     decorators = [jwt_required()]
 
     def get(self, project_name, intent_name):
-        """
+        """Get intents
         :param intent_name:
-            If intent_name is None, then get the names of all intents.\n
-            If intent_name is not None, then get an intent object.
+            If intent_name is None, then return all intents.\n
+            Else, then return an intent object.
         """
         # Receive
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
         if intent_name:
-            intent_obj = prj.intent.get(intent_name)
-            return jsonify(intent_obj), 200
+            obj = prj.intent.get(intent_name)
+            return jsonify(obj), 200
         elif mode == 'name':
-            intent_names = prj.intent.names
-            return jsonify(intent_names), 200
+            names = prj.intent.names
+            return jsonify(names), 200
         else:
-            intents = prj.intent.content
-            return jsonify(intents), 200
+            content = prj.intent.content
+            return jsonify(content), 200
 
     def post(self, project_name):
-        """Create An intent"""
+        """Create an intent"""
         # Receive
         intent_name = request.json.get('intent_name')
         # Implement
@@ -38,7 +38,7 @@ class IntentAPI(MethodView):
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, intent_name):
-        """Update An Intent"""
+        """Update an intent"""
         # Receive
         content = request.json
         new_intent_name = content.pop('new_intent_name', None)
@@ -48,7 +48,7 @@ class IntentAPI(MethodView):
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, intent_name):
-        """Delete An Intent"""
+        """Delete an intent"""
         # Implement
         prj = Project(project_name)
         prj.intent.delete(intent_name)
@@ -56,7 +56,6 @@ class IntentAPI(MethodView):
 
 
 def init_app(app: Flask):
-
     intent_view = IntentAPI.as_view('intent_api')
     app.add_url_rule('/projects/<string:project_name>/intents',
                      defaults={'intent_name': None},
