@@ -16,7 +16,7 @@ class Project:
 
     def __init__(self, project_name) -> None:
         # Validate
-        _ = ProjectNameSchema(project_name=project_name)
+        _ = ProjectNameSchema(name=project_name)
         # Implement
         self.prj_root.mkdir(parents=True, exist_ok=True)
         self.prj_path = self.prj_root.joinpath(project_name)
@@ -43,7 +43,7 @@ class Project:
 
     def rename(self, new_project_name) -> None:
         # Validate
-        _ = ProjectNameSchema(project_name=new_project_name)
+        _ = ProjectNameSchema(name=new_project_name)
         # Implement
         target = self.prj_root.joinpath(new_project_name)
         self.prj_path.rename(target)
@@ -53,9 +53,9 @@ class Project:
 
 
 class ProjectNameSchema(BaseModel):
-    project_name: str
+    name: str
 
-    @validator('project_name')
+    @validator('name')
     def check_name(cls, name: str):
         if re.match(r"^\w+$", name):
             return name
