@@ -32,16 +32,17 @@ class RuleAPI(MethodView):
         """Create a rule"""
         # Receive
         name = request.json.get('name')
+        content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.rule.create(name)
+        prj.rule.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, rule_name):
         """Update a rule"""
         # Receive
-        content = request.json
-        new_name = content.pop('new_name', None)
+        new_name = request.json.get('new_name')
+        content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
         prj.rule.update(rule_name, new_name, content)

@@ -54,7 +54,7 @@ class FileBasis():
     def create(self, name: str, input_content: dict = {}) -> None:
         # Validate
         _ = self.name_schema(name=name)
-        _ = self.object_schema(**input_content)
+        _ = self.object_schema.parse_obj(input_content)
         content = self.content
         if name in content:
             raise ValueError(f'{self.__class__.__name__} already exist')
@@ -66,7 +66,7 @@ class FileBasis():
         # Validate
         _ = self.name_schema(name=name, new_name=new_name)
         if input_content:
-            _ = self.object_schema(**input_content)
+            _ = self.object_schema.parse_obj(input_content)
         content = self.content
         if name not in content:
             raise ValueError(f'{self.__class__.__name__} does not exist')
