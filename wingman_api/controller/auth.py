@@ -38,7 +38,7 @@ class AuthAPI(MethodView):
     @jwt_required()
     def delete(self):
         """logout"""
-        response = jsonify({"msg": "logout successful"})
+        response = jsonify({"msg": "logged out"})
         unset_jwt_cookies(response)
         return response
 
