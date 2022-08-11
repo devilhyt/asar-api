@@ -68,7 +68,7 @@ class ActionTypeAPI(MethodView):
         """Get the names of all action types"""
         # Implement
         type_names = [d.stem for d in actions_root.iterdir() if d.is_dir()]
-        return jsonify({'type_names': type_names})
+        return jsonify(type_names)
 
 
 class ActionSchemaAPI(MethodView):
