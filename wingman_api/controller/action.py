@@ -98,9 +98,10 @@ def init_app(app: Flask):
     app.add_url_rule('/projects/<string:project_name>/actions',
                      view_func=action_view,
                      methods=['POST'])
-    app.add_url_rule('/projects/<string:project_name>/actions/<string:action_name>',
+    app.add_url_rule('/projects/<string:project_name>/actions/<path:action_name>',
                      view_func=action_view,
                      methods=['GET', 'PUT', 'DELETE'])
+    
     action_type_view = ActionTypeAPI.as_view('action_type_api')
     app.add_url_rule('/actions/types',
                      view_func=action_type_view,

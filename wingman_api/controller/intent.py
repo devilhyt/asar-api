@@ -66,6 +66,6 @@ def init_app(app: Flask):
     app.add_url_rule('/projects/<string:project_name>/intents',
                      view_func=intent_view,
                      methods=['POST'])
-    app.add_url_rule('/projects/<string:project_name>/intents/<string:intent_name>',
+    app.add_url_rule('/projects/<string:project_name>/intents/<path:intent_name>',
                      view_func=intent_view,
                      methods=['GET', 'PUT', 'DELETE'])

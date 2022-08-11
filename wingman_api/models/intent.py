@@ -1,6 +1,7 @@
+import re
 from typing import Dict, Optional, List
 from pathlib import Path
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel, validator, root_validator
 from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
 from .file_basis import FileBasis
 
@@ -10,6 +11,7 @@ class Intent(FileBasis):
         super().__init__(prj_path=prj_path,
                          dir_name=INTENTS_DIR_NAME,
                          file_name=INTENTS_FILE_NAME,
+                         name_schema=IntentNameSchema,
                          object_schema=IntentObjectSchema)
 
 
@@ -18,6 +20,20 @@ class Label(BaseModel):
     start: int
     end: int
     entity: str
+
+
+class IntentNameSchema(BaseModel):
+    name: str
+    new_name: Optional[str]
+
+    @validator('*')
+    def check_name(cls, name: str):
+        if name is None:
+            return name
+        elif re.match(r"^\w+/?\w+$", name):
+            return name
+        else:
+            raise ValueError('Invalid name')
 
 
 class IntentObjectSchema(BaseModel):

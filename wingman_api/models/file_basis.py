@@ -1,3 +1,4 @@
+import re
 import json
 from typing import Optional
 from pathlib import Path
@@ -9,11 +10,13 @@ class GeneralNameSchema(BaseModel):
     new_name: Optional[str]
 
     @validator('*')
-    def check_name(cls, v) -> str:
-        check_list = ['.', ' ', '\\', ':']
-        if v and any(elem in v for elem in check_list):
+    def check_name(cls, name: str):
+        if name is None:
+            return name
+        elif re.match(r"^\w+$", name):
+            return name
+        else:
             raise ValueError('Invalid name')
-        return v
 
 
 class GeneralObjectSchema(BaseModel):
@@ -39,7 +42,7 @@ class FileBasis():
     @property
     def names(self) -> tuple:
         return tuple(self.content.keys())
-    
+
     def init(self) -> None:
         self.dir.mkdir(parents=True)
         self.file.touch()
@@ -54,28 +57,27 @@ class FileBasis():
     def create(self, name: str, input_content: dict = {}) -> None:
         # Validate
         _ = self.name_schema(name=name)
-        _ = self.object_schema.parse_obj(input_content)
+        valid_content = self.object_schema.parse_obj(input_content)
         content = self.content
         if name in content:
-            raise ValueError(f'{self.__class__.__name__} already exist')
+            raise ValueError(f'{name} already exists')
         # Implement
-        content[name] = input_content
+        content[name] = valid_content.dict(exclude_unset=True)
         self.write_json(content)
 
     def update(self, name, new_name, input_content) -> None:
         # Validate
         _ = self.name_schema(name=name, new_name=new_name)
         if input_content:
-            _ = self.object_schema.parse_obj(input_content)
+            valid_content = self.object_schema.parse_obj(input_content)
         content = self.content
         if name not in content:
-            raise ValueError(f'{self.__class__.__name__} does not exist')
-        elif new_name:
-            if new_name in content:
-                raise ValueError('Duplicate names are not allowed')
+            raise ValueError(f'{name} does not exist')
+        elif new_name in content:
+            raise ValueError('Duplicate names are not allowed')
         # Implement
         if input_content:
-            content[name] = input_content
+            content[name] = valid_content.dict(exclude_unset=True)
         if new_name:
             content[new_name] = content.pop(name)
         self.write_json(content)

@@ -1,4 +1,5 @@
 import shutil
+import re
 from pathlib import Path
 from pydantic import BaseModel, validator
 from wingman_api.config import WINGMAN_PRJ_DIR, MODELS_DIR_NAME
@@ -56,7 +57,7 @@ class ProjectNameSchema(BaseModel):
 
     @validator('project_name')
     def check_name(cls, name: str):
-        check_list = ['.', '/', '\\', ':']
-        if any(elem in name for elem in check_list):
+        if re.match(r"^\w+$", name):
+            return name
+        else:
             raise ValueError('Invalid name')
-        return name
