@@ -4,6 +4,7 @@ from pydantic import BaseModel, validator
 from wingman_api.config import WINGMAN_PRJ_DIR, MODELS_DIR_NAME
 from .intent import Intent
 from .action import Action
+from .entity import Entity
 from .story import Story
 from .rule import Rule
 from .token import Token
@@ -20,6 +21,7 @@ class Project:
         self.prj_path = self.prj_root.joinpath(project_name)
         self.intent = Intent(self.prj_path)
         self.action = Action(self.prj_path)
+        self.entity = Entity(self.prj_path)
         self.story = Story(self.prj_path)
         self.rule = Rule(self.prj_path)
         self.token = Token(self.prj_path)
@@ -32,6 +34,7 @@ class Project:
         self.prj_path.mkdir(parents=True, exist_ok=False)
         self.intent.init()
         self.action.init()
+        self.entity.init()
         self.story.init()
         self.rule.init()
         self.token.init()

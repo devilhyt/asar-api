@@ -7,6 +7,7 @@ import wingman_api.controller.auth
 import wingman_api.controller.project
 import wingman_api.controller.intent
 import wingman_api.controller.action
+import wingman_api.controller.entity
 import wingman_api.controller.story
 import wingman_api.controller.rule
 import wingman_api.controller.token
@@ -26,6 +27,7 @@ def create_app(config=DevelopmentConfig):
     wingman_api.controller.project.init_app(app)
     wingman_api.controller.intent.init_app(app)
     wingman_api.controller.action.init_app(app)
+    wingman_api.controller.entity.init_app(app)
     wingman_api.controller.story.init_app(app)
     wingman_api.controller.rule.init_app(app)
     wingman_api.controller.token.init_app(app)
