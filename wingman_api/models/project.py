@@ -57,7 +57,6 @@ class ProjectNameSchema(BaseModel):
 
     @validator('name')
     def check_name(cls, name: str):
-        if re.match(r"^\w+$", name):
-            return name
-        else:
+        if not re.match(r"^\w+$", name):
             raise ValueError('Invalid name')
+        return name

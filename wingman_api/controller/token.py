@@ -32,7 +32,7 @@ class TokenAPI(MethodView):
         """Create a token"""
         # Receive
         name = request.json.get('name')
-        content = request.json.get('content')
+        content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
         prj.token.create(name, content)
@@ -42,7 +42,7 @@ class TokenAPI(MethodView):
         """Update a token"""
         # Receive
         new_name = request.json.get('new_name')
-        content = request.json.get('content')
+        content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
         prj.token.update(token_name, new_name, content)

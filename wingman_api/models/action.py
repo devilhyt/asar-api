@@ -3,7 +3,7 @@ from typing import Optional
 from pathlib import Path
 from pydantic import BaseModel, validator
 from wingman_api.config import ACTIONS_DIR_NAME, ACTIONS_FILE_NAME
-from .file_basis import FileBasis
+from .file_basis import FileBasis, GeneralNameSchema
 
 
 class Action(FileBasis):
@@ -15,18 +15,13 @@ class Action(FileBasis):
                          object_schema=ActionObjectSchema)
 
 
-class ActionNameSchema(BaseModel):
-    name: str
-    new_name: Optional[str]
-
+class ActionNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
-        if name is None:
-            return name
-        elif re.match(r"^\w+/?\w+$", name):
-            return name
-        else:
-            raise ValueError('Invalid name')
+        if name:
+            if not re.match(r"^\w+/?\w+$", name):
+                raise ValueError('Invalid name')
+        return name
 
 
 class ActionObjectSchema(BaseModel):

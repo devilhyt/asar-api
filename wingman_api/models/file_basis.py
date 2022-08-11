@@ -1,22 +1,12 @@
-import re
 import json
 from typing import Optional
 from pathlib import Path
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 
 
 class GeneralNameSchema(BaseModel):
     name: str
     new_name: Optional[str]
-
-    @validator('*')
-    def check_name(cls, name: str):
-        if name is None:
-            return name
-        elif re.match(r"^\w+$", name):
-            return name
-        else:
-            raise ValueError('Invalid name')
 
 
 class GeneralObjectSchema(BaseModel):
@@ -54,7 +44,7 @@ class FileBasis():
         # Implement
         return self.content[name]
 
-    def create(self, name: str, input_content: dict = {}) -> None:
+    def create(self, name: str, input_content: dict) -> None:
         # Validate
         _ = self.name_schema(name=name)
         valid_content = self.object_schema.parse_obj(input_content)

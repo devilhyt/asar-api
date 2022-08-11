@@ -3,7 +3,7 @@ from typing import Dict, Optional, List
 from pathlib import Path
 from pydantic import BaseModel, validator, root_validator
 from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
-from .file_basis import FileBasis
+from .file_basis import FileBasis, GeneralNameSchema
 
 
 class Intent(FileBasis):
@@ -22,18 +22,13 @@ class Label(BaseModel):
     entity: str
 
 
-class IntentNameSchema(BaseModel):
-    name: str
-    new_name: Optional[str]
-
+class IntentNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
-        if name is None:
-            return name
-        elif re.match(r"^\w+/?\w+$", name):
-            return name
-        else:
-            raise ValueError('Invalid name')
+        if name:
+            if not re.match(r"^\w+/?\w+$", name):
+                raise ValueError('Invalid name')
+        return name
 
 
 class IntentObjectSchema(BaseModel):
