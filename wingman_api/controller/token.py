@@ -32,20 +32,20 @@ class TokenAPI(MethodView):
         """Create a token"""
         # Receive
         content = request.json
-        token_name = content.pop('token_name', None)
+        name = content.pop('name', None)
         # Implement
         prj = Project(project_name)
-        prj.token.create(token_name, content)
+        prj.token.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, token_name):
         """Update a token"""
         # Receive
         content = request.json
-        new_token_name = content.pop('new_token_name', None)
+        new_name = content.pop('new_name', None)
         # Implement
         prj = Project(project_name)
-        prj.token.update(token_name, new_token_name, content)
+        prj.token.update(token_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, token_name):

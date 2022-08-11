@@ -31,20 +31,20 @@ class IntentAPI(MethodView):
     def post(self, project_name):
         """Create an intent"""
         # Receive
-        intent_name = request.json.get('intent_name')
+        name = request.json.get('name')
         # Implement
         prj = Project(project_name)
-        prj.intent.create(intent_name)
+        prj.intent.create(name)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, intent_name):
         """Update an intent"""
         # Receive
         content = request.json
-        new_intent_name = content.pop('new_intent_name', None)
+        new_name = content.pop('new_name', None)
         # Implement
         prj = Project(project_name)
-        prj.intent.update(intent_name, new_intent_name, content)
+        prj.intent.update(intent_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, intent_name):

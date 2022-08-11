@@ -37,20 +37,20 @@ class ActionAPI(MethodView):
         """Create An action"""
         # Receive
         content = request.json
-        action_name = content.pop('action_name', None)
+        name = content.pop('name', None)
         # Implement
         prj = Project(project_name)
-        prj.action.create(action_name, content)
+        prj.action.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, action_name):
         """Update A Intent"""
         # Receive
         content = request.json
-        new_action_name = content.pop('new_action_name', None)
+        new_name = content.pop('new_name', None)
         # Implement
         prj = Project(project_name)
-        prj.action.update(action_name, new_action_name, content)
+        prj.action.update(action_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, action_name):

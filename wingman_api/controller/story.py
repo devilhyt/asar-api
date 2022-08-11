@@ -31,20 +31,20 @@ class StoryAPI(MethodView):
     def post(self, project_name):
         """Create a story"""
         # Receive
-        story_name = request.json.get('story_name')
+        name = request.json.get('name')
         # Implement
         prj = Project(project_name)
-        prj.story.create(story_name)
+        prj.story.create(name)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, story_name):
         """Update a story"""
         # Receive
         content = request.json
-        new_story_name = content.pop('new_story_name', None)
+        new_name = content.pop('new_name', None)
         # Implement
         prj = Project(project_name)
-        prj.story.update(story_name, new_story_name, content)
+        prj.story.update(story_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, story_name):
