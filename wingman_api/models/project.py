@@ -6,6 +6,7 @@ from wingman_api.config import WINGMAN_PRJ_DIR, MODELS_DIR_NAME
 from .intent import Intent
 from .action import Action
 from .entity import Entity
+from. slot import Slot
 from .story import Story
 from .rule import Rule
 from .token import Token
@@ -23,6 +24,7 @@ class Project:
         self.intents = Intent(self.prj_path)
         self.actions = Action(self.prj_path)
         self.entities = Entity(self.prj_path)
+        self.slots = Slot(self.prj_path)
         self.stories = Story(self.prj_path)
         self.rules = Rule(self.prj_path)
         self.tokens = Token(self.prj_path)
@@ -36,6 +38,7 @@ class Project:
         self.intents.init()
         self.actions.init()
         self.entities.init()
+        self.slots.init()
         self.stories.init()
         self.rules.init()
         self.tokens.init()

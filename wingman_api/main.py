@@ -24,6 +24,7 @@ def create_app(config=DevelopmentConfig):
     ApiBasis.init_app(app, 'intents', 'path')
     ApiBasis.init_app(app, 'actions', 'path')
     ApiBasis.init_app(app, 'entities')
+    ApiBasis.init_app(app, 'slots')
     ApiBasis.init_app(app, 'stories')
     ApiBasis.init_app(app, 'rules')
     ApiBasis.init_app(app, 'tokens')
