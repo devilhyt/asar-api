@@ -5,14 +5,9 @@ import wingman_api.config
 import wingman_api.public
 import wingman_api.controller.auth
 import wingman_api.controller.project
-import wingman_api.controller.intent
-import wingman_api.controller.action
-import wingman_api.controller.entity
-import wingman_api.controller.story
-import wingman_api.controller.rule
-import wingman_api.controller.token
 import wingman_api.controller.tokenizer
 import wingman_api.controller.action_ext
+from wingman_api.controller.api_basis import ApiBasis
 
 
 def create_app(config=DevelopmentConfig):
@@ -26,12 +21,12 @@ def create_app(config=DevelopmentConfig):
     wingman_api.public.init_app(app)
     wingman_api.controller.auth.init_app(app)
     wingman_api.controller.project.init_app(app)
-    wingman_api.controller.intent.init_app(app)
-    wingman_api.controller.action.init_app(app)
-    wingman_api.controller.entity.init_app(app)
-    wingman_api.controller.story.init_app(app)
-    wingman_api.controller.rule.init_app(app)
-    wingman_api.controller.token.init_app(app)
+    ApiBasis.init_app(app, 'intents', 'path')
+    ApiBasis.init_app(app, 'actions', 'path')
+    ApiBasis.init_app(app, 'entities')
+    ApiBasis.init_app(app, 'stories')
+    ApiBasis.init_app(app, 'rules')
+    ApiBasis.init_app(app, 'tokens')
     wingman_api.controller.tokenizer.init_app(app)
     wingman_api.controller.action_ext.init_app(app)
     return app
