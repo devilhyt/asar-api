@@ -1,5 +1,5 @@
 import re
-from typing import Dict, Optional, List
+from typing import Optional, List
 from pathlib import Path
 from pydantic import BaseModel, validator, root_validator
 from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
@@ -24,16 +24,21 @@ class IntentNameSchema(GeneralNameSchema):
         return name
 
 
-class Label(BaseModel):
+class IntentLabelSchema(BaseModel):
     token: str
     start: int
     end: int
     entity: str
+    rule: Optional[str]
+    group: Optional[str]
 
+class IntentExampleSchema(BaseModel):
+    text: str
+    metadata: Optional[dict]
+    labels: Optional[List[IntentLabelSchema]]
 
 class IntentObjectSchema(BaseModel):
-    examples: Optional[List[str]]
-    labels: Optional[List[Label]]
+    examples: Optional[List[IntentExampleSchema]]
     use_entities: Optional[List[str]]
     ignore_entities: Optional[List[str]]
 
