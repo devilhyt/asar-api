@@ -11,7 +11,7 @@ def init_app(app: Flask):
         return "<p>Hello, World!</p>"
 
     @app.post("/<string:test_string>")
-    def hello_world_post(test_string):
+    def hello_world_post(**kwargs):
         return "<p>Hello, World!</p>"
 
     @app.get("/json")
