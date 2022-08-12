@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Any, List, Optional
 from pathlib import Path
 from pydantic import BaseModel, validator
 from wingman_api.config import ACTIONS_DIR_NAME, ACTIONS_FILE_NAME
@@ -23,7 +23,27 @@ class ActionNameSchema(GeneralNameSchema):
                 raise ValueError('Invalid name')
         return name
 
+class ActionResponseButtonSchema(BaseModel):
+    title: str
+    payload: str
+
+class ActionResponseConditionSchema(BaseModel):
+    type: str
+    name: str
+    value: Any
+
+class ActionResponseSchema(BaseModel):
+    text: Optional[str]
+    image: Optional[str]
+    button: Optional[List[ActionResponseButtonSchema]]
+    button_type: Optional[str]
+    quick_replies: Optional[List[ActionResponseButtonSchema]]
+    attachment: Optional[str]
+    elements: Optional[List[dict]]
+    channel: Optional[str]
+    metadata: Optional[dict]
+    condition: Optional[List[ActionResponseConditionSchema]]
 
 class ActionObjectSchema(BaseModel):
     action_type: str
-    data: Optional[list]
+    data: Optional[List[ActionResponseSchema]]
