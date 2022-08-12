@@ -23,27 +23,27 @@ class ActionNameSchema(GeneralNameSchema):
                 raise ValueError('Invalid name')
         return name
 
-class ActionResponseButtonSchema(BaseModel):
+class ResponseButtonSchema(BaseModel):
     title: str
     payload: str
 
-class ActionResponseConditionSchema(BaseModel):
+class ResponseConditionSchema(BaseModel):
     type: str
     name: str
     value: Any
 
-class ActionResponseSchema(BaseModel):
+class ResponseSchema(BaseModel):
     text: Optional[str]
     image: Optional[str]
-    button: Optional[List[ActionResponseButtonSchema]]
+    button: Optional[List[ResponseButtonSchema]]
     button_type: Optional[str]
-    quick_replies: Optional[List[ActionResponseButtonSchema]]
+    quick_replies: Optional[List[ResponseButtonSchema]]
     attachment: Optional[str]
     elements: Optional[List[dict]]
     channel: Optional[str]
     metadata: Optional[dict]
-    condition: Optional[List[ActionResponseConditionSchema]]
+    condition: Optional[List[ResponseConditionSchema]]
 
 class ActionObjectSchema(BaseModel):
     action_type: str
-    data: Optional[List[ActionResponseSchema]]
+    data: Optional[List[ResponseSchema]]
