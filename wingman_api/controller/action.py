@@ -24,13 +24,13 @@ class ActionAPI(MethodView):
         # Implement
         prj = Project(project_name)
         if action_name:
-            obj = prj.action.get(action_name)
+            obj = prj.actions.get(action_name)
             return jsonify(obj), 200
         elif mode == 'name':
-            names = prj.action.names
+            names = prj.actions.names
             return jsonify(names), 200
         else:
-            content = prj.action.content
+            content = prj.actions.content
             return jsonify(content), 200
 
     def post(self, project_name):
@@ -40,7 +40,7 @@ class ActionAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.action.create(name, content)
+        prj.actions.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, action_name):
@@ -50,14 +50,14 @@ class ActionAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.action.update(action_name, new_name, content)
+        prj.actions.update(action_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, action_name):
         """Delete A Project"""
         # Implement
         prj = Project(project_name)
-        prj.action.delete(action_name)
+        prj.actions.delete(action_name)
         return jsonify({"msg": "OK"}), 200
 
 

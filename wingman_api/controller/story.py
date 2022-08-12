@@ -19,13 +19,13 @@ class StoryAPI(MethodView):
         # Implement
         prj = Project(project_name)
         if story_name:
-            obj = prj.story.get(story_name)
+            obj = prj.stories.get(story_name)
             return jsonify(obj), 200
         elif mode == 'name':
-            names = prj.story.names
+            names = prj.stories.names
             return jsonify(names), 200
         else:
-            content = prj.story.content
+            content = prj.stories.content
             return jsonify(content), 200
 
     def post(self, project_name):
@@ -35,7 +35,7 @@ class StoryAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.story.create(name, content)
+        prj.stories.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, story_name):
@@ -45,14 +45,14 @@ class StoryAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.story.update(story_name, new_name, content)
+        prj.stories.update(story_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, story_name):
         """Delete a story"""
         # Implement
         prj = Project(project_name)
-        prj.story.delete(story_name)
+        prj.stories.delete(story_name)
         return jsonify({"msg": "OK"}), 200
 
 

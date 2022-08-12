@@ -15,10 +15,10 @@ class TokenizerAPI(MethodView):
         sentence = request.json.get('sentence')
         # Implement
         prj = Project(project_name)
-        prj.token.gen_jieba_dict()
+        prj.tokens.gen_jieba_dict()
 
         tokenizer = jieba.Tokenizer()
-        tokenizer.load_userdict(str(prj.token.jieba_dict))
+        tokenizer.load_userdict(str(prj.tokens.jieba_dict))
         tokenized = tokenizer.tokenize(sentence)
 
         tokens = [{'token': token, 'start': start, 'end': end}

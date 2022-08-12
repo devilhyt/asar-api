@@ -19,13 +19,13 @@ class EntityAPI(MethodView):
         # Implement
         prj = Project(project_name)
         if entity_name:
-            obj = prj.entity.get(entity_name)
+            obj = prj.entities.get(entity_name)
             return jsonify(obj), 200
         elif mode == 'name':
-            names = prj.entity.names
+            names = prj.entities.names
             return jsonify(names), 200
         else:
-            content = prj.entity.content
+            content = prj.entities.content
             return jsonify(content), 200
 
     def post(self, project_name):
@@ -35,7 +35,7 @@ class EntityAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.entity.create(name, content)
+        prj.entities.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, entity_name):
@@ -45,14 +45,14 @@ class EntityAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.entity.update(entity_name, new_name, content)
+        prj.entities.update(entity_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, entity_name):
         """Delete an entity"""
         # Implement
         prj = Project(project_name)
-        prj.entity.delete(entity_name)
+        prj.entities.delete(entity_name)
         return jsonify({"msg": "OK"}), 200
 
 

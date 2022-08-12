@@ -19,13 +19,13 @@ class RuleAPI(MethodView):
         # Implement
         prj = Project(project_name)
         if rule_name:
-            obj = prj.rule.get(rule_name)
+            obj = prj.rules.get(rule_name)
             return jsonify(obj), 200
         elif mode == 'name':
-            names = prj.rule.names
+            names = prj.rules.names
             return jsonify(names), 200
         else:
-            content = prj.rule.content
+            content = prj.rules.content
             return jsonify(content), 200
 
     def post(self, project_name):
@@ -35,7 +35,7 @@ class RuleAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.rule.create(name, content)
+        prj.rules.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, rule_name):
@@ -45,14 +45,14 @@ class RuleAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.rule.update(rule_name, new_name, content)
+        prj.rules.update(rule_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, rule_name):
         """Delete a rule"""
         # Implement
         prj = Project(project_name)
-        prj.rule.delete(rule_name)
+        prj.rules.delete(rule_name)
         return jsonify({"msg": "OK"}), 200
 
 

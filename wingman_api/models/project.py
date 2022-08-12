@@ -20,12 +20,12 @@ class Project:
         # Implement
         self.prj_root.mkdir(parents=True, exist_ok=True)
         self.prj_path = self.prj_root.joinpath(project_name)
-        self.intent = Intent(self.prj_path)
-        self.action = Action(self.prj_path)
-        self.entity = Entity(self.prj_path)
-        self.story = Story(self.prj_path)
-        self.rule = Rule(self.prj_path)
-        self.token = Token(self.prj_path)
+        self.intents = Intent(self.prj_path)
+        self.actions = Action(self.prj_path)
+        self.entities = Entity(self.prj_path)
+        self.stories = Story(self.prj_path)
+        self.rules = Rule(self.prj_path)
+        self.tokens = Token(self.prj_path)
 
     @staticmethod
     def names() -> tuple:
@@ -33,12 +33,12 @@ class Project:
 
     def create(self) -> None:
         self.prj_path.mkdir(parents=True, exist_ok=False)
-        self.intent.init()
-        self.action.init()
-        self.entity.init()
-        self.story.init()
-        self.rule.init()
-        self.token.init()
+        self.intents.init()
+        self.actions.init()
+        self.entities.init()
+        self.stories.init()
+        self.rules.init()
+        self.tokens.init()
         self.prj_path.joinpath(MODELS_DIR_NAME).mkdir()
 
     def rename(self, new_project_name) -> None:

@@ -19,13 +19,13 @@ class TokenAPI(MethodView):
         # Implement
         prj = Project(project_name)
         if token_name:
-            obj = prj.token.get(token_name)
+            obj = prj.tokens.get(token_name)
             return jsonify(obj), 200
         elif mode == 'name':
-            names = prj.token.names
+            names = prj.tokens.names
             return jsonify(names), 200
         else:
-            content = prj.token.content
+            content = prj.tokens.content
             return jsonify(content), 200
 
     def post(self, project_name):
@@ -35,7 +35,7 @@ class TokenAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.token.create(name, content)
+        prj.tokens.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, token_name):
@@ -45,14 +45,14 @@ class TokenAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.token.update(token_name, new_name, content)
+        prj.tokens.update(token_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, token_name):
         """Delete a token"""
         # Implement
         prj = Project(project_name)
-        prj.token.delete(token_name)
+        prj.tokens.delete(token_name)
         return jsonify({"msg": "OK"}), 200
 
 

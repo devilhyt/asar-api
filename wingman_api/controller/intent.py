@@ -19,13 +19,13 @@ class IntentAPI(MethodView):
         # Implement
         prj = Project(project_name)
         if intent_name:
-            obj = prj.intent.get(intent_name)
+            obj = prj.intents.get(intent_name)
             return jsonify(obj), 200
         elif mode == 'name':
-            names = prj.intent.names
+            names = prj.intents.names
             return jsonify(names), 200
         else:
-            content = prj.intent.content
+            content = prj.intents.content
             return jsonify(content), 200
 
     def post(self, project_name):
@@ -35,7 +35,7 @@ class IntentAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.intent.create(name, content)
+        prj.intents.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
     def put(self, project_name, intent_name):
@@ -45,14 +45,14 @@ class IntentAPI(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        prj.intent.update(intent_name, new_name, content)
+        prj.intents.update(intent_name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
     def delete(self, project_name, intent_name):
         """Delete an intent"""
         # Implement
         prj = Project(project_name)
-        prj.intent.delete(intent_name)
+        prj.intents.delete(intent_name)
         return jsonify({"msg": "OK"}), 200
 
 
