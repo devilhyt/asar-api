@@ -15,13 +15,6 @@ class Intent(FileBasis):
                          object_schema=IntentObjectSchema)
 
 
-class Label(BaseModel):
-    token: str
-    start: int
-    end: int
-    entity: str
-
-
 class IntentNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
@@ -29,6 +22,13 @@ class IntentNameSchema(GeneralNameSchema):
             if not re.match(r"^\w+/?\w+$", name):
                 raise ValueError('Invalid name')
         return name
+
+
+class Label(BaseModel):
+    token: str
+    start: int
+    end: int
+    entity: str
 
 
 class IntentObjectSchema(BaseModel):

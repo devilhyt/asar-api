@@ -33,7 +33,6 @@ class IntentAPI(MethodView):
         # Receive
         name = request.json.get('name')
         content = request.json.get('content', {})
-        print(content)
         # Implement
         prj = Project(project_name)
         prj.intent.create(name, content)
