@@ -63,16 +63,16 @@ class ApiBasis(MethodView):
         objs.delete(name)
         return jsonify({"msg": "OK"}), 200
 
-
-def init_app(app: Flask, name: str, name_type: str = 'string'):
-    view = ApiBasis.as_view(f'{name}_api', name)
-    app.add_url_rule(f'/projects/<string:project_name>/{name}',
-                     defaults={'name': None},
-                     view_func=view,
-                     methods=['GET'])
-    app.add_url_rule(f'/projects/<string:project_name>/{name}',
-                     view_func=view,
-                     methods=['POST'])
-    app.add_url_rule(f'/projects/<string:project_name>/{name}/<{name_type}:name>',
-                     view_func=view,
-                     methods=['GET', 'PUT', 'DELETE'])
+    @classmethod
+    def init_app(cls, app: Flask, name: str, name_type: str = 'string'):
+        view = cls.as_view(f'{name}_api', name)
+        app.add_url_rule(f'/projects/<string:project_name>/{name}',
+                        defaults={'name': None},
+                        view_func=view,
+                        methods=['GET'])
+        app.add_url_rule(f'/projects/<string:project_name>/{name}',
+                        view_func=view,
+                        methods=['POST'])
+        app.add_url_rule(f'/projects/<string:project_name>/{name}/<{name_type}:name>',
+                        view_func=view,
+                        methods=['GET', 'PUT', 'DELETE'])
