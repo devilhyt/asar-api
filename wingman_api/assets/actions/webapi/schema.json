@@ -1,9 +1,0 @@
-{
-    "title": "webapi",
-    "type": "object",
-    "properties": {
-        "url": {
-            "type": "string"
-        }
-    }
-}

@@ -1,11 +1,9 @@
-import json
-from pathlib import Path
 from flask import Flask, jsonify
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
-from wingman_api.config import WINGMAN_ROOT
+from wingman_api.models.action import ResponseSchema
 
-actions_root = Path(WINGMAN_ROOT, 'wingman_api', 'assets', 'actions')
+action_types = {'response': ResponseSchema.schema()}
 
 
 class ActionTypeAPI(MethodView):
@@ -15,7 +13,7 @@ class ActionTypeAPI(MethodView):
     def get(self):
         """Get the names of all action types"""
         # Implement
-        type_names = [d.stem for d in actions_root.iterdir() if d.is_dir()]
+        type_names = list(action_types.keys())
         return jsonify(type_names)
 
 
@@ -25,16 +23,11 @@ class ActionSchemaAPI(MethodView):
 
     def get(self, type_name):
         """Get the schema of an action type"""
-        type_names = [d.stem for d in actions_root.iterdir() if d.is_dir()]
+        type_names = list(action_types.keys())
         if type_name not in type_names:
             raise ValueError('Action type does not exist')
-
-        schema_file = actions_root.joinpath(type_name, 'schema.json')
-
-        # Implement
-        with open(schema_file, 'r', encoding="utf-8") as json_file:
-            schema_json = json.load(json_file)
-
+        # # Implement
+        schema_json = action_types[type_name]
         return jsonify(schema_json), 200
 
 
