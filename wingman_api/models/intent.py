@@ -38,7 +38,7 @@ class IntentExampleSchema(BaseModel):
     labels: Optional[List[IntentLabelSchema]]
 
 class IntentObjectSchema(BaseModel):
-    examples: Optional[List[IntentExampleSchema]]
+    examples: List[IntentExampleSchema]
     use_entities: Optional[List[str]]
     ignore_entities: Optional[List[str]]
 

@@ -19,6 +19,7 @@ class Project:
         # Validate
         _ = ProjectNameSchema(name=project_name)
         # Implement
+        self.prj_name = project_name
         self.prj_root.mkdir(parents=True, exist_ok=True)
         self.prj_path = self.prj_root.joinpath(project_name)
         self.intents = Intent(self.prj_path)
