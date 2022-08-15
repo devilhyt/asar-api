@@ -1,7 +1,7 @@
 import re
 from typing import Optional, List
 from pathlib import Path
-from pydantic import BaseModel, validator, root_validator
+from pydantic import BaseModel, validator, root_validator, conlist
 from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
 
@@ -38,7 +38,7 @@ class IntentExampleSchema(BaseModel):
     labels: Optional[List[IntentLabelSchema]]
 
 class IntentObjectSchema(BaseModel):
-    examples: List[IntentExampleSchema]
+    examples: conlist(IntentExampleSchema, min_items=1)
     use_entities: Optional[List[str]]
     ignore_entities: Optional[List[str]]
 

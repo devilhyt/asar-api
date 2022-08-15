@@ -1,7 +1,7 @@
 import re
 from typing import Any, List, Optional
 from pathlib import Path
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, root_validator, conlist
 from wingman_api.config import ACTIONS_DIR_NAME, ACTIONS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
 
@@ -23,14 +23,17 @@ class ActionNameSchema(GeneralNameSchema):
                 raise ValueError('Invalid name')
         return name
 
+
 class ResponseButtonSchema(BaseModel):
     title: str
     payload: str
+
 
 class ResponseConditionSchema(BaseModel):
     type: str
     name: str
     value: Any
+
 
 class ResponseSchema(BaseModel):
     text: Optional[str]
@@ -44,6 +47,13 @@ class ResponseSchema(BaseModel):
     metadata: Optional[dict]
     condition: Optional[List[ResponseConditionSchema]]
 
+    @root_validator
+    def check_required(cls, values: dict):
+        if values.get('text') or values.get('image') or values.get('button'):
+            return values
+        raise ValueError('Required one of text, image or button')
+
+
 class ActionObjectSchema(BaseModel):
     action_type: str
-    data: Optional[List[ResponseSchema]]
+    data: conlist(ResponseSchema, min_items=1)
