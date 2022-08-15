@@ -18,12 +18,14 @@ class FileBasis():
                  prj_path: Path,
                  dir_name: str,
                  file_name: str,
+                 default_content: dict = {},
                  name_schema=GeneralNameSchema,
                  object_schema=GeneralObjectSchema) -> None:
         self.dir = prj_path.joinpath(dir_name)
         self.file = self.dir.joinpath(file_name)
         self.name_schema = name_schema
         self.object_schema = object_schema
+        self.default_content = default_content
 
     @property
     def content(self) -> dict:
@@ -47,7 +49,8 @@ class FileBasis():
     def create(self, name: str, input_content: dict) -> None:
         # Validate
         _ = self.name_schema(name=name)
-        valid_content = self.object_schema.parse_obj(input_content)
+        valid_content = self.object_schema.parse_obj(
+            input_content or self.default_content)
         content = self.content
         if name in content:
             raise ValueError(f'{name} already exists')

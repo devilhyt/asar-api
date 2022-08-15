@@ -8,9 +8,11 @@ from .file_basis import FileBasis, GeneralNameSchema
 
 class Intent(FileBasis):
     def __init__(self, prj_path: Path) -> None:
+        self.default_content = {'examples': [{'text': 'default'}]}
         super().__init__(prj_path=prj_path,
                          dir_name=INTENTS_DIR_NAME,
                          file_name=INTENTS_FILE_NAME,
+                         default_content=self.default_content,
                          name_schema=IntentNameSchema,
                          object_schema=IntentObjectSchema)
 
@@ -32,10 +34,12 @@ class IntentLabelSchema(BaseModel):
     rule: Optional[str]
     group: Optional[str]
 
+
 class IntentExampleSchema(BaseModel):
     text: str
     metadata: Optional[dict]
     labels: Optional[List[IntentLabelSchema]]
+
 
 class IntentObjectSchema(BaseModel):
     examples: conlist(IntentExampleSchema, min_items=1)

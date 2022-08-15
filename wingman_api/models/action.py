@@ -8,9 +8,11 @@ from .file_basis import FileBasis, GeneralNameSchema
 
 class Action(FileBasis):
     def __init__(self, prj_path: Path) -> None:
+        self.default_content={'action_type': 'response', "data": [{'text': 'default'}]}
         super().__init__(prj_path=prj_path,
                          dir_name=ACTIONS_DIR_NAME,
                          file_name=ACTIONS_FILE_NAME,
+                         default_content=self.default_content,
                          name_schema=ActionNameSchema,
                          object_schema=ActionObjectSchema)
 
