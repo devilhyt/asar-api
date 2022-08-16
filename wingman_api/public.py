@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, current_app, request
+import asyncio
 
 
 def init_app(app: Flask):
@@ -7,23 +8,33 @@ def init_app(app: Flask):
 
     # test page
     @app.get("/")
-    def hello_world_get():
+    def test_get():
         return "<p>Hello, World!</p>"
 
     @app.post("/<string:test_string>")
-    def hello_world_post(**kwargs):
+    def test_post(**kwargs):
         return "<p>Hello, World!</p>"
 
     @app.get("/json")
-    def json_test():
+    def test_json():
         return [{'a': 1}, {'b': 2}]
 
+    @app.route("/async")
+    async def get_data():
+        await asyncio.sleep(10)
+        return jsonify('ok')
 
 def request_info():
     """Debugger for request info"""
     try:
+        if request.content_type == 'application/json':
+            data = request.json
+        elif request.content_type == 'application/x-tar':
+            data = 'application/x-tar'
+        else:
+            data = request.data
         current_app.logger.debug(f'\n  view_args: {request.view_args}\
-                                   \n  data     : {request.data}\
+                                   \n  data     : {data}\
                                    \n  args     : {request.args.to_dict()}')
     except:
         pass

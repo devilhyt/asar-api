@@ -26,6 +26,9 @@ RULES_FILE_NAME = 'rules.json'
 TOKENS_FILE_NAME = 'tokens.json'
 JIEBA_DICT_NAME = 'userdict.txt'
 
+SERVER_URL = 'http://localhost:5000'
+RASA_URL = 'http://localhost:5005'
+
 class DevelopmentConfig(object):
     """Flask Config"""
 
@@ -36,7 +39,7 @@ class DevelopmentConfig(object):
     JWT_TOKEN_LOCATION = ['headers', 'cookies', 'query_string', 'json']
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_CSRF_PROTECT = False
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=1)
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=12)
     
 def init_app(app:Flask):
     app.json.sort_keys = False

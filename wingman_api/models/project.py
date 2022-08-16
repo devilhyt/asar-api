@@ -2,7 +2,7 @@ import shutil
 import re
 from pathlib import Path
 from pydantic import BaseModel, validator
-from wingman_api.config import WINGMAN_PRJ_DIR, MODELS_DIR_NAME
+from wingman_api.config import WINGMAN_PRJ_DIR
 from .intent import Intent
 from .action import Action
 from .entity import Entity
@@ -10,6 +10,7 @@ from. slot import Slot
 from .story import Story
 from .rule import Rule
 from .token import Token
+from .rasa_model import RasaModel
 
 
 class Project:
@@ -29,6 +30,7 @@ class Project:
         self.stories = Story(self.prj_path)
         self.rules = Rule(self.prj_path)
         self.tokens = Token(self.prj_path)
+        self.models = RasaModel(self.prj_path, self.prj_name)
 
     @staticmethod
     def names() -> tuple:
@@ -43,7 +45,7 @@ class Project:
         self.stories.init()
         self.rules.init()
         self.tokens.init()
-        self.prj_path.joinpath(MODELS_DIR_NAME).mkdir()
+        self.models.init()
 
     def rename(self, new_project_name) -> None:
         # Validate

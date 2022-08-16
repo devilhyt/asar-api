@@ -7,6 +7,7 @@ import wingman_api.controller.auth
 import wingman_api.controller.project
 import wingman_api.controller.tokenizer
 import wingman_api.controller.action_ext
+import wingman_api.controller.rasa_model
 from wingman_api.controller.api_basis import ApiBasis
 
 
@@ -30,4 +31,5 @@ def create_app(config=DevelopmentConfig):
     ApiBasis.init_app(app, 'tokens')
     wingman_api.controller.tokenizer.init_app(app)
     wingman_api.controller.action_ext.init_app(app)
+    wingman_api.controller.rasa_model.init_app(app)
     return app

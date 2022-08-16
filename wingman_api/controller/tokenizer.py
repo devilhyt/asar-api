@@ -27,7 +27,7 @@ class TokenizerAPI(MethodView):
 
 
 def init_app(app: Flask):
-    intent_view = TokenizerAPI.as_view('tokenizer_api')
+    tokenizer_view = TokenizerAPI.as_view('tokenizer_api')
     app.add_url_rule('/projects/<string:project_name>/tokenizer',
-                     view_func=intent_view,
+                     view_func=tokenizer_view,
                      methods=['POST'])

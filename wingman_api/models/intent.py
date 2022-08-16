@@ -1,14 +1,14 @@
 import re
 from typing import Optional, List
 from pathlib import Path
-from pydantic import BaseModel, validator, root_validator, conlist
+from pydantic import BaseModel, validator, root_validator, conlist, constr
 from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
 
 
 class Intent(FileBasis):
     def __init__(self, prj_path: Path) -> None:
-        self.default_content = {'examples': [{'text': 'default'}]}
+        self.default_content = {'examples': [{'text': 'default', 'labels':[]}]}
         super().__init__(prj_path=prj_path,
                          dir_name=INTENTS_DIR_NAME,
                          file_name=INTENTS_FILE_NAME,
@@ -36,7 +36,7 @@ class IntentLabelSchema(BaseModel):
 
 
 class IntentExampleSchema(BaseModel):
-    text: str
+    text: constr(min_length=1)
     metadata: Optional[dict]
     labels: Optional[List[IntentLabelSchema]]
 

@@ -55,7 +55,7 @@ class FileBasis():
         if name in content:
             raise ValueError(f'{name} already exists')
         # Implement
-        content[name] = valid_content.dict(exclude_unset=True)
+        content[name] = valid_content.dict(exclude_unset=True, exclude_none=True)
         self.write_json(content)
 
     def update(self, name, new_name, input_content) -> None:
