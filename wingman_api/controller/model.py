@@ -30,9 +30,9 @@ class ModelAPI(MethodView):
         status_code = prj.models.load()
         return jsonify({'rasa_status_code': status_code}), 200
 
-
-def init_app(app: Flask):
-    model_view = ModelAPI.as_view('model_api')
-    app.add_url_rule('/projects/<string:project_name>/models',
-                     view_func=model_view,
-                     methods=['GET', 'POST', 'PUT'])
+    @classmethod
+    def init_app(cls, app: Flask):
+        model_view = cls.as_view('model_api')
+        app.add_url_rule('/projects/<string:project_name>/models',
+                        view_func=model_view,
+                        methods=['GET', 'POST', 'PUT'])

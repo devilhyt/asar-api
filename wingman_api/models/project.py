@@ -10,7 +10,7 @@ from. slot import Slot
 from .story import Story
 from .rule import Rule
 from .token import Token
-from .rasa_model import RasaModel
+from .model import Model
 
 
 class Project:
@@ -30,7 +30,7 @@ class Project:
         self.stories = Story(self.prj_path)
         self.rules = Rule(self.prj_path)
         self.tokens = Token(self.prj_path)
-        self.models = RasaModel(self.prj_path, self.prj_name)
+        self.models = Model(self.prj_path, self.prj_name)
 
     @staticmethod
     def names() -> tuple:

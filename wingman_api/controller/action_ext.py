@@ -30,13 +30,14 @@ class ActionSchemaAPI(MethodView):
         schema_json = action_types[type_name]
         return jsonify(schema_json), 200
 
-
-def init_app(app: Flask):
-    action_type_view = ActionTypeAPI.as_view('action_type_api')
-    app.add_url_rule('/actions/types',
-                     view_func=action_type_view,
-                     methods=['GET'])
-    action_schema_view = ActionSchemaAPI.as_view('action_schema_api')
-    app.add_url_rule('/actions/schema/<string:type_name>',
-                     view_func=action_schema_view,
-                     methods=['GET'])
+class ActionExt:
+    @classmethod
+    def init_app(cls, app: Flask):
+        action_type_view = ActionTypeAPI.as_view('action_type_api')
+        app.add_url_rule('/actions/types',
+                        view_func=action_type_view,
+                        methods=['GET'])
+        action_schema_view = ActionSchemaAPI.as_view('action_schema_api')
+        app.add_url_rule('/actions/schema/<string:type_name>',
+                        view_func=action_schema_view,
+                        methods=['GET'])

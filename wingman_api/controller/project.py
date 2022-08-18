@@ -38,11 +38,11 @@ class ProjectAPI(MethodView):
         prj.delete()
         return jsonify({"msg": "OK"}), 200
 
-
-def init_app(app: Flask):
-    project_view = ProjectAPI.as_view('project_api')
-    app.add_url_rule('/projects', view_func=project_view,
-                     methods=['GET', 'POST'])
-    app.add_url_rule('/projects/<string:project_name>',
-                     view_func=project_view,
-                     methods=['PUT', 'DELETE'])
+    @classmethod
+    def init_app(cls, app: Flask):
+        project_view = cls.as_view('project_api')
+        app.add_url_rule('/projects', view_func=project_view,
+                        methods=['GET', 'POST'])
+        app.add_url_rule('/projects/<string:project_name>',
+                        view_func=project_view,
+                        methods=['PUT', 'DELETE'])

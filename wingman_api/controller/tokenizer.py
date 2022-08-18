@@ -25,9 +25,9 @@ class TokenizerAPI(MethodView):
                   for (token, start, end) in tokenized]
         return jsonify(tokens), 200
 
-
-def init_app(app: Flask):
-    tokenizer_view = TokenizerAPI.as_view('tokenizer_api')
-    app.add_url_rule('/projects/<string:project_name>/tokenizer',
-                     view_func=tokenizer_view,
-                     methods=['POST'])
+    @classmethod
+    def init_app(cls, app: Flask):
+        tokenizer_view = cls.as_view('tokenizer_api')
+        app.add_url_rule('/projects/<string:project_name>/tokenizer',
+                        view_func=tokenizer_view,
+                        methods=['POST'])

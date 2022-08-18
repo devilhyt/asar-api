@@ -42,13 +42,14 @@ class AuthAPI(MethodView):
         unset_jwt_cookies(response)
         return response
 
-
-def init_app(app: Flask):
-    db.create_all(app=app)
-    auth_view = AuthAPI.as_view('auth_api')
-    app.add_url_rule('/auth', view_func=auth_view,
-                     methods=['GET', 'POST', 'DELETE'])
-    app.after_request(refresh_expiring_jwts)
+    @classmethod
+    def init_app(cls, app: Flask):
+        db.create_all(app=app)
+        auth_view = cls.as_view('auth_api')
+        app.add_url_rule('/auth',
+                         view_func=auth_view,
+                         methods=['GET', 'POST', 'DELETE'])
+        app.after_request(refresh_expiring_jwts)
 
 
 def refresh_expiring_jwts(response):

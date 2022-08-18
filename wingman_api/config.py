@@ -24,6 +24,7 @@ SLOTS_FILE_NAME = 'slots.json'
 STORIES_FILE_NAME = 'stories.json'
 RULES_FILE_NAME = 'rules.json'
 TOKENS_FILE_NAME = 'tokens.json'
+MODELS_FILE_NAME = 'model.tar.gz'
 JIEBA_DICT_NAME = 'userdict.txt'
 
 SERVER_URL = 'http://localhost:5000'
