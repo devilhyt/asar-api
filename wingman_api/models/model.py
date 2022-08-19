@@ -38,6 +38,3 @@ class Model:
     def save(self, content) -> None:
         with open(self.file, 'wb') as t:
             t.write(content)
-
-    def convert_intent(self):
-        ...

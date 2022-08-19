@@ -26,6 +26,7 @@ RULES_FILE_NAME = 'rules.json'
 TOKENS_FILE_NAME = 'tokens.json'
 MODELS_FILE_NAME = 'model.tar.gz'
 JIEBA_DICT_NAME = 'userdict.txt'
+TRAINING_DATA_FILE_NAME = 'training_data.yml'
 
 SERVER_URL = 'http://localhost:5000'
 RASA_URL = 'http://localhost:5005'

@@ -12,7 +12,9 @@ class ModelAPI(MethodView):
         """Train a model"""
         # Implement
         prj = Project(project_name)
-        status_code = prj.models.train()
+        prj.compile()
+        # status_code = prj.models.train()
+        status_code = 200
         return jsonify({'rasa_status_code': status_code}), 200
 
 

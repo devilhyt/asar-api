@@ -1,16 +1,18 @@
+from .model import Model
+from .token import Token
+from .rule import Rule
+from .story import Story
+from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import LiteralScalarString
 import shutil
 import re
 from pathlib import Path
 from pydantic import BaseModel, validator
-from wingman_api.config import WINGMAN_PRJ_DIR
+from wingman_api.config import WINGMAN_PRJ_DIR, TRAINING_DATA_FILE_NAME
 from .intent import Intent
-from .action import Action
+from .action_blockly import Action
 from .entity import Entity
-from. slot import Slot
-from .story import Story
-from .rule import Rule
-from .token import Token
-from .model import Model
+from .slot import Slot
 
 
 class Project:
@@ -31,6 +33,8 @@ class Project:
         self.rules = Rule(self.prj_path)
         self.tokens = Token(self.prj_path)
         self.models = Model(self.prj_path, self.prj_name)
+        # Tools
+        self.yaml = YAML()
 
     @staticmethod
     def names() -> tuple:
@@ -56,6 +60,61 @@ class Project:
 
     def delete(self) -> None:
         shutil.rmtree(self.prj_path)
+
+    def compile(self) -> None:
+        nlu = {'nlu': []}
+        domain = {'intents': [], 'entities': []}
+
+        # compile intents
+        intents = self.intents.content
+        for intent_name, intent in intents.items():
+            # nlu
+            examples_arr = []
+            for example in intent['examples']:
+                text = ''
+                previous_end = 0
+                sorted_labels = sorted(
+                    example['labels'], key=lambda d: d['start'])
+                for label in sorted_labels:
+                    token = label.get('token')
+                    entity = label.get('entity')
+                    role = label.get('role')
+                    group = label.get('group')
+                    text += example['text'][previous_end:label['start']]
+                    text += f'[{token}]{{"entity": "{entity}"'
+                    text += f', "role": "{role}"' if role else ''
+                    text += f', "group": "{group}"' if group else ''
+                    text += f'}}'
+                    previous_end = label['end']
+                text += example['text'][previous_end:]
+                text += '\n'
+                examples_arr.append({'text': LiteralScalarString(text)})
+            nlu['nlu'].append(
+                {'intent': intent_name, 'examples': examples_arr})
+
+            # domain
+            intent.pop('examples')
+            if intent:
+                domain['intents'].append({intent_name: intent})
+            else:
+                domain['intents'].append(intent_name)
+
+        # compile entities
+        entities = self.entities.content
+        for entity_name, entity in entities.items():
+            if entity:
+                domain['entities'].append({entity_name: entity})
+            else:
+                domain['entities'].append(entity_name)
+
+        training_data = nlu | domain
+
+        with open(file=self.models.dir.joinpath(TRAINING_DATA_FILE_NAME),
+                  mode='w',
+                  encoding="utf-8") as y:
+            self.yaml.dump(data=training_data, stream=y)
+
+        # compile actions
 
 
 class ProjectNameSchema(BaseModel):
