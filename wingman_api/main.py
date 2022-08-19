@@ -6,7 +6,6 @@ import wingman_api.public
 from wingman_api.controller.auth import AuthAPI
 from wingman_api.controller.project import ProjectAPI
 from wingman_api.controller.tokenizer import TokenizerAPI
-# from wingman_api.controller.action_ext import ActionExt
 from wingman_api.controller.model import ModelAPI
 from wingman_api.controller.api_basis import ApiBasis
 
