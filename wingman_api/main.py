@@ -29,6 +29,5 @@ def create_app(config=DevelopmentConfig):
     ApiBasis.init_app(app, 'rules')
     ApiBasis.init_app(app, 'tokens')
     TokenizerAPI.init_app(app)
-    # ActionExt.init_app(app)
     ModelAPI.init_app(app)
     return app
