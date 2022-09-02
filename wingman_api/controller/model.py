@@ -12,6 +12,7 @@ class ModelAPI(MethodView):
         """Train a model"""
         # Implement
         prj = Project(project_name)
+        prj.tokens.gen_jieba_dict()
         prj.compile()
         # status_code = prj.models.train()
         status_code = 200
