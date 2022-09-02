@@ -1,7 +1,7 @@
 from pathlib import Path
 import requests
 import yaml
-from wingman_api.config import MODELS_DIR_NAME, MODELS_FILE_NAME, SERVER_URL, RASA_URL
+from ..config import MODELS_DIR_NAME, MODELS_FILE_NAME, SERVER_URL, RASA_URL
 
 
 class Model:

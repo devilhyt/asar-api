@@ -36,6 +36,8 @@ def request_info():
         current_app.logger.debug(f'\n  view_args: {request.view_args}\
                                    \n  data     : {data}\
                                    \n  args     : {request.args.to_dict()}')
+        # current_app.logger.debug(f'\n  header   : {request.headers}\
+        #                            \n  addr     : {request.remote_addr}')
     except:
         pass
 

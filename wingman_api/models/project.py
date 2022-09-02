@@ -8,7 +8,7 @@ import shutil
 import re
 from pathlib import Path
 from pydantic import BaseModel, validator
-from wingman_api.config import WINGMAN_PRJ_DIR, TRAINING_DATA_FILE_NAME
+from ..config import WINGMAN_PRJ_DIR, TRAINING_DATA_FILE_NAME
 from .intent import Intent
 from .action_blockly import Action
 from .entity import Entity

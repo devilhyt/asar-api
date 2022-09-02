@@ -1,7 +1,7 @@
 from typing import Optional
 from pathlib import Path
 from pydantic import BaseModel, conlist
-from wingman_api.config import RULES_DIR_NAME, RULES_FILE_NAME
+from ..config import RULES_DIR_NAME, RULES_FILE_NAME
 from .file_basis import FileBasis
 
 

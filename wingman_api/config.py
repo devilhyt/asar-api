@@ -43,5 +43,6 @@ class DevelopmentConfig(object):
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=12)
     
-def init_app(app:Flask):
-    app.json.sort_keys = False
+    @classmethod
+    def init_app(cls, app:Flask):
+        app.json.sort_keys = False

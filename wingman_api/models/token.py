@@ -1,7 +1,7 @@
 from typing import Optional
 from pathlib import Path
 from pydantic import BaseModel
-from wingman_api.config import (TOKENS_DIR_NAME, 
+from ..config import (TOKENS_DIR_NAME, 
                                 TOKENS_FILE_NAME, 
                                 JIEBA_DICT_NAME)
 from .file_basis import FileBasis

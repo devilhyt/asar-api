@@ -2,7 +2,7 @@ import re
 from typing import Optional, List
 from pathlib import Path
 from pydantic import BaseModel, validator, root_validator, conlist, constr
-from wingman_api.config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
+from ..config import INTENTS_DIR_NAME, INTENTS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
 
 

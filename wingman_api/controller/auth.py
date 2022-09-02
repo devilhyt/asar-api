@@ -7,8 +7,8 @@ from flask_jwt_extended import (current_user,
                                 set_access_cookies,
                                 unset_jwt_cookies, get_jwt,
                                 get_jwt_identity)
-from wingman_api.models.user import User, UserSchema
-from wingman_api.extensions import db, jwt
+from ..models.user import User, UserSchema
+from ..extensions import db, jwt
 
 
 class AuthAPI(MethodView):
