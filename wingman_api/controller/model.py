@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
-from wingman_api.models.project import Project
+from ..models.project import Project
 
 
 class ModelAPI(MethodView):
@@ -12,6 +12,7 @@ class ModelAPI(MethodView):
         """Train a model"""
         # Implement
         prj = Project(project_name)
+        prj.tokens.gen_jieba_dict()
         prj.compile()
         # status_code = prj.models.train()
         status_code = 200

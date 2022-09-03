@@ -1,4 +1,4 @@
-from wingman_api.main import create_app
+from wingman_api import create_app
 
 if __name__ == '__main__':
     app = create_app()

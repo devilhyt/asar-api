@@ -8,14 +8,7 @@ WINGMAN_PRJ_DIR_NAME = 'wingman_projects'
 WINGMAN_DATA_DIR = f'{WINGMAN_ROOT}/{WINGMAN_DATA_DIR_NAME}'
 WINGMAN_PRJ_DIR = f'{WINGMAN_DATA_DIR}/{WINGMAN_PRJ_DIR_NAME}'
 
-INTENTS_DIR_NAME = 'intents'
-ACTIONS_DIR_NAME = 'actions'
-ENTITIES_DIR_NAME = 'entities'
-SLOTS_DIR_NAME = 'slots'
-STORIES_DIR_NAME = 'stories'
-RULES_DIR_NAME = 'rules'
-TOKENS_DIR_NAME = 'tokens'
-MODELS_DIR_NAME = 'models'
+OUTPUT_DIR_NAME = 'output'
 
 INTENTS_FILE_NAME = 'intents.json'
 ACTIONS_FILE_NAME = 'actions.json'
@@ -43,5 +36,6 @@ class DevelopmentConfig(object):
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=12)
     
-def init_app(app:Flask):
-    app.json.sort_keys = False
+    @classmethod
+    def init_app(cls, app:Flask):
+        app.json.sort_keys = False

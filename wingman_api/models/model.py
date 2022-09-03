@@ -1,14 +1,14 @@
 from pathlib import Path
 import requests
 import yaml
-from wingman_api.config import MODELS_DIR_NAME, MODELS_FILE_NAME, SERVER_URL, RASA_URL
+from ..config import OUTPUT_DIR_NAME, MODELS_FILE_NAME, SERVER_URL, RASA_URL
 
 
 class Model:
     def __init__(self,
                  prj_path: Path,
                  prj_name: str,
-                 dir_name: str = MODELS_DIR_NAME,
+                 dir_name: str = OUTPUT_DIR_NAME,
                  file_name: str = MODELS_FILE_NAME) -> None:
         self.prj_name = prj_name
         self.dir = prj_path.joinpath(dir_name)

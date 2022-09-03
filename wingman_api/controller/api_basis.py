@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
-from wingman_api.models.project import Project
-from wingman_api.models.file_basis import FileBasis
+from ..models.project import Project
+from ..models.file_basis import FileBasis
 
 
 class ApiBasis(MethodView):
