@@ -3,6 +3,17 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from ..models.project import Project
 from ..models.file_basis import FileBasis
+from ..models.intent import Intent
+from ..models.action import Action
+from ..models.entity import Entity
+from ..models.slot import Slot
+from ..models.story import Story
+from ..models.rule import Rule
+from ..models.token import Token
+from typing import Union
+
+file_types = Union[FileBasis, Intent, Action,
+                   Entity, Entity, Slot, Story, Rule, Token]
 
 
 class ApiBasis(MethodView):
@@ -22,7 +33,7 @@ class ApiBasis(MethodView):
         mode = request.args.get('mode')
         # Implement
         prj = Project(project_name)
-        objs: FileBasis = getattr(prj, self.attr_name)
+        objs: file_types = getattr(prj, self.attr_name)
         if name:
             obj = objs.get(name)
             return jsonify(obj), 200
@@ -40,7 +51,7 @@ class ApiBasis(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        objs: FileBasis = getattr(prj, self.attr_name)
+        objs: file_types = getattr(prj, self.attr_name)
         objs.create(name, content)
         return jsonify({"msg": "OK"}), 200
 
@@ -51,7 +62,7 @@ class ApiBasis(MethodView):
         content = request.json.get('content', {})
         # Implement
         prj = Project(project_name)
-        objs: FileBasis = getattr(prj, self.attr_name)
+        objs: file_types = getattr(prj, self.attr_name)
         objs.update(name, new_name, content)
         return jsonify({"msg": "OK"}), 200
 
@@ -59,7 +70,7 @@ class ApiBasis(MethodView):
         """Delete an object"""
         # Implement
         prj = Project(project_name)
-        objs: FileBasis = getattr(prj, self.attr_name)
+        objs: file_types = getattr(prj, self.attr_name)
         objs.delete(name)
         return jsonify({"msg": "OK"}), 200
 
@@ -67,12 +78,12 @@ class ApiBasis(MethodView):
     def init_app(cls, app: Flask, name: str, name_type: str = 'string'):
         view = cls.as_view(f'{name}_api', name)
         app.add_url_rule(f'/projects/<string:project_name>/{name}',
-                        defaults={'name': None},
-                        view_func=view,
-                        methods=['GET'])
+                         defaults={'name': None},
+                         view_func=view,
+                         methods=['GET'])
         app.add_url_rule(f'/projects/<string:project_name>/{name}',
-                        view_func=view,
-                        methods=['POST'])
+                         view_func=view,
+                         methods=['POST'])
         app.add_url_rule(f'/projects/<string:project_name>/{name}/<{name_type}:name>',
-                        view_func=view,
-                        methods=['GET', 'PUT', 'DELETE'])
+                         view_func=view,
+                         methods=['GET', 'PUT', 'DELETE'])
