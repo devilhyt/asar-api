@@ -1,0 +1,17 @@
+from typing import Any, Text, Dict, List
+from rasa_sdk import Action, Tracker
+from rasa_sdk.executor import CollectingDispatcher
+
+
+{% for action_name, action in actions.items() -%}
+class {{action_name}}(Action):
+
+    def name(self) -> Text:
+        return "{{action_name}}"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        {{action.code | indent(8, False)}}
+{% endfor %}

@@ -8,7 +8,8 @@ import shutil
 import re
 from pathlib import Path
 from pydantic import BaseModel, validator
-from ..config import WINGMAN_PRJ_DIR, TRAINING_DATA_FILE_NAME
+from jinja2 import Template
+from ..config import WINGMAN_PRJ_DIR, TRAINING_DATA_FILE_NAME, ACTIONS_PY_NAME
 from .intent import Intent
 from .action import Action
 from .entity import Entity
@@ -63,7 +64,7 @@ class Project:
 
     def compile(self) -> None:
         nlu = {'nlu': []}
-        domain = {'intents': [], 'entities': []}
+        domain = {'intents': [], 'entities': [], 'actions': []}
 
         # compile intents
         intents = self.intents.content
@@ -81,16 +82,20 @@ class Project:
                     role = label.get('role')
                     group = label.get('group')
                     text += example['text'][previous_end:label['start']]
-                    text += f'[{token}]{{"entity": "{entity}"'
-                    text += f', "role": "{role}"' if role else ''
-                    text += f', "group": "{group}"' if group else ''
+                    text += f'[{token}]'
+                    text += f'{{'
+                    text += f'"entity": "{entity}"'
+                    if role:
+                        text += f', "role": "{role}"'
+                    if group:
+                        text += f', "group": "{group}"'
                     text += f'}}'
                     previous_end = label['end']
                 text += example['text'][previous_end:]
                 text += '\n'
                 examples_arr.append({'text': LiteralScalarString(text)})
-            nlu['nlu'].append(
-                {'intent': intent_name, 'examples': examples_arr})
+            nlu['nlu'].append({'intent': intent_name,
+                               'examples': examples_arr})
 
             # domain
             intent.pop('examples')
@@ -107,15 +112,27 @@ class Project:
             else:
                 domain['entities'].append(entity_name)
 
-        training_data = nlu | domain
+        # compile actions
+        domain['actions'] = self.actions.names # domain
 
+        with open('./wingman_api/assets/templates/action.j2', 'r', encoding='utf-8') as j: # py
+            template = j.read()
+        j2_template = Template(template)
+        gen = j2_template.render(actions=self.actions.content)
+        with open(file=self.models.dir.joinpath(ACTIONS_PY_NAME),
+                  mode='w',
+                  encoding="utf-8") as py:
+            py.write(gen)
+
+        # gen yaml
+        training_data = nlu | domain
         with open(file=self.models.dir.joinpath(TRAINING_DATA_FILE_NAME),
                   mode='w',
                   encoding="utf-8") as y:
             self.yaml.dump(data=training_data, stream=y)
-
-        # compile actions
-
+        
+        # gen jieba dict
+        self.tokens.gen_jieba_dict()
 
 class ProjectNameSchema(BaseModel):
     name: str
