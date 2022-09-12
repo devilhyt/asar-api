@@ -1,12 +1,8 @@
-from .model import Model
-from .token import Token
-from .rule import Rule
-from .story import Story
-from ruamel.yaml import YAML
-from ruamel.yaml.scalarstring import LiteralScalarString
 import shutil
 import re
 from pathlib import Path
+from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import LiteralScalarString
 from pydantic import BaseModel, validator
 from jinja2 import Template
 from ..config import WINGMAN_PRJ_DIR, TRAINING_DATA_FILE_NAME, ACTIONS_PY_NAME
@@ -14,6 +10,10 @@ from .intent import Intent
 from .action import Action
 from .entity import Entity
 from .slot import Slot
+from .story import Story
+from .rule import Rule
+from .token import Token
+from .model import Model
 
 
 class Project:
@@ -113,9 +113,9 @@ class Project:
                 domain['entities'].append(entity_name)
 
         # compile actions
-        domain['actions'] = self.actions.names # domain
+        domain['actions'] = self.actions.names  # domain
 
-        with open('./wingman_api/assets/templates/action.j2', 'r', encoding='utf-8') as j: # py
+        with open('./wingman_api/assets/templates/action.j2', 'r', encoding='utf-8') as j:  # py
             template = j.read()
         j2_template = Template(template)
         gen = j2_template.render(actions=self.actions.content)
@@ -130,9 +130,10 @@ class Project:
                   mode='w',
                   encoding="utf-8") as y:
             self.yaml.dump(data=training_data, stream=y)
-        
+
         # gen jieba dict
         self.tokens.gen_jieba_dict()
+
 
 class ProjectNameSchema(BaseModel):
     name: str

@@ -37,7 +37,7 @@ class FileBasis():
         self.file.touch()
         self.file.write_text('{}')
 
-    def get(self, name: str):
+    def select(self, name: str):
         # Validate
         _ = self.name_schema(name=name)
         # Implement

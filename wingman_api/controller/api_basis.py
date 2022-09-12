@@ -35,14 +35,12 @@ class ApiBasis(MethodView):
         prj = Project(project_name)
         objs: file_types = getattr(prj, self.attr_name)
         if name:
-            obj = objs.get(name)
-            return jsonify(obj), 200
+            r = objs.select(name)
         elif mode == 'name':
-            names = objs.names
-            return jsonify(names), 200
+            r = objs.names
         else:
-            content = objs.content
-            return jsonify(content), 200
+            r = objs.content
+        return jsonify(r), 200
 
     def post(self, project_name):
         """Create an object"""
