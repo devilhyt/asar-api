@@ -4,8 +4,9 @@ import asyncio, logging
 
 def init_app(app: Flask):
     gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+    if gunicorn_logger.hasHandlers():
+        app.logger.handlers = gunicorn_logger.handlers
+        app.logger.setLevel(gunicorn_logger.level)
 
     app.before_request(request_info)
     app.register_error_handler(Exception, handle_exception)
