@@ -1,7 +1,8 @@
 from flask import Flask
 import datetime
+from pathlib import Path
 
-WINGMAN_ROOT = 'C:/Users/DevilHYT/Desktop/github/wingman-api'
+WINGMAN_ROOT = '.'
 WINGMAN_DATA_DIR_NAME = 'wingman_data'
 WINGMAN_PRJ_DIR_NAME = 'wingman_projects'
 
@@ -29,7 +30,7 @@ class DevelopmentConfig(object):
     """Flask Config"""
 
     SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{WINGMAN_DATA_DIR}/wingman.db'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(WINGMAN_DATA_DIR).resolve()}/wingman.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
     JWT_TOKEN_LOCATION = ['headers', 'cookies', 'query_string', 'json']
