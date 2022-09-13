@@ -1,0 +1,9 @@
+gunicorn
+Flask
+Flask-Cors
+Flask-JWT-Extended
+Flask-SQLAlchemy
+jieba
+pydantic
+requests
+ruamel.yaml
