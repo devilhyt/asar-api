@@ -7,6 +7,7 @@ from flask_jwt_extended import (current_user,
                                 set_access_cookies,
                                 unset_jwt_cookies, get_jwt,
                                 get_jwt_identity)
+import wingman_api.models.user
 from ..models.user import User, UserSchema
 from ..extensions import db, jwt
 
@@ -44,7 +45,11 @@ class AuthAPI(MethodView):
 
     @classmethod
     def init_app(cls, app: Flask):
-        db.create_all(app=app)
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            wingman_api.models.user.init()
+        
         auth_view = cls.as_view('auth_api')
         app.add_url_rule('/auth',
                          view_func=auth_view,
