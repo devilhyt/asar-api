@@ -1,6 +1,6 @@
 from pathlib import Path
 import requests
-import yaml
+from ruamel.yaml import YAML
 from ..config import OUTPUT_DIR_NAME, MODELS_FILE_NAME, SERVER_URL, RASA_URL
 
 
@@ -13,6 +13,8 @@ class Model:
         self.prj_name = prj_name
         self.dir = prj_path.joinpath(dir_name)
         self.file = self.dir.joinpath(file_name)
+        # Tools
+        self.yaml = YAML(typ='safe')
 
     def init(self) -> None:
         self.dir.mkdir(parents=True)
@@ -23,10 +25,10 @@ class Model:
                   'callback_url': f'{SERVER_URL}/projects/{self.prj_name}/models'}
         # Todo: generate yaml from this project
         with open('./test/test.yml', 'r') as f:
-            data = yaml.safe_load(f)
+            data = self.yaml.load(f)
         response = requests.post(url=f'{rasa_url}/model/train',
                                  params=params,
-                                 data=yaml.dump(data))
+                                 data=self.yaml.dump(data))
 
         return response.status_code
 
