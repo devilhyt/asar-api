@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from flask import Flask, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import (current_user,
@@ -10,6 +11,7 @@ from flask_jwt_extended import (current_user,
 import wingman_api.models.user
 from ..models.user import User, UserSchema
 from ..extensions import db, jwt
+from ..config import WINGMAN_DATA_DIR
 
 
 class AuthAPI(MethodView):
@@ -45,6 +47,7 @@ class AuthAPI(MethodView):
 
     @classmethod
     def init_app(cls, app: Flask):
+        Path(WINGMAN_DATA_DIR).mkdir(parents=True, exist_ok=True)
         with app.app_context():
             db.drop_all()
             db.create_all()
