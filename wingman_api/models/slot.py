@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional, List
+from typing import Any, Optional, List, Literal
 from pathlib import Path
 from pydantic import BaseModel, validator, conlist
 from ..config import SLOTS_FILE_NAME
@@ -28,7 +28,7 @@ class SlotConditionSchema(BaseModel):
     requested_slot: Optional[str]
     
 class SlotMappingSchema(BaseModel):
-    type: str
+    type: Literal['from_entity', 'from_text', 'from_intent', 'from_trigger_intent', 'custom']
     inent: Optional[Any]
     not_inent: Optional[Any]
     entity: Optional[str]
@@ -40,7 +40,7 @@ class SlotMappingSchema(BaseModel):
     
 
 class SlotObjectSchema(BaseModel):
-    type: str
+    type: Literal['text', 'bool' ,'categorical', 'float' ,'list', 'any']
     values: Optional[list]
     min_value: Optional[float]
     max_value: Optional[float]
