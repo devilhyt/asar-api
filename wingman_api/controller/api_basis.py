@@ -38,6 +38,8 @@ class ApiBasis(MethodView):
             r = objs.select(name)
         elif mode == 'name':
             r = objs.names
+        elif mode == 'schema':
+            r = objs.object_schema.schema_json()
         else:
             r = objs.content
         return jsonify(r), 200
