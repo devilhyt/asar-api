@@ -15,7 +15,7 @@ from ..config import ASAR_DATA_DIR
 
 
 class AuthAPI(MethodView):
-    """Wingman Auth API"""
+    """Asar Auth API"""
     @jwt_required()
     def get(self):
         """get current user info"""

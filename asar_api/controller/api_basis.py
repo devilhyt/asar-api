@@ -17,7 +17,7 @@ file_types = Union[FileBasis, Intent, Action,
 
 
 class ApiBasis(MethodView):
-    """Wingman API"""
+    """Asar API"""
     decorators = [jwt_required()]
 
     def __init__(self, attr_name: str) -> None:

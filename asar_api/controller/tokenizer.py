@@ -6,7 +6,7 @@ import jieba
 
 
 class TokenizerAPI(MethodView):
-    """Wingman Tokenizer API"""
+    """Asar Tokenizer API"""
     decorators = [jwt_required()]
 
     def post(self, project_name):

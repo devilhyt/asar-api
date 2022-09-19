@@ -5,7 +5,7 @@ from ..models.project import Project
 
 
 class ModelAPI(MethodView):
-    """Wingman Model API"""
+    """Asar Model API"""
 
     @jwt_required()
     def get(self, project_name):
