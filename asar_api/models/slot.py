@@ -29,8 +29,8 @@ class SlotConditionSchema(BaseModel):
     
 class SlotMappingSchema(BaseModel):
     type: Literal['from_entity', 'from_text', 'from_intent', 'from_trigger_intent', 'custom']
-    inent: Optional[Any]
-    not_inent: Optional[Any]
+    intent: Optional[Any]
+    not_intent: Optional[Any]
     entity: Optional[str]
     role: Optional[str]
     group: Optional[str]
