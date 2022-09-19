@@ -5,7 +5,7 @@ from ..models.project import Project
 
 
 class ProjectAPI(MethodView):
-    """Wingman Project API"""
+    """Asar Project API"""
     decorators = [jwt_required()]
 
     def get(self):

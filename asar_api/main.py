@@ -1,7 +1,7 @@
 from flask import Flask
 from .config import DevelopmentConfig
 from .extensions import cors, db, jwt
-import wingman_api.public
+import asar_api.public
 from .controller.auth import AuthAPI
 from .controller.project import ProjectAPI
 from .controller.tokenizer import TokenizerAPI
@@ -17,7 +17,7 @@ def create_app(config=DevelopmentConfig):
     jwt.init_app(app)
     cors.init_app(app)
     
-    wingman_api.public.init_app(app)
+    asar_api.public.init_app(app)
     AuthAPI.init_app(app)
     ProjectAPI.init_app(app)
     ApiBasis.init_app(app, 'intents', 'path')
