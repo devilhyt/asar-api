@@ -7,6 +7,7 @@ from .controller.project import ProjectAPI
 from .controller.tokenizer import TokenizerAPI
 from .controller.model import ModelAPI
 from .controller.api_basis import ApiBasis
+from .controller.gconfig import GConfigAPI
 
 
 def create_app(config=DevelopmentConfig):
@@ -19,6 +20,7 @@ def create_app(config=DevelopmentConfig):
     
     asar_api.public.init_app(app)
     AuthAPI.init_app(app)
+    GConfigAPI.init_app(app)
     ProjectAPI.init_app(app)
     ApiBasis.init_app(app, 'intents', 'path')
     ApiBasis.init_app(app, 'actions', 'path')

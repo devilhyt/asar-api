@@ -22,6 +22,7 @@ MODELS_FILE_NAME = 'model.tar.gz'
 JIEBA_DICT_NAME = 'userdict.txt'
 TRAINING_DATA_FILE_NAME = 'training_data.yml'
 ACTIONS_PY_NAME = 'action.py'
+GCONFIG_FILE_NAME = 'gconfig.json'
 
 SERVER_URL = 'http://localhost:5000'
 RASA_URL = 'http://localhost:5005'
