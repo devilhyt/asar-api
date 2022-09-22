@@ -8,6 +8,7 @@ from .controller.tokenizer import TokenizerAPI
 from .controller.model import ModelAPI
 from .controller.api_basis import ApiBasis
 from .controller.gconfig import GConfigAPI
+from .controller.lconfig import LConfigAPI
 
 
 def create_app(config=DevelopmentConfig):
@@ -22,6 +23,7 @@ def create_app(config=DevelopmentConfig):
     AuthAPI.init_app(app)
     GConfigAPI.init_app(app)
     ProjectAPI.init_app(app)
+    LConfigAPI.init_app(app)
     ApiBasis.init_app(app, 'intents', 'path')
     ApiBasis.init_app(app, 'actions', 'path')
     ApiBasis.init_app(app, 'entities')

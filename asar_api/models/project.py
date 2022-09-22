@@ -14,6 +14,7 @@ from .story import Story
 from .rule import Rule
 from .token import Token
 from .model import Model
+from .lconfig import LConfig
 
 
 class Project:
@@ -34,6 +35,7 @@ class Project:
         self.rules = Rule(self.prj_path)
         self.tokens = Token(self.prj_path)
         self.models = Model(self.prj_path, self.prj_name)
+        self.lconfigs = LConfig(self.prj_path)
         # Tools
         self.yaml = YAML()
 
@@ -51,6 +53,7 @@ class Project:
         self.rules.init()
         self.tokens.init()
         self.models.init()
+        self.lconfigs.init()
 
     def rename(self, new_project_name) -> None:
         # Validate
