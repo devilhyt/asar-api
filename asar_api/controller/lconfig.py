@@ -13,7 +13,7 @@ class LConfigAPI(MethodView):
         # Implement
         prj = Project(project_name)
         r = make_response(prj.lconfigs.content)
-        r.mimetype = 'application/yaml'
+        r.mimetype = 'text/x-yaml'
         return r
     
     def put(self, project_name):
