@@ -11,7 +11,7 @@ from flask_jwt_extended import (current_user,
 import asar_api.models.user
 from ..models.user import User, UserSchema
 from ..extensions import db, jwt
-from ..config import ASAR_DATA_DIR
+from ..config import ASAR_DATA_ROOT
 
 
 class AuthAPI(MethodView):
@@ -47,7 +47,7 @@ class AuthAPI(MethodView):
 
     @classmethod
     def init_app(cls, app: Flask):
-        Path(ASAR_DATA_DIR).mkdir(parents=True, exist_ok=True)
+        Path(ASAR_DATA_ROOT).mkdir(parents=True, exist_ok=True)
         with app.app_context():
             db.drop_all()
             db.create_all()

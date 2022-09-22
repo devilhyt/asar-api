@@ -2,11 +2,11 @@ from typing import Optional
 from pydantic import BaseModel, Field
 import json
 from pathlib import Path
-from ..config import ASAR_DATA_DIR, GCONFIG_FILE_NAME
+from ..config import ASAR_DATA_ROOT, GCONFIG_FILE_NAME
 
 class GConfig():
     def __init__(self) -> None:
-        self.file = Path(ASAR_DATA_DIR).joinpath(GCONFIG_FILE_NAME)
+        self.file = Path(ASAR_DATA_ROOT).joinpath(GCONFIG_FILE_NAME)
         self.object_schema = GConfigSchema
 
     @property

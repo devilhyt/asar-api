@@ -3,11 +3,10 @@ import datetime
 from pathlib import Path
 
 ASAR_ROOT = '.'
-ASAR_DATA_DIR_NAME = 'asar_data'
+ASAR_DATA_ROOT = '/data'
 ASAR_PRJ_DIR_NAME = 'asar_projects'
 
-ASAR_DATA_DIR = f'{ASAR_ROOT}/{ASAR_DATA_DIR_NAME}'
-ASAR_PRJ_DIR = f'{ASAR_DATA_DIR}/{ASAR_PRJ_DIR_NAME}'
+ASAR_PRJ_DIR = f'{ASAR_DATA_ROOT}/{ASAR_PRJ_DIR_NAME}'
 ASAR_TEMPLATES_DIR = f'{ASAR_ROOT}/asar_api/assets/templates'
 
 OUTPUT_DIR_NAME = 'output'
@@ -33,7 +32,7 @@ class DevelopmentConfig(object):
     """Flask Config"""
 
     SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(ASAR_DATA_DIR).resolve()}/asar.db'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(ASAR_DATA_ROOT).resolve()}/asar.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
     JWT_TOKEN_LOCATION = ['headers', 'cookies', 'query_string', 'json']
