@@ -5,7 +5,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 from pydantic import BaseModel, validator
 from jinja2 import Template
-from ..config import ASAR_PRJ_DIR, TRAINING_DATA_FILE_NAME, ACTIONS_PY_NAME
+from ..config import ASAR_PRJ_DIR, TRAINING_DATA_FILE_NAME, ACTIONS_PY_NAME, ASAR_TEMPLATES_DIR
 from .intent import Intent
 from .action import Action
 from .entity import Entity
@@ -115,7 +115,7 @@ class Project:
         # compile actions
         domain['actions'] = self.actions.names  # domain
 
-        with open('./asar_api/assets/templates/action.j2', 'r', encoding='utf-8') as j:  # py
+        with open(f'{ASAR_TEMPLATES_DIR}/action.j2', 'r', encoding='utf-8') as j:  # py
             template = j.read()
         j2_template = Template(template)
         gen = j2_template.render(actions=self.actions.content)

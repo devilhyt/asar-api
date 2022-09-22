@@ -28,6 +28,6 @@ class GConfigAPI(MethodView):
         cfg = GConfig()
         cfg.init()
         view = cls.as_view(f'gconfig_api')
-        app.add_url_rule(f'/gconfig',
+        app.add_url_rule(f'/gconfigs',
                          view_func=view,
                          methods=['GET', 'PUT'])
