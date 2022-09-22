@@ -30,7 +30,7 @@ class IntentLabelSchema(BaseModel):
     start: int
     end: int
     entity: str
-    rule: Optional[str]
+    role: Optional[str]
     group: Optional[str]
 
 
