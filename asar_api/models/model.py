@@ -1,7 +1,7 @@
 from pathlib import Path
 import requests
 from ruamel.yaml import YAML
-from ..config import OUTPUT_DIR_NAME, MODELS_FILE_NAME, SERVER_URL, RASA_URL
+from ..config import OUTPUT_DIR_NAME, MODELS_FILE_NAME
 
 
 class Model:
@@ -19,22 +19,22 @@ class Model:
     def init(self) -> None:
         self.dir.mkdir(parents=True)
 
-    def train(self, rasa_url=RASA_URL) -> None:
+    def train(self, rasa_api_url, asar_api_url) -> None:
         params = {'save_to_default_model_directory': 'false',
                   'force_training': 'true',
-                  'callback_url': f'{SERVER_URL}/projects/{self.prj_name}/models'}
+                  'callback_url': f'{asar_api_url}/projects/{self.prj_name}/models'}
         # Todo: generate yaml from this project
-        with open('./test/test.yml', 'r') as f:
-            data = self.yaml.load(f)
-        response = requests.post(url=f'{rasa_url}/model/train',
+        with open('./test/test.yml', 'r', encoding="utf-8") as f:
+            data = f.read()
+        response = requests.post(url=f'{rasa_api_url}/model/train',
                                  params=params,
-                                 data=self.yaml.dump(data))
+                                 data=data)
 
         return response.status_code
 
-    def load(self, rasa_url=RASA_URL) -> None:
+    def load(self, rasa_api_url) -> None:
         data = {'model_file': self.file.absolute().as_posix()}
-        response = requests.put(url=f'{rasa_url}/model', json=data)
+        response = requests.put(url=f'{rasa_api_url}/model', json=data)
         return response.status_code
 
     def save(self, content) -> None:

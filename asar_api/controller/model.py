@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from ..models.project import Project
+from ..models.gconfig import GConfig
 
 
 class ModelAPI(MethodView):
@@ -12,8 +13,10 @@ class ModelAPI(MethodView):
         """Train a model"""
         # Implement
         prj = Project(project_name)
+        cfg = GConfig()
         prj.compile()
-        # status_code = prj.models.train()
+        status_code = prj.models.train(rasa_api_url=cfg.content["docker"]["rasa_api_url"],
+                                        asar_api_url=cfg.content["docker"]["asar_api_url"])
         status_code = 200
         return jsonify({'rasa_status_code': status_code}), 200
 
@@ -29,7 +32,8 @@ class ModelAPI(MethodView):
     @jwt_required()
     async def put(self, project_name):
         prj = Project(project_name)
-        status_code = prj.models.load()
+        cfg = GConfig()
+        status_code = prj.models.load(rasa_api_url=cfg.content["docker"]["rasa_api_url"])
         return jsonify({'rasa_status_code': status_code}), 200
 
     @classmethod
