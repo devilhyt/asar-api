@@ -23,18 +23,24 @@ class Model:
         params = {'save_to_default_model_directory': 'false',
                   'force_training': 'true',
                   'callback_url': f'{asar_api_url}/projects/{self.prj_name}/models'}
+
+        # response = requests.get(url=f'{rasa_api_url}/status')
+        # if response.json().get("num_active_training_jobs") > 0:
+        #     return 400, "Still training"
+
         # Todo: generate yaml from this project
         with open('./test/test.yml', 'r', encoding="utf-8") as f:
             data = f.read()
         response = requests.post(url=f'{rasa_api_url}/model/train',
                                  params=params,
                                  data=data)
-
         return response.status_code
 
     def load(self, rasa_api_url) -> None:
         data = {'model_file': self.file.absolute().as_posix()}
-        response = requests.put(url=f'{rasa_api_url}/model', json=data)
+        response = requests.put(url=f'{rasa_api_url}/model', 
+                                json=data,
+                                timeout=300)
         return response.status_code
 
     def save(self, content) -> None:
