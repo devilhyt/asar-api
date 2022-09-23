@@ -38,6 +38,11 @@ class GConfig():
         with open(self.file, 'w', encoding="utf-8") as f:
             json.dump(f_json, f, indent=4, ensure_ascii=False)
 
+class DockerSchema(BaseModel):
+    rasa_container: str = 'app'
+    action_container: str = 'action'
+    asar_api_url: str = 'http://localhost:5500'
+    rasa_api_url: str = 'http://localhost:5005'
 
 class RasaCredentialsSchema(BaseModel):
     url: str = "http://localhost:5002/api"
@@ -71,5 +76,6 @@ class EndpointsSchema(BaseModel):
 
 
 class GConfigSchema(BaseModel):
+    docker: DockerSchema = DockerSchema()
     credentials: CredentialsSchema = CredentialsSchema()
     endpoints: EndpointsSchema = EndpointsSchema()
