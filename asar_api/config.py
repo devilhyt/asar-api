@@ -25,9 +25,6 @@ ACTIONS_PY_NAME = 'action.py'
 GCONFIG_FILE_NAME = 'gconfig.json'
 LCONFIG_FILE_NAME = 'lconfig.yml'
 
-SERVER_URL = 'http://localhost:5000'
-RASA_URL = 'http://localhost:5005'
-
 class DevelopmentConfig(object):
     """Flask Config"""
 
