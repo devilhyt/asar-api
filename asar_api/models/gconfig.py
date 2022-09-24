@@ -4,6 +4,7 @@ import json
 from ruamel.yaml import YAML
 from pathlib import Path
 from ..config import ASAR_DATA_ROOT, GCONFIG_FILE_NAME
+import docker
 
 
 class GConfig():
@@ -12,6 +13,7 @@ class GConfig():
         self.object_schema = GConfigSchema
         # Tools
         self.yaml = YAML()
+        self.docker_client = docker.from_env()
 
     @property
     def content(self) -> dict:
@@ -19,34 +21,40 @@ class GConfig():
 
     @property
     def names(self) -> tuple:
+        # not yet been used
         return tuple(self.content.keys())
 
     def init(self) -> None:
         if not self.file.exists():
-            self.file.touch()
             # Todo: optimized required
-            self.file.write_text(GConfigSchema().json(by_alias=True, indent=4, exclude={'credentials':{'telegram','facebook'}}))
+            content = self.object_schema().dict(by_alias=True,
+                                                exclude={'credentials': {'telegram', 'facebook'}})
+            self.write_json(content)
             self.compile()
 
     def update(self, input_content) -> None:
         # Validate
         valid_content = self.object_schema.parse_obj(input_content)
         # Implement
-        content = valid_content.dict(by_alias=True)
+        content = valid_content.dict(by_alias=True, exclude_unset=True)
         self.write_json(content)
         self.compile()
 
     def compile(self) -> None:
-        # Todo: optimize required
+        # Todo: all optimize required
         content = self.content
-        with open(file=Path(ASAR_DATA_ROOT).joinpath("credentials.yml"),
+        with open(file=Path(ASAR_DATA_ROOT).joinpath('credentials.yml'),
                   mode='w',
                   encoding="utf-8") as y:
-            self.yaml.dump(data=content["credentials"], stream=y)
-        with open(file=Path(ASAR_DATA_ROOT).joinpath("endpoints.yml"),
+            self.yaml.dump(data=content['credentials'], stream=y)
+        with open(file=Path(ASAR_DATA_ROOT).joinpath('endpoints.yml'),
                   mode='w',
                   encoding="utf-8") as y:
-            self.yaml.dump(data=content["endpoints"], stream=y)
+            self.yaml.dump(data=content['endpoints'], stream=y)
+        # docker
+        container = self.docker_client.containers.get(
+            content['docker']['rasa_container'])
+        container.restart()
 
     def read_json(self) -> dict:
         with open(self.file, 'r', encoding="utf-8") as f:
@@ -66,7 +74,7 @@ class DockerSchema(BaseModel):
 
 
 class RasaCredentialsSchema(BaseModel):
-    url: str = "http://localhost:5002/api"
+    url: str = 'http://localhost:5002/api'
 
 
 class TelegramCredentialsSchema(BaseModel):
@@ -89,7 +97,7 @@ class CredentialsSchema(BaseModel):
 
 
 class ActionEndpointSchema(BaseModel):
-    url: str = "http://localhost:5055/webhook"
+    url: str = 'http://localhost:5055/webhook'
 
 
 class EndpointsSchema(BaseModel):
