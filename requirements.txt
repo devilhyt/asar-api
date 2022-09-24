@@ -7,3 +7,4 @@ jieba
 pydantic
 requests
 ruamel.yaml
+docker
