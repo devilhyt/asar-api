@@ -24,7 +24,8 @@ class GConfig():
     def init(self) -> None:
         if not self.file.exists():
             self.file.touch()
-            self.file.write_text(GConfigSchema().json(by_alias=True, indent=4))
+            # Todo: optimized required
+            self.file.write_text(GConfigSchema().json(by_alias=True, indent=4, exclude={'credentials':{'telegram','facebook'}}))
             self.compile()
 
     def update(self, input_content) -> None:
