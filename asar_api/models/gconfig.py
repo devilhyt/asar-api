@@ -11,6 +11,25 @@ class GConfig():
     def __init__(self) -> None:
         self.file = Path(ASAR_DATA_ROOT).joinpath(GCONFIG_FILE_NAME)
         self.object_schema = GConfigSchema
+        self.default_content = {
+            "docker": {
+                "rasa_container": "app",
+                "action_container": "action",
+                "asar_api_url": "http://localhost:5500",
+                "rasa_api_url": "http://localhost:5005"
+            },
+            "credentials": {
+                "rest": None,
+                "rasa": {
+                    "url": "http://localhost:5002/api"
+                }
+            },
+            "endpoints": {
+                "action_endpoint": {
+                    "url": "http://localhost:5055/webhook"
+                }
+            }
+        }
         # Tools
         self.yaml = YAML()
         self.docker_client = docker.from_env()
@@ -26,9 +45,8 @@ class GConfig():
 
     def init(self) -> None:
         if not self.file.exists():
-            # Todo: optimized required
-            content = self.object_schema().dict(by_alias=True,
-                                                exclude={'credentials': {'telegram', 'facebook'}})
+            valid_content = self.object_schema.parse_obj(self.default_content)
+            content = valid_content.dict(by_alias=True, exclude_unset=True)
             self.write_json(content)
             self.compile()
 
@@ -41,7 +59,7 @@ class GConfig():
         self.compile()
 
     def compile(self) -> None:
-        # Todo: all optimize required
+        # Todo: optimize required
         content = self.content
         with open(file=Path(ASAR_DATA_ROOT).joinpath('credentials.yml'),
                   mode='w',
@@ -67,14 +85,14 @@ class GConfig():
 
 
 class DockerSchema(BaseModel):
-    rasa_container: str = 'app'
-    action_container: str = 'action'
-    asar_api_url: str = 'http://localhost:5500'
-    rasa_api_url: str = 'http://localhost:5005'
+    rasa_container: str
+    action_container: str
+    asar_api_url: str
+    rasa_api_url: str
 
 
 class RasaCredentialsSchema(BaseModel):
-    url: str = 'http://localhost:5002/api'
+    url: str
 
 
 class TelegramCredentialsSchema(BaseModel):
@@ -90,21 +108,21 @@ class FacebookCredentialsSchema(BaseModel):
 
 
 class CredentialsSchema(BaseModel):
-    rest: None = None
-    rasa: RasaCredentialsSchema = RasaCredentialsSchema()
+    rest: None
+    rasa: RasaCredentialsSchema
     telegram: Optional[TelegramCredentialsSchema]
     facebook: Optional[FacebookCredentialsSchema]
 
 
 class ActionEndpointSchema(BaseModel):
-    url: str = 'http://localhost:5055/webhook'
+    url: str
 
 
 class EndpointsSchema(BaseModel):
-    action_endpoint: ActionEndpointSchema = ActionEndpointSchema()
+    action_endpoint: ActionEndpointSchema
 
 
 class GConfigSchema(BaseModel):
-    docker: DockerSchema = DockerSchema()
-    credentials: CredentialsSchema = CredentialsSchema()
-    endpoints: EndpointsSchema = EndpointsSchema()
+    docker: DockerSchema
+    credentials: CredentialsSchema
+    endpoints: EndpointsSchema
