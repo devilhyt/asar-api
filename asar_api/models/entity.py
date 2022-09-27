@@ -8,12 +8,15 @@ from .file_basis import FileBasis, GeneralNameSchema
 
 class Entity(FileBasis):
     def __init__(self, prj_path: Path) -> None:
-        self.default_content = {'roles': [], 'groups':[]}
+        self.default_content = {'roles': [],
+                                'groups': [],
+                                'influence_conversation': True}
         super().__init__(prj_path=prj_path,
                          file_name=ENTITIES_FILE_NAME,
                          default_content=self.default_content,
                          name_schema=EntityNameSchema,
                          object_schema=EntityObjectSchema)
+
 
 class EntityNameSchema(GeneralNameSchema):
     @validator('*')
@@ -23,6 +26,8 @@ class EntityNameSchema(GeneralNameSchema):
                 raise ValueError('Invalid name')
         return name
 
+
 class EntityObjectSchema(BaseModel):
     roles: Optional[List[str]]
     groups: Optional[List[str]]
+    influence_conversation: Optional[bool]
