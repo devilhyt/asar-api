@@ -52,7 +52,7 @@ class FileBasis():
         if name in content:
             raise ValueError(f'{name} already exists')
         # Implement
-        content[name] = valid_content.dict(exclude_unset=True, exclude_none=True)
+        content[name] = json.loads(valid_content.json(exclude_unset=True, exclude_none=True)) # Todo: follow https://github.com/pydantic/pydantic/issues/1409
         self.write_json(content)
 
     def update(self, name, new_name, input_content) -> None:
@@ -67,7 +67,7 @@ class FileBasis():
             raise ValueError('Duplicate names are not allowed')
         # Implement
         if input_content:
-            content[name] = valid_content.dict(exclude_unset=True)
+            content[name] = json.loads(valid_content.json(exclude_unset=True)) # Todo: follow https://github.com/pydantic/pydantic/issues/1409
         if new_name:
             content[new_name] = content.pop(name)
         self.write_json(content)
