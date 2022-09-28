@@ -18,17 +18,18 @@ class GConfig():
                 "asar_api_url": "http://localhost:5500",
                 "rasa_api_url": "http://localhost:5005"
             },
-            "credentials": {
-                "rest": None,
-                "rasa": {
-                    "url": "http://localhost:5002/api"
-                }
-            },
-            "endpoints": {
-                "action_endpoint": {
-                    "url": "http://localhost:5055/webhook"
-                }
-            }
+            # Todo: delete
+            # "credentials": {
+            #     "rest": None,
+            #     "rasa": {
+            #         "url": "http://localhost:5002/api"
+            #     }
+            # },
+            # "endpoints": {
+            #     "action_endpoint": {
+            #         "url": "http://localhost:5055/webhook"
+            #     }
+            # }
         }
         # Tools
         self.yaml = YAML()
@@ -48,7 +49,8 @@ class GConfig():
             valid_content = self.object_schema.parse_obj(self.default_content)
             content = valid_content.dict(by_alias=True, exclude_unset=True)
             self.write_json(content)
-            self.compile()
+            # Todo: optimize required
+            # self.compile()
 
     def update(self, input_content) -> None:
         # Validate
@@ -56,7 +58,8 @@ class GConfig():
         # Implement
         content = valid_content.dict(by_alias=True, exclude_unset=True)
         self.write_json(content)
-        self.compile()
+        # Todo: optimize required
+        # self.compile()
 
     def compile(self) -> None:
         # Todo: optimize required
@@ -124,5 +127,6 @@ class EndpointsSchema(BaseModel):
 
 class GConfigSchema(BaseModel):
     docker: DockerSchema
-    credentials: CredentialsSchema
-    endpoints: EndpointsSchema
+    # Todo: delete
+    # credentials: CredentialsSchema
+    # endpoints: EndpointsSchema
