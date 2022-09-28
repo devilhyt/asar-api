@@ -1,10 +1,10 @@
-from typing import Optional
+# from typing import Optional
 from pydantic import BaseModel, Field
 import json
-from ruamel.yaml import YAML
+# from ruamel.yaml import YAML
 from pathlib import Path
 from ..config import ASAR_DATA_ROOT, GCONFIG_FILE_NAME
-import docker
+# import docker
 
 
 class GConfig():
@@ -14,11 +14,8 @@ class GConfig():
         self.default_content = {
             "docker": {
                 "rasa_container": "app",
-                "action_container": "action",
-                "asar_api_url": "http://localhost:5500",
-                "rasa_api_url": "http://localhost:5005"
+                "action_container": "action"
             },
-            # Todo: delete
             # "credentials": {
             #     "rest": None,
             #     "rasa": {
@@ -32,8 +29,8 @@ class GConfig():
             # }
         }
         # Tools
-        self.yaml = YAML()
-        self.docker_client = docker.from_env()
+        # self.yaml = YAML()
+        # self.docker_client = docker.from_env()
 
     @property
     def content(self) -> dict:
@@ -61,21 +58,21 @@ class GConfig():
         # Todo: optimize required
         # self.compile()
 
-    def compile(self) -> None:
-        # Todo: optimize required
-        content = self.content
-        with open(file=Path(ASAR_DATA_ROOT).joinpath('credentials.yml'),
-                  mode='w',
-                  encoding="utf-8") as y:
-            self.yaml.dump(data=content['credentials'], stream=y)
-        with open(file=Path(ASAR_DATA_ROOT).joinpath('endpoints.yml'),
-                  mode='w',
-                  encoding="utf-8") as y:
-            self.yaml.dump(data=content['endpoints'], stream=y)
-        # docker
-        container = self.docker_client.containers.get(
-            content['docker']['rasa_container'])
-        container.restart()
+    # def compile(self) -> None:
+    #     # Todo: optimize required
+    #     content = self.content
+    #     with open(file=Path(ASAR_DATA_ROOT).joinpath('credentials.yml'),
+    #               mode='w',
+    #               encoding="utf-8") as y:
+    #         self.yaml.dump(data=content['credentials'], stream=y)
+    #     with open(file=Path(ASAR_DATA_ROOT).joinpath('endpoints.yml'),
+    #               mode='w',
+    #               encoding="utf-8") as y:
+    #         self.yaml.dump(data=content['endpoints'], stream=y)
+    #     # docker
+    #     container = self.docker_client.containers.get(
+    #         content['docker']['rasa_container'])
+    #     container.restart()
 
     def read_json(self) -> dict:
         with open(self.file, 'r', encoding="utf-8") as f:
@@ -90,43 +87,40 @@ class GConfig():
 class DockerSchema(BaseModel):
     rasa_container: str
     action_container: str
-    asar_api_url: str
-    rasa_api_url: str
 
 
-class RasaCredentialsSchema(BaseModel):
-    url: str
+# class RasaCredentialsSchema(BaseModel):
+#     url: str
 
 
-class TelegramCredentialsSchema(BaseModel):
-    access_token: str
-    verify: str
-    webhook_url: str
+# class TelegramCredentialsSchema(BaseModel):
+#     access_token: str
+#     verify: str
+#     webhook_url: str
 
 
-class FacebookCredentialsSchema(BaseModel):
-    verify: str
-    secret: str
-    page_access_token: str = Field(alias='page-access-token')
+# class FacebookCredentialsSchema(BaseModel):
+#     verify: str
+#     secret: str
+#     page_access_token: str = Field(alias='page-access-token')
 
 
-class CredentialsSchema(BaseModel):
-    rest: None
-    rasa: RasaCredentialsSchema
-    telegram: Optional[TelegramCredentialsSchema]
-    facebook: Optional[FacebookCredentialsSchema]
+# class CredentialsSchema(BaseModel):
+#     rest: None
+#     rasa: RasaCredentialsSchema
+#     telegram: Optional[TelegramCredentialsSchema]
+#     facebook: Optional[FacebookCredentialsSchema]
 
 
-class ActionEndpointSchema(BaseModel):
-    url: str
+# class ActionEndpointSchema(BaseModel):
+#     url: str
 
 
-class EndpointsSchema(BaseModel):
-    action_endpoint: ActionEndpointSchema
+# class EndpointsSchema(BaseModel):
+#     action_endpoint: ActionEndpointSchema
 
 
 class GConfigSchema(BaseModel):
     docker: DockerSchema
-    # Todo: delete
     # credentials: CredentialsSchema
     # endpoints: EndpointsSchema
