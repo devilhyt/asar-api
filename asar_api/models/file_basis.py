@@ -20,6 +20,7 @@ class FileBasis():
                  default_content: dict = {},
                  name_schema=GeneralNameSchema,
                  object_schema=GeneralObjectSchema) -> None:
+        self.prj_path = prj_path
         self.file = prj_path.joinpath(file_name)
         self.name_schema = name_schema
         self.object_schema = object_schema
@@ -58,7 +59,7 @@ class FileBasis():
     def update(self, name, new_name, input_content) -> None:
         # Validate
         _ = self.name_schema(name=name, new_name=new_name)
-        if input_content:
+        if input_content is not None:
             valid_content = self.object_schema.parse_obj(input_content)
         content = self.content
         if name not in content:
@@ -66,7 +67,7 @@ class FileBasis():
         elif new_name in content:
             raise ValueError('Duplicate names are not allowed')
         # Implement
-        if input_content:
+        if input_content is not None:
             content[name] = json.loads(valid_content.json(exclude_unset=True)) # Todo: follow https://github.com/pydantic/pydantic/issues/1409
         if new_name:
             content[new_name] = content.pop(name)

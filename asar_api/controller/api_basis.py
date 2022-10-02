@@ -48,7 +48,7 @@ class ApiBasis(MethodView):
         """Create an object"""
         # Receive
         name = request.json.get('name')
-        content = request.json.get('content', {})
+        content = request.json.get('content', None)
         # Implement
         prj = Project(project_name)
         objs: file_types = getattr(prj, self.attr_name)
@@ -59,7 +59,7 @@ class ApiBasis(MethodView):
         """Update an object"""
         # Receive
         new_name = request.json.get('new_name')
-        content = request.json.get('content', {})
+        content = request.json.get('content', None)
         # Implement
         prj = Project(project_name)
         objs: file_types = getattr(prj, self.attr_name)
