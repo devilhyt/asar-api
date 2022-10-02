@@ -9,7 +9,7 @@ from flask_jwt_extended import (current_user,
                                 unset_jwt_cookies, get_jwt,
                                 get_jwt_identity)
 import asar_api.models.user
-from ..models.user import User, UserSchema
+from ..models.user import User, UserSchema, UserChangePasswordSchema
 from ..extensions import db, jwt
 from ..config import ASAR_DATA_ROOT
 
@@ -26,16 +26,38 @@ class AuthAPI(MethodView):
         # Receive
         content = request.json
         # Validation
-        valid_data = UserSchema(**content)
+        valid_data = UserSchema.parse_obj(content)
         # Implement
-        user = User.query.filter_by(username=valid_data.username,
-                                    password=valid_data.password).one_or_none()
-        if not user:
+        user = User.query.filter_by(username=valid_data.username).one_or_none()
+
+        if not user.check_password(valid_data.password):
             return jsonify("Wrong username or password"), 400
 
         access_token = create_access_token(identity=user.id)
         response = jsonify(access_token=access_token)
         set_access_cookies(response, access_token)
+        return response
+    
+    @jwt_required()
+    def put(self):
+        """change password"""
+        # Receive
+        content = request.json
+        # Validation
+        valid_data = UserChangePasswordSchema.parse_obj(content)
+        # Implement
+        user = User.query.filter_by(username=current_user.username).one_or_none()
+
+        if not user.check_password(valid_data.password):
+            return jsonify("Wrong username or password"), 400
+
+        user.set_password(valid_data.new_password)
+        db.session.commit()
+        
+        # access_token = create_access_token(identity=user.id)
+        # response = jsonify(access_token=access_token)
+        # set_access_cookies(response, access_token)
+        response = jsonify({"msg": "ok"})
         return response
 
     @jwt_required()
@@ -52,11 +74,11 @@ class AuthAPI(MethodView):
             db.drop_all()
             db.create_all()
             asar_api.models.user.init()
-        
+
         auth_view = cls.as_view('auth_api')
         app.add_url_rule('/auth',
                          view_func=auth_view,
-                         methods=['GET', 'POST', 'DELETE'])
+                         methods=['GET', 'POST', 'PUT', 'DELETE'])
         app.after_request(refresh_expiring_jwts)
 
 
