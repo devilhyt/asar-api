@@ -12,6 +12,7 @@ ASAR_TEMPLATES_DIR = f'{ASAR_ROOT}/asar_api/assets/templates'
 OUTPUT_DIR_NAME = 'output'
 
 INTENTS_FILE_NAME = 'intents.json'
+RESPONSES_FILE_NAME = 'responses.json'
 ACTIONS_FILE_NAME = 'actions.json'
 ENTITIES_FILE_NAME = 'entities.json'
 SLOTS_FILE_NAME = 'slots.json'

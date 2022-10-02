@@ -25,6 +25,7 @@ def create_app(config=DevelopmentConfig):
     ProjectAPI.init_app(app)
     LConfigAPI.init_app(app)
     ApiBasis.init_app(app, 'intents', 'path')
+    ApiBasis.init_app(app, 'responses', 'path')
     ApiBasis.init_app(app, 'actions', 'path')
     ApiBasis.init_app(app, 'entities')
     ApiBasis.init_app(app, 'slots')

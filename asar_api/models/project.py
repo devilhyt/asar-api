@@ -2,10 +2,8 @@ import shutil
 import re
 from pathlib import Path
 from ruamel.yaml import YAML
-from ruamel.yaml.scalarstring import LiteralScalarString
 from pydantic import BaseModel, validator
-from jinja2 import Template
-from ..config import ASAR_PRJ_DIR, TRAINING_DATA_FILE_NAME, ACTIONS_PY_NAME, ASAR_TEMPLATES_DIR
+from ..config import ASAR_PRJ_DIR, TRAINING_DATA_FILE_NAME
 from .intent import Intent
 from .action import Action
 from .entity import Entity
@@ -15,6 +13,7 @@ from .rule import Rule
 from .token import Token
 from .model import Model
 from .lconfig import LConfig
+from .responese import Response
 
 
 class Project:
@@ -28,6 +27,7 @@ class Project:
         self.prj_root.mkdir(parents=True, exist_ok=True)
         self.prj_path = self.prj_root.joinpath(project_name)
         self.intents = Intent(self.prj_path)
+        self.responses = Response(self.prj_path)
         self.actions = Action(self.prj_path)
         self.entities = Entity(self.prj_path)
         self.slots = Slot(self.prj_path)
@@ -46,6 +46,7 @@ class Project:
     def create(self) -> None:
         self.prj_path.mkdir(parents=True, exist_ok=False)
         self.intents.init()
+        self.responses.init()
         self.actions.init()
         self.entities.init()
         self.slots.init()
