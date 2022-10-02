@@ -1,6 +1,5 @@
-from typing import Optional
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 from ..config import STORIES_FILE_NAME
 from .file_basis import FileBasis
 
@@ -12,8 +11,5 @@ class Story(FileBasis):
                          object_schema=StoryObjectSchema)
 
 
-class StoryObjectSchema(BaseModel):
-    nodes: Optional[list]
-    edges: Optional[list]
-    position: Optional[list]
-    zoom: Optional[int]
+class StoryObjectSchema(BaseModel, extra=Extra.allow):
+    pass
