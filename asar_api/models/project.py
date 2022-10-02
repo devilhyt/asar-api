@@ -69,63 +69,15 @@ class Project:
         nlu = {'nlu': []}
         domain = {'intents': [], 'entities': [], 'actions': []}
 
-        # compile intents
-        intents = self.intents.content
-        for intent_name, intent in intents.items():
-            # nlu
-            examples_arr = []
-            for example in intent['examples']:
-                text = ''
-                previous_end = 0
-                sorted_labels = sorted(
-                    example['labels'], key=lambda d: d['start'])
-                for label in sorted_labels:
-                    token = label.get('token')
-                    entity = label.get('entity')
-                    role = label.get('role')
-                    group = label.get('group')
-                    text += example['text'][previous_end:label['start']]
-                    text += f'[{token}]'
-                    text += f'{{'
-                    text += f'"entity": "{entity}"'
-                    if role:
-                        text += f', "role": "{role}"'
-                    if group:
-                        text += f', "group": "{group}"'
-                    text += f'}}'
-                    previous_end = label['end']
-                text += example['text'][previous_end:]
-                text += '\n'
-                examples_arr.append({'text': LiteralScalarString(text)})
-            nlu['nlu'].append({'intent': intent_name,
-                               'examples': examples_arr})
-
-            # domain
-            intent.pop('examples')
-            if intent:
-                domain['intents'].append({intent_name: intent})
-            else:
-                domain['intents'].append(intent_name)
-
-        # compile entities
-        entities = self.entities.content
-        for entity_name, entity in entities.items():
-            if entity:
-                domain['entities'].append({entity_name: entity})
-            else:
-                domain['entities'].append(entity_name)
-
-        # compile actions
-        domain['actions'] = self.actions.names  # domain
-
-        with open(f'{ASAR_TEMPLATES_DIR}/action.j2', 'r', encoding='utf-8') as j:  # py
-            template = j.read()
-        j2_template = Template(template)
-        gen = j2_template.render(actions=self.actions.content)
-        with open(file=self.models.dir.joinpath(ACTIONS_PY_NAME),
-                  mode='w',
-                  encoding="utf-8") as py:
-            py.write(gen)
+        intents_nlu, intents_domain = self.intents.compile()
+        nlu['nlu'] += intents_nlu
+        domain.update(intents_domain)
+        
+        entities_domain = self.entities.compile()
+        domain.update(entities_domain)
+        
+        actions_domain = self.actions.compile()
+        domain.update(actions_domain)
 
         # gen yaml
         training_data = nlu | domain

@@ -16,6 +16,16 @@ class Entity(FileBasis):
                          default_content=self.default_content,
                          name_schema=EntityNameSchema,
                          object_schema=EntityObjectSchema)
+    def compile(self) -> dict:
+        content = self.content
+        domain = {'entities': []}
+        
+        for entity_name, entity in content.items():
+            if entity:
+                domain['entities'].append({entity_name: entity})
+            else:
+                domain['entities'].append(entity_name)
+        return domain
 
 
 class EntityNameSchema(GeneralNameSchema):

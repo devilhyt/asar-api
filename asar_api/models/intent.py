@@ -1,19 +1,64 @@
 import re
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from pathlib import Path
 from pydantic import BaseModel, validator, root_validator, conlist, constr
 from ..config import INTENTS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
+from ruamel.yaml.scalarstring import LiteralScalarString
 
 
 class Intent(FileBasis):
     def __init__(self, prj_path: Path) -> None:
-        self.default_content = {'examples': [{'text': 'default', 'labels':[]}]}
+        self.default_content = {'examples': [
+            {'text': 'default', 'labels': []}]}
         super().__init__(prj_path=prj_path,
                          file_name=INTENTS_FILE_NAME,
                          default_content=self.default_content,
                          name_schema=IntentNameSchema,
                          object_schema=IntentObjectSchema)
+
+    def compile(self) -> Tuple[list, dict]:
+        content = self.content
+        nlu = []
+        domain = {'intents': []}
+
+        for intent_name, intent in content.items():
+            # nlu
+            examples_arr = []
+            for example in intent['examples']:
+                text = ''
+                previous_end = 0
+                sorted_labels = sorted(
+                    example['labels'], key=lambda d: d['start'])
+                for label in sorted_labels:
+                    token = label.get('token')
+                    entity = label.get('entity')
+                    role = label.get('role')
+                    group = label.get('group')
+                    text += example['text'][previous_end:label['start']]
+                    text += f'[{token}]'
+                    text += f'{{'
+                    text += f'"entity": "{entity}"'
+                    if role:
+                        text += f', "role": "{role}"'
+                    if group:
+                        text += f', "group": "{group}"'
+                    text += f'}}'
+                    previous_end = label['end']
+                text += example['text'][previous_end:]
+                text += '\n'
+                examples_arr.append({'text': LiteralScalarString(text)})
+            nlu.append({'intent': intent_name,
+                        'examples': examples_arr})
+
+            # domain
+            intent.pop('examples')
+            if intent:
+                domain['intents'].append({intent_name: intent})
+            else:
+                domain['intents'].append(intent_name)
+
+        return nlu, domain
 
 
 class IntentNameSchema(GeneralNameSchema):
