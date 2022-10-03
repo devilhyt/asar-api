@@ -27,6 +27,7 @@ TRAINING_DATA_FILE_NAME = 'training_data.yml'
 ACTIONS_PY_NAME = 'actions.py'
 GCONFIG_FILE_NAME = 'gconfig.json'
 LCONFIG_FILE_NAME = 'lconfig.yml'
+ACTIONS_J2_NAME = 'action.j2'
 
 class DevelopmentConfig(object):
     """Flask Config"""
