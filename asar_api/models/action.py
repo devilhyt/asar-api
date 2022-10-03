@@ -2,9 +2,13 @@ import re
 from typing import List, Optional
 from pathlib import Path
 from pydantic import BaseModel, validator
-from ..config import ACTIONS_FILE_NAME, ASAR_TEMPLATES_DIR, ACTIONS_PY_NAME, OUTPUT_DIR_NAME
+from ..config import (ACTIONS_FILE_NAME, 
+                      ASAR_TEMPLATES_DIR, 
+                      ACTIONS_PY_NAME, 
+                      OUTPUT_DIR_NAME, 
+                      ACTIONS_J2_NAME)
 from .file_basis import FileBasis, GeneralNameSchema
-from jinja2 import Template
+from jinja2 import FileSystemLoader, Environment
 
 
 class Action(FileBasis):
@@ -21,15 +25,13 @@ class Action(FileBasis):
         domain = {'actions': []}
         domain['actions'] = self.names
 
-        with open(f'{ASAR_TEMPLATES_DIR}/action.j2', 'r', encoding='utf-8') as j:  # py
-            template = j.read()
-        j2_template = Template(template)
-        gen = j2_template.render(actions=self.content)
+        template_env =  Environment(loader=FileSystemLoader(ASAR_TEMPLATES_DIR))
+        template = template_env.get_template(ACTIONS_J2_NAME)
+        rendered = template.render(actions=self.content)
         with open(file=self.action_py_file,
                   mode='w',
                   encoding="utf-8") as py:
-            py.write(gen)
-
+            py.write(rendered)
         return domain
 
 
