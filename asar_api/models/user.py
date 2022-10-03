@@ -27,12 +27,10 @@ class UserChangePasswordSchema(BaseModel, extra=Extra.forbid):
 
 
 def init():
-    # db.session.add(User(username="admin", password="admin"))
     user = User(username='admin')
     user.set_password('admin')
     db.session.add(user)
     user = User(username='user')
     user.set_password('user')
     db.session.add(user)
-    # db.session.add(User(username="user", password="user"))
     db.session.commit()
