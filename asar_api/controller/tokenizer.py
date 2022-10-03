@@ -18,7 +18,7 @@ class TokenizerAPI(MethodView):
         prj.tokens.gen_jieba_dict()
 
         tokenizer = jieba.Tokenizer()
-        tokenizer.load_userdict(str(prj.tokens.jieba_dict))
+        tokenizer.load_userdict(str(prj.tokens.jieba_dict_file))
         tokenized = tokenizer.tokenize(sentence)
 
         tokens = [{'token': token, 'start': start, 'end': end}

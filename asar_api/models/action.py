@@ -15,6 +15,7 @@ class Action(FileBasis):
                          default_content=self.default_content,
                          name_schema=ActionNameSchema,
                          object_schema=ActionObjectSchema)
+        self.action_py_file = self.prj_path.joinpath(OUTPUT_DIR_NAME, ACTIONS_PY_NAME)
 
     def compile(self) -> dict:
         domain = {'actions': []}
@@ -24,7 +25,7 @@ class Action(FileBasis):
             template = j.read()
         j2_template = Template(template)
         gen = j2_template.render(actions=self.content)
-        with open(file=self.prj_path.joinpath(OUTPUT_DIR_NAME, ACTIONS_PY_NAME),
+        with open(file=self.action_py_file,
                   mode='w',
                   encoding="utf-8") as py:
             py.write(gen)

@@ -68,7 +68,7 @@ class Project:
 
     def compile(self) -> None:
         nlu = {'nlu': []}
-        domain = {'intents': [], 'entities': [], 'actions': []}
+        domain = {'intents': [], 'entities': [], 'actions': [], 'slots':{}}
 
         intents_nlu, intents_domain = self.intents.compile()
         nlu['nlu'] += intents_nlu
@@ -79,6 +79,9 @@ class Project:
         
         actions_domain = self.actions.compile()
         domain.update(actions_domain)
+        
+        slots_domain = self.slots.compile()
+        domain.update(slots_domain)
 
         # gen yaml
         training_data = nlu | domain
