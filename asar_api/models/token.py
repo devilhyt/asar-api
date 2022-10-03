@@ -18,7 +18,7 @@ class Token(FileBasis):
     
     def init(self) -> None:
         super().init()
-        self.jieba_dir_path.mkdir(parents=True)
+        self.jieba_dir_path.mkdir(parents=True, exist_ok=True)
 
     def gen_jieba_dict(self) -> None:
         content = self.content

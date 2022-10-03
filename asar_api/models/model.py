@@ -20,7 +20,7 @@ class Model:
         self.env_asar_api_url = os.getenv("ASAR_API_URL")
 
     def init(self) -> None:
-        self.dir.mkdir(parents=True)
+        self.dir.mkdir(parents=True, exist_ok=True)
 
     def train(self, custom_rasa_api_url=None, custom_asar_api_url=None) -> None:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
