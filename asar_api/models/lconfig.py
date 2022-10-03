@@ -9,14 +9,19 @@ class LConfig():
                  prj_path: Path) -> None:
         self.file = prj_path.joinpath(LCONFIG_FILE_NAME)
         # Tools
-        self.yaml = YAML(typ='safe')
+        self.yaml = YAML()
 
     @property
     def content(self) -> str:
         return self.read_file()
 
-    def init(self) -> None:
+    def init(self, jieba_dir_path:Path) -> None:
         shutil.copy(f'{ASAR_TEMPLATES_DIR}/{LCONFIG_FILE_NAME}', self.file)
+
+        data = self.yaml.load(self.content)
+        data['pipeline'][0].update({'dictionary_path': str(jieba_dir_path.resolve())})
+        with open(file=self.file, mode='w', encoding="utf-8") as y:
+            self.yaml.dump(data=data, stream=y)
 
     def update(self, input_content) -> None:
         self.write_file(input_content)

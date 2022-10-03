@@ -54,7 +54,7 @@ class Project:
         self.rules.init()
         self.tokens.init()
         self.models.init()
-        self.lconfigs.init()
+        self.lconfigs.init(self.tokens.jieba_dir_path)
 
     def rename(self, new_project_name) -> None:
         # Validate
