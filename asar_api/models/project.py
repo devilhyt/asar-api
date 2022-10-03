@@ -69,6 +69,7 @@ class Project:
     def compile(self) -> None:
         nlu = {'nlu': []}
         domain = {'intents': [], 'entities': [], 'actions': [], 'slots':{}}
+        stories = {}
 
         intents_nlu, intents_domain = self.intents.compile()
         nlu['nlu'] += intents_nlu
@@ -82,9 +83,12 @@ class Project:
         
         slots_domain = self.slots.compile()
         domain.update(slots_domain)
+        
+        compiled_stories = self.stories.compile()
+        stories.update(compiled_stories)
 
         # gen yaml
-        training_data = nlu | domain
+        training_data = nlu | domain | stories
         with open(file=self.models.dir.joinpath(TRAINING_DATA_FILE_NAME),
                   mode='w',
                   encoding="utf-8") as y:
