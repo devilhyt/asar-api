@@ -1,7 +1,7 @@
 import re
 from typing import Any, Optional, List, Literal, Union
 from pathlib import Path
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator, Field, conlist
 from ..config import SLOTS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
 
@@ -10,7 +10,7 @@ class Slot(FileBasis):
     def __init__(self, prj_path: Path) -> None:
         self.default_content = {'influence_conversation': False,
                                 'type': 'any',
-                                'mappings':[]}
+                                'mappings':[{'type':'custom'}]}
         super().__init__(prj_path=prj_path,
                          file_name=SLOTS_FILE_NAME,
                          default_content=self.default_content,
@@ -112,7 +112,7 @@ class SlotMappingSchema(BaseModel):
 class SlotTypeBase(BaseModel):
     influence_conversation: Optional[bool]
     initial_value: Optional[Any]
-    mappings: Optional[List[SlotMappingSchema]]
+    mappings: conlist(SlotMappingSchema, min_items=1)
 
 
 class SlotTypeText(SlotTypeBase):
