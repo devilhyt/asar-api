@@ -22,6 +22,7 @@ class Intent(FileBasis):
         nlu = []
         domain = {'intents': []}
 
+        intent:dict
         for intent_name, intent in content.items():
             # nlu
             examples_arr = []
@@ -30,6 +31,7 @@ class Intent(FileBasis):
                 previous_end = 0
                 sorted_labels = sorted(
                     example['labels'], key=lambda d: d['start'])
+                label:dict
                 for label in sorted_labels:
                     token = label.get('token')
                     entity = label.get('entity')
