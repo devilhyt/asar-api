@@ -32,6 +32,7 @@ def create_app(config=DevelopmentConfig):
     ApiBasis.init_app(app, 'stories')
     ApiBasis.init_app(app, 'rules')
     ApiBasis.init_app(app, 'tokens')
+    ApiBasis.init_app(app, 'synonyms')
     TokenizerAPI.init_app(app)
     ModelAPI.init_app(app)
     return app
