@@ -1,7 +1,7 @@
 from pathlib import Path
 import requests
 from ruamel.yaml import YAML
-from ..config import OUTPUT_DIR_NAME
+from ..config import OUTPUT_DIR_NAME, TRAINING_DATA_FILE_NAME
 import os
 
 
@@ -12,7 +12,8 @@ class Model:
                  dir_name: str = OUTPUT_DIR_NAME) -> None:
         self.prj_name = prj_name
         self.dir = prj_path.joinpath(dir_name)
-        self.file = self.dir.joinpath(f'{prj_name}.tar.gz')
+        self.model_file = self.dir.joinpath(f'{prj_name}.tar.gz')
+        self.training_data_file = self.dir.joinpath(TRAINING_DATA_FILE_NAME)
         # Tools
         self.yaml = YAML(typ='safe')
         # env var
@@ -39,11 +40,12 @@ class Model:
             #     return resp.status_code
 
             # Todo: generate yaml from this project
-            with open('./test/test.yml', 'r', encoding="utf-8") as f:
+            # with open('./test/test.yml', 'r', encoding="utf-8") as f:
+            with open(self.training_data_file, 'r', encoding="utf-8") as f:
                 data = f.read()
             response = requests.post(url=f'{rasa_api_url}/model/train',
                                     params=params,
-                                    data=data)
+                                    data=data.encode('utf-8'))
             return 200, response.status_code, ""
         else:
             return 400, None, "Please provide RASA_API_URL and ASAR_API_URL."
@@ -52,7 +54,7 @@ class Model:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         
         if rasa_api_url:
-            data = {'model_file': self.file.absolute().as_posix()}
+            data = {'model_file': self.model_file.absolute().as_posix()}
             response = requests.put(url=f'{rasa_api_url}/model', 
                                     json=data,
                                     timeout=300)
@@ -61,5 +63,5 @@ class Model:
             return 400, None, "Please provide RASA_API_URL."
 
     def save(self, content) -> None:
-        with open(self.file, 'wb') as t:
+        with open(self.model_file, 'wb') as t:
             t.write(content)

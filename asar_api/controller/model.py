@@ -19,7 +19,7 @@ class ModelAPI(MethodView):
         rasa_status_code=200
         msg = "test mode"
         # Todo: uncomment
-        # status_code, rasa_status_code, msg = prj.models.train()
+        status_code, rasa_status_code, msg = prj.models.train()
         return jsonify({'rasa_status_code': rasa_status_code, 'msg': msg}), status_code                                     
         
 
@@ -40,7 +40,7 @@ class ModelAPI(MethodView):
         rasa_status_code=200
         msg = "test mode"
         # Todo: uncomment
-        # status_code, rasa_status_code, msg = prj.models.load()
+        status_code, rasa_status_code, msg = prj.models.load()
         shutil.copy(prj.actions.action_py_file, f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
         return jsonify({'rasa_status_code': rasa_status_code, 'msg': msg}), status_code
 
