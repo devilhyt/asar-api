@@ -40,11 +40,11 @@ class Intent(FileBasis):
                     text += example['text'][previous_end:label['start']]
                     text += f'[{token}]'
                     text += f'{{'
-                    text += f'"entity": "{entity}"'
+                    text += f'"entity" : "{entity}"'
                     if role:
-                        text += f', "role": "{role}"'
+                        text += f', "role" : "{role}"'
                     if group:
-                        text += f', "group": "{group}"'
+                        text += f', "group" : "{group}"'
                     text += f'}}'
                     previous_end = label['end']
                 text += example['text'][previous_end:]

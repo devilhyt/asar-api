@@ -73,6 +73,7 @@ class Project:
         nlu = {'nlu': []}
         domain = {'intents': [], 'entities': [], 'actions': [], 'slots':{}}
         stories = {}
+        lconfig = {}
 
         intents_nlu, intents_domain = self.intents.compile()
         nlu['nlu'] += intents_nlu
@@ -89,9 +90,11 @@ class Project:
         
         compiled_stories = self.stories.compile()
         stories.update(compiled_stories)
+        
+        lconfig = self.lconfigs.content_dict
 
         # gen yaml
-        training_data = nlu | domain | stories
+        training_data = nlu | domain | stories | lconfig
         with open(file=self.models.dir.joinpath(TRAINING_DATA_FILE_NAME),
                   mode='w',
                   encoding="utf-8") as y:
