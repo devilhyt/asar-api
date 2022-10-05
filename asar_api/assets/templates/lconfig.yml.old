@@ -10,10 +10,7 @@ pipeline:
 # # No configuration for the NLU pipeline was provided. The following default pipeline was used to train your model.
 # # If you'd like to customize it, uncomment and adjust the pipeline.
 # # See https://rasa.com/docs/rasa/tuning-your-model for more information.
-- name: custom_components.ckip_transformers_tokenizer.CkipTransformersTokenizer
-  model: "albert-base"
-  model_name: "./custom_components/albert-base-chinese-ws"
-  show_progress: false
+- name: JiebaTokenizer
 - name: RegexFeaturizer
   # use match word boundaries for lookup table
   use_word_boundaries: False
@@ -23,11 +20,6 @@ pipeline:
   analyzer: char_wb
   min_ngram: 1
   max_ngram: 4
-- name: custom_components.ckip_transformers_extractor.CkipTransformersExtractor
-  model: "albert-base"
-  model_name: "./custom_components/albert-base-chinese-ner"
-  show_progress: false
-  dimensions:
 - name: DIETClassifier
   epochs: 100
   # sigmoid cross entropy loss
@@ -44,7 +36,6 @@ pipeline:
 - name: FallbackClassifier
   threshold: 0.3
   ambiguity_threshold: 0.1
-# - name: custom_components.printer.Printer
 
 # Configuration for Rasa Core.
 # https://rasa.com/docs/rasa/core/policies/

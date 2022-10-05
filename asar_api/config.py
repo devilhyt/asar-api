@@ -9,7 +9,7 @@ ASAR_PRJ_DIR_NAME = 'asar_projects'
 
 ASAR_PRJ_DIR = f'{ASAR_DATA_ROOT}/{ASAR_PRJ_DIR_NAME}'
 ASAR_TEMPLATES_DIR = f'{ASAR_ROOT}/asar_api/assets/templates'
-ALBERT_BASE_CHINESE_WS_DIR = f'{ASAR_ROOT}/asar_api/utils/albert-base-chinese-ws'
+ALBERT_BASE_CHINESE_WS_DIR = f'{ASAR_ROOT}/asar_api/assets/albert-base-chinese-ws'
 RASA_APP_ROOT = os.getenv('RASA_APP_ROOT', '/rasa-app')
 
 OUTPUT_DIR_NAME = 'output'
