@@ -8,3 +8,4 @@ pydantic
 requests
 ruamel.yaml
 docker
+ckip-transformers
