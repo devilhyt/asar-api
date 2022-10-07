@@ -46,3 +46,4 @@ class DevelopmentConfig(object):
     @classmethod
     def init_app(cls, app:Flask):
         app.json.sort_keys = False
+        app.json.ensure_ascii = False
