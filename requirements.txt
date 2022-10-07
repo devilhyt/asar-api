@@ -1,4 +1,4 @@
-gunicorn
+gunicorn[gevent]
 Flask[async]
 Flask-Cors
 Flask-JWT-Extended
