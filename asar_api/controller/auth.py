@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from flask import Flask, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import (current_user,
