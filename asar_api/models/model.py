@@ -1,9 +1,13 @@
+import os
 from pathlib import Path
+from typing import Tuple
+from datetime import datetime, timezone
 import requests
 from ruamel.yaml import YAML
 from ..config import OUTPUT_DIR_NAME, TRAINING_DATA_FILE_NAME
-import os
 from ..models.server_status import ServerStatus
+from ..extensions import db
+
 
 class Model:
     def __init__(self,
@@ -22,8 +26,8 @@ class Model:
 
     def init(self) -> None:
         self.dir.mkdir(parents=True, exist_ok=True)
-    
-    def check_health(self, rasa_api_url)-> bool:
+
+    def check_health(self, rasa_api_url) -> bool:
         try:
             resp = requests.get(url=f'{rasa_api_url}')
             if resp.status_code == requests.codes.ok:
@@ -33,41 +37,67 @@ class Model:
         except:
             return False
 
-    def train(self, custom_rasa_api_url=None, custom_asar_api_url=None) -> None:
+    def train(self, debug=False, custom_rasa_api_url=None, custom_asar_api_url=None) -> Tuple[int, int, str]:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         asar_api_url = custom_asar_api_url or self.env_asar_api_url
-        
-        if rasa_api_url and asar_api_url:
+        server_status = ServerStatus.query.first()
+
+        if debug:
+            server_status.training_status = False
+            server_status.training_result = 1
+            server_status.training_project = self.prj_name
+            server_status.training_time = datetime.now(timezone.utc)
+            server_status.training_message = 'debug mode'
+            db.session.commit()
+            return 200, None, 'debug mode'
+        elif server_status.training_status:
+            return 400, None, f'Still performing previous training. (Project: {server_status.training_project})'
+        elif rasa_api_url and asar_api_url:
             params = {'save_to_default_model_directory': 'false',
-                    'force_training': 'true',
-                    'callback_url': f'{asar_api_url}/projects/{self.prj_name}/models'}
-            
+                      'force_training': 'true',
+                      'callback_url': f'{asar_api_url}/projects/{self.prj_name}/models'}
+
             if self.check_health(rasa_api_url):
-                server_status = ServerStatus.query.first()
                 if self.prj_name == server_status.loaded_project:
                     resp = requests.delete(url=f'{rasa_api_url}/model')
-                
+
                 with open(self.training_data_file, 'r', encoding="utf-8") as f:
                     data = f.read()
                 resp = requests.post(url=f'{rasa_api_url}/model/train',
-                                        params=params,
-                                        data=data.encode('utf-8'))
+                                     params=params,
+                                     data=data.encode('utf-8'))
+
+                server_status.training_status = True
+                server_status.training_result = -1
+                server_status.training_project = self.prj_name
+                server_status.training_time = datetime.now(timezone.utc)
+                server_status.training_message = None
+                db.session.commit()
                 return 200, resp.status_code, 'ok'
             else:
                 return 400, None, 'Can not connect to Rasa API server.'
         else:
             return 400, None, 'Please provide RASA_API_URL and ASAR_API_URL.'
 
-    def load(self, custom_rasa_api_url=None) -> None:
+    def load(self, debug=False, custom_rasa_api_url=None) -> None:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
+        server_status = ServerStatus.query.first()
         
-        if rasa_api_url:
+        if debug:
+            server_status.loaded_project = self.prj_name
+            db.session.commit()
+            return 200, None, 'debug mode'
+        elif server_status.training_project == self.prj_name and server_status.training_status:
+            return 400, None, 'Can not load a project which is training.'
+        elif rasa_api_url:
             data = {'model_file': self.model_file.absolute().as_posix()}
-            
+
             if self.check_health(rasa_api_url):
-                resp = requests.put(url=f'{rasa_api_url}/model', 
+                resp = requests.put(url=f'{rasa_api_url}/model',
                                         json=data,
                                         timeout=300)
+                server_status.loaded_project = self.prj_name
+                db.session.commit()
                 return 200, resp.status_code, 'ok'
             else:
                 return 400, None, 'Can not connect to Rasa API server.'
