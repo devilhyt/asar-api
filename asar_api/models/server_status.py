@@ -3,11 +3,12 @@ from ..extensions import db
 
 class ServerStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    training_status = db.Column(db.Boolean, nullable=False)
-    training_result = db.Column(db.Integer, nullable=False)
+    training_status = db.Column(db.Boolean, nullable=False)  # True: training / False: idle
+    training_result = db.Column(db.Integer, nullable=False)  # -1: unknown / 0: fail / 1: success
     training_time = db.Column(db.DateTime, nullable=True)
     training_project = db.Column(db.String, nullable=True)
     training_message = db.Column(db.String, nullable=True)
+    loaded_project = db.Column(db.String, nullable=True)
 
     @classmethod
     def init(cls):
