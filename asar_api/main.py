@@ -6,7 +6,7 @@ import asar_api.public
 from .controller.auth import AuthAPI
 from .controller.project import ProjectAPI
 from .controller.tokenizer import TokenizerAPI
-from .controller.model import ModelAPI
+from .controller.model import ModelAPI, ModelCallbackAPI
 from .controller.api_basis import ApiBasis
 from .controller.gconfig import GConfigAPI
 from .controller.lconfig import LConfigAPI
@@ -45,4 +45,5 @@ def create_app(config=DevelopmentConfig):
     ApiBasis.init_app(app, 'synonyms')
     TokenizerAPI.init_app(app)
     ModelAPI.init_app(app)
+    ModelCallbackAPI.init_app(app)
     return app
