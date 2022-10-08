@@ -2,18 +2,27 @@ import re
 from typing import Any, List, Optional
 from pathlib import Path
 from pydantic import BaseModel, validator, root_validator, conlist
-from ..config import  RESPONSES_FILE_NAME
+from ..config import RESPONSES_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
 
 
 class Response(FileBasis):
     def __init__(self, prj_path: Path) -> None:
-        self.default_content={'data':[{'text':'default'}]}
+        self.default_content = {'data': [{'text': 'default'}]}
         super().__init__(prj_path=prj_path,
                          file_name=RESPONSES_FILE_NAME,
                          default_content=self.default_content,
                          name_schema=ResponseNameSchema,
                          object_schema=ResponseObjectSchema)
+
+    def compile(self) -> dict:
+        content = self.content
+        domain = {'responses': {}}
+
+        for response_name, response in content.items():
+            domain['responses'].update({f'utter_{response_name}': response['data']})
+
+        return domain
 
 
 class ResponseNameSchema(GeneralNameSchema):
