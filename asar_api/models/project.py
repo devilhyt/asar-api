@@ -71,26 +71,30 @@ class Project:
 
     def compile(self) -> None:
         nlu = {'nlu': []}
-        domain = {'intents': [], 'entities': [], 'actions': [], 'slots':{}}
+        domain = {'intents': [], 'entities': [],
+                  'responses': {}, 'actions': [], 'slots': {}}
         stories = {}
         lconfig = {}
 
         intents_nlu, intents_domain = self.intents.compile()
         nlu['nlu'] += intents_nlu
         domain.update(intents_domain)
-        
+
         entities_domain = self.entities.compile()
         domain.update(entities_domain)
-        
+
+        responses_domain = self.responses.compile()
+        domain.update(responses_domain)
+
         actions_domain = self.actions.compile()
         domain.update(actions_domain)
-        
+
         slots_domain = self.slots.compile()
         domain.update(slots_domain)
-        
+
         compiled_stories = self.stories.compile()
         stories.update(compiled_stories)
-        
+
         lconfig = self.lconfigs.content_dict
 
         # gen yaml
@@ -101,7 +105,7 @@ class Project:
             self.yaml.dump(data=training_data, stream=y)
 
         # gen jieba dict
-        self.tokens.gen_jieba_dict()
+        # self.tokens.gen_jieba_dict()
 
 
 class ProjectNameSchema(BaseModel):
