@@ -8,10 +8,8 @@ from flask_jwt_extended import (current_user,
                                 set_access_cookies,
                                 unset_jwt_cookies, get_jwt,
                                 get_jwt_identity)
-import asar_api.models.user
 from ..models.user import User, UserSchema, UserChangePasswordSchema
 from ..extensions import db, jwt
-from ..config import ASAR_DATA_ROOT
 
 
 class AuthAPI(MethodView):
@@ -28,7 +26,8 @@ class AuthAPI(MethodView):
         # Validation
         valid_data = UserSchema.parse_obj(content)
         # Implement
-        user = User.query.filter_by(username=valid_data.username).one_or_none()
+        user: User = User.query.filter_by(
+            username=valid_data.username).one_or_none()
 
         if not user.check_password(valid_data.password):
             return jsonify("Wrong username or password"), 400
@@ -37,7 +36,7 @@ class AuthAPI(MethodView):
         response = jsonify(access_token=access_token)
         set_access_cookies(response, access_token)
         return response
-    
+
     @jwt_required()
     def put(self):
         """change password"""
@@ -46,14 +45,15 @@ class AuthAPI(MethodView):
         # Validation
         valid_data = UserChangePasswordSchema.parse_obj(content)
         # Implement
-        user = User.query.filter_by(username=current_user.username).one_or_none()
+        user: User = User.query.filter_by(
+            username=current_user.username).one_or_none()
 
         if not user.check_password(valid_data.password):
             return jsonify("Wrong username or password"), 400
 
         user.set_password(valid_data.new_password)
         db.session.commit()
-        
+
         # access_token = create_access_token(identity=user.id)
         # response = jsonify(access_token=access_token)
         # set_access_cookies(response, access_token)
@@ -69,12 +69,7 @@ class AuthAPI(MethodView):
 
     @classmethod
     def init_app(cls, app: Flask):
-        Path(ASAR_DATA_ROOT).mkdir(parents=True, exist_ok=True)
-        with app.app_context():
-            db.drop_all()
-            db.create_all()
-            asar_api.models.user.init()
-
+        
         auth_view = cls.as_view('auth_api')
         app.add_url_rule('/auth',
                          view_func=auth_view,

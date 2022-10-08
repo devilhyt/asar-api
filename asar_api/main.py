@@ -1,6 +1,7 @@
+from pathlib import Path
 from flask import Flask
-from .config import DevelopmentConfig
 from .extensions import cors, db, jwt
+from .config import DevelopmentConfig, ASAR_DATA_ROOT
 import asar_api.public
 from .controller.auth import AuthAPI
 from .controller.project import ProjectAPI
@@ -18,7 +19,16 @@ def create_app(config=DevelopmentConfig):
     db.init_app(app)
     jwt.init_app(app)
     cors.init_app(app)
-    
+
+    # database
+    with app.app_context():
+        from .models.user import User
+        from .models.server_status import ServerStatus
+        Path(ASAR_DATA_ROOT).mkdir(parents=True, exist_ok=True)
+        db.create_all()
+        User.init()
+        ServerStatus.init()
+
     asar_api.public.init_app(app)
     AuthAPI.init_app(app)
     GConfigAPI.init_app(app)

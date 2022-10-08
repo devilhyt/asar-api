@@ -14,6 +14,14 @@ class User(db.Model):
 
     def check_password(self, secret):
         return check_password_hash(self.password, secret)
+    
+    @classmethod
+    def init(cls):
+        if User.query.filter_by(username="admin").first() is None:
+            user = User(username='admin')
+            user.set_password('admin')
+            db.session.add(user)
+            db.session.commit()
 
 
 class UserSchema(BaseModel, extra=Extra.forbid):
@@ -24,13 +32,3 @@ class UserSchema(BaseModel, extra=Extra.forbid):
 class UserChangePasswordSchema(BaseModel, extra=Extra.forbid):
     password: str
     new_password: str
-
-
-def init():
-    user = User(username='admin')
-    user.set_password('admin')
-    db.session.add(user)
-    user = User(username='user')
-    user.set_password('user')
-    db.session.add(user)
-    db.session.commit()
