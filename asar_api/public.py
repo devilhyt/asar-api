@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, current_app, request
-import asyncio, logging
+import asyncio, logging, time
 
 
 def init_app(app: Flask):
@@ -16,18 +16,15 @@ def init_app(app: Flask):
     def test_get():
         return "<p>Hello, World!</p>"
 
-    @app.post("/<string:test_string>")
-    def test_post(**kwargs):
-        return "<p>Hello, World!</p>"
-
-    @app.get("/json")
-    def test_json():
-        return [{'a': 1}, {'b': 2}]
-
     @app.route("/async")
-    async def get_data():
-        await asyncio.sleep(10)
-        return jsonify('ok')
+    async def test_async():
+        await asyncio.sleep(5)
+        return jsonify('async')
+    
+    @app.route("/delay")
+    def test_block():
+        time.sleep(5)
+        return jsonify('delay')
 
 def request_info():
     """Debugger for request info"""
