@@ -4,7 +4,8 @@ from pathlib import Path
 from pydantic import BaseModel, validator
 from ..config import SYNONYMS_FILE_NAME
 from .file_basis import FileBasis, GeneralNameSchema
-
+from ruamel.yaml.scalarstring import LiteralScalarString
+from ..utils.utils import MyYAML
 
 class Synonym(FileBasis):
     def __init__(self, prj_path: Path) -> None:
@@ -14,17 +15,17 @@ class Synonym(FileBasis):
                          default_content=self.default_content,
                          name_schema=SynonymNameSchema,
                          object_schema=SynonymObjectSchema)
-    # def compile(self) -> dict:
-    #     content = self.content
-    #     domain = {'entities': []}
+        
+    def compile(self) -> list:
+        yaml = MyYAML()
+        content:dict = self.content
+        nlu = []
 
-    #     for entity_name, entity in content.items():
-    #         if entity:
-    #             domain['entities'].append({entity_name: entity})
-    #         else:
-    #             domain['entities'].append(entity_name)
-    #     return domain
-
+        for synonym_name, synonym in content.items():
+            if examples := synonym["examples"]:
+                nlu.append({'synonym': synonym_name,
+                            'examples': LiteralScalarString(yaml.dump(examples))})
+        return nlu
 
 class SynonymNameSchema(GeneralNameSchema):
     @validator('*')

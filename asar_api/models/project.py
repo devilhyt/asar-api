@@ -80,21 +80,24 @@ class Project:
         nlu['nlu'] += intents_nlu
         domain.update(intents_domain)
 
-        entities_domain = self.entities.compile()
-        domain.update(entities_domain)
-
         responses_domain = self.responses.compile()
         domain.update(responses_domain)
 
         actions_domain = self.actions.compile()
         domain.update(actions_domain)
 
+        entities_domain = self.entities.compile()
+        domain.update(entities_domain)
+        
         slots_domain = self.slots.compile()
         domain.update(slots_domain)
 
+        synonyms_nlu = self.synonyms.compile()
+        nlu['nlu'] += synonyms_nlu
+
         compiled_stories = self.stories.compile()
         stories.update(compiled_stories)
-
+        
         lconfig = self.lconfigs.content_dict
 
         # gen yaml
