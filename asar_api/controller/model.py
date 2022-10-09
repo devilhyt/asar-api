@@ -40,8 +40,9 @@ class ModelAPI(MethodView):
         # Implement
         prj = Project(project_name)
         status_code, rasa_status_code, msg = prj.models.load(debug=True)
-        shutil.copy(prj.actions.action_py_file,
-                    f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
+        if status_code==200 and msg != 'debug mode':
+            shutil.copy(prj.actions.action_py_file,
+                        f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
         return jsonify({'rasa_status_code': rasa_status_code, 'msg': msg}), status_code
 
     @classmethod
