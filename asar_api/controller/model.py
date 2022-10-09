@@ -32,7 +32,7 @@ class ModelAPI(MethodView):
         status_code, rasa_status_code, msg = prj.models.train(debug=True)
         return jsonify({'rasa_status_code': rasa_status_code, 'msg': msg}), status_code
 
-    async def put(self):
+    def put(self):
         """Load a model"""
 
         # Receive
