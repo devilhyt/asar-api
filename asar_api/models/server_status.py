@@ -4,13 +4,13 @@ from ..extensions import db
 class ServerStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # train
-    training_status = db.Column(db.Boolean, nullable=False)  # True: runing / False: idle
+    training_status = db.Column(db.Boolean, nullable=False)  # True: running / False: idle
     training_result = db.Column(db.Integer, nullable=False)  # -1: unknown / 0: fail / 1: success
     training_message = db.Column(db.String, nullable=True)
     training_project = db.Column(db.String, nullable=True)
     training_time = db.Column(db.DateTime, nullable=True)
     # load
-    loaded_status = db.Column(db.Boolean, nullable=False)  # True: runing / False: idle
+    loaded_status = db.Column(db.Boolean, nullable=False)  # True: running / False: idle
     loaded_result = db.Column(db.Integer, nullable=False)  # -1: unknown / 0: fail / 1: success
     loaded_message = db.Column(db.String, nullable=True)
     loaded_project = db.Column(db.String, nullable=True)
