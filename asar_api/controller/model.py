@@ -5,7 +5,7 @@ from ..models.project import Project
 import shutil
 from ..config import RASA_APP_ROOT, ACTIONS_PY_NAME
 from ..models.server_status import ServerStatus
-from ..extensions import db
+from ..extensions import db, executor
 
 
 class ModelAPI(MethodView):
@@ -17,8 +17,11 @@ class ModelAPI(MethodView):
         server_status = ServerStatus.query.first()
         return jsonify({'training_status': server_status.training_status,
                         'training_result': server_status.training_result,
-                        'training_project': server_status.training_project,
                         'training_message': server_status.training_message,
+                        'training_project': server_status.training_project,
+                        'loaded_status': server_status.loaded_status,
+                        'loaded_result': server_status.loaded_result,
+                        'loaded_message': server_status.loaded_message,
                         'loaded_project': server_status.loaded_project}), 200
 
     def post(self):
@@ -29,21 +32,29 @@ class ModelAPI(MethodView):
         # Implement
         prj = Project(project_name)
         prj.compile()
-        status_code, rasa_status_code, msg = prj.models.train(debug=True)
-        return jsonify({'rasa_status_code': rasa_status_code, 'msg': msg}), status_code
+        status_code, msg = prj.models.train(debug=True)
+        return jsonify({'msg': msg}), status_code
 
     def put(self):
         """Load a model"""
-
+        debug = False
         # Receive
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
-        status_code, rasa_status_code, msg = prj.models.load(debug=True)
-        if status_code==200 and msg != 'debug mode':
+        status_code, msg = prj.models.load_checker(debug=debug)
+        
+        if status_code == 200:
+            executor.submit(self.load_bg, project_name, debug)
+            
+        return jsonify({'msg': msg}), status_code
+    
+    def load_bg(self, project_name:str, debug:bool):
+        prj = Project(project_name)
+        result = prj.models.load_bg(debug=debug)
+        if result and not debug:
             shutil.copy(prj.actions.action_py_file,
                         f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
-        return jsonify({'rasa_status_code': rasa_status_code, 'msg': msg}), status_code
 
     @classmethod
     def init_app(cls, app: Flask):

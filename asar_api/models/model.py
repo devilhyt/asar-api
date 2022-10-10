@@ -37,7 +37,7 @@ class Model:
         except:
             return False
 
-    def train(self, debug=False, custom_rasa_api_url=None, custom_asar_api_url=None) -> Tuple[int, int, str]:
+    def train(self, debug=False, custom_rasa_api_url=None, custom_asar_api_url=None) -> Tuple[int, str]:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         asar_api_url = custom_asar_api_url or self.env_asar_api_url
         server_status = ServerStatus.query.first()
@@ -45,13 +45,13 @@ class Model:
         if debug:
             server_status.training_status = False
             server_status.training_result = 1
+            server_status.training_message = 'debug mode'
             server_status.training_project = self.prj_name
             server_status.training_time = datetime.now(timezone.utc)
-            server_status.training_message = 'debug mode'
             db.session.commit()
-            return 200, None, 'debug mode'
+            return 200, 'debug mode'
         elif server_status.training_status:
-            return 400, None, f'Still performing previous training. (Project: {server_status.training_project})'
+            return 400, f'Still performing previous training. (Project: {server_status.training_project})'
         elif rasa_api_url and asar_api_url:
             params = {'save_to_default_model_directory': 'false',
                       'force_training': 'true',
@@ -59,11 +59,11 @@ class Model:
 
             if self.check_health(rasa_api_url):
                 if self.prj_name == server_status.loaded_project:
-                    resp = requests.delete(url=f'{rasa_api_url}/model')
+                    _ = requests.delete(url=f'{rasa_api_url}/model')
 
                 with open(self.training_data_file, 'r', encoding="utf-8") as f:
                     data = f.read()
-                resp = requests.post(url=f'{rasa_api_url}/model/train',
+                _ = requests.post(url=f'{rasa_api_url}/model/train',
                                      params=params,
                                      data=data.encode('utf-8'))
 
@@ -73,36 +73,86 @@ class Model:
                 server_status.training_time = datetime.now(timezone.utc)
                 server_status.training_message = None
                 db.session.commit()
-                return 200, resp.status_code, 'ok'
+                return 200, 'OK'
             else:
-                return 400, None, 'Can not connect to Rasa API server.'
+                return 400, 'Can not connect to Rasa API server.'
         else:
-            return 400, None, 'Please provide RASA_API_URL and ASAR_API_URL.'
-
-    def load(self, debug=False, custom_rasa_api_url=None) -> None:
+            return 400, 'Please provide RASA_API_URL and ASAR_API_URL.'
+        
+    def load_checker(self, debug=False, custom_rasa_api_url=None) -> Tuple[int, str]:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         server_status = ServerStatus.query.first()
         
         if debug:
-            server_status.loaded_project = self.prj_name
-            db.session.commit()
-            return 200, None, 'debug mode'
+            return 200, 'debug mode'
+        elif not rasa_api_url:
+            return 400, 'Please provide RASA_API_URL.'
+        elif server_status.loaded_status:
+            return 400, f'Still performing previous loading task.'
         elif server_status.training_project == self.prj_name and server_status.training_status:
-            return 400, None, 'Can not load a project which is training.'
-        elif rasa_api_url:
+            return 400, f'Can not load a project which is training.'
+        else:
+            if self.check_health(rasa_api_url):
+                return 200, 'OK'
+            else:
+                return 400, 'Can not connect to Rasa API server.'
+            
+
+    def load_bg(self, debug=False, custom_rasa_api_url=None) -> bool:
+        rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
+        server_status = ServerStatus.query.first()
+        
+        if debug:
+            server_status.loaded_result = 1
+            server_status.loaded_message = 'debug mode'
+            server_status.loaded_project = self.prj_name
+            server_status.loaded_time = datetime.now(timezone.utc)
+            db.session.commit()
+            return True
+        elif not rasa_api_url:
+            server_status.loaded_result = 0
+            server_status.loaded_message = 'Please provide RASA_API_URL.'
+            db.session.commit()
+            return False
+        else:
             data = {'model_file': self.model_file.absolute().as_posix()}
 
             if self.check_health(rasa_api_url):
-                resp = requests.put(url=f'{rasa_api_url}/model',
-                                        json=data,
-                                        timeout=300)
-                server_status.loaded_project = self.prj_name
+                server_status.loaded_status = True
+                server_status.loaded_result = -1
+                server_status.loaded_message = None
+                server_status.loaded_project = None
+                server_status.loaded_time = datetime.now(timezone.utc)
                 db.session.commit()
-                return 200, resp.status_code, 'ok'
+                
+                try:
+                    resq = requests.put(url=f'{rasa_api_url}/model',
+                                            json=data,
+                                            timeout=300)
+                    if resq.status_code == 204:
+                        server_status.loaded_status = False
+                        server_status.loaded_result = 1
+                        server_status.training_message = 'OK'
+                        server_status.loaded_project = self.prj_name
+                        db.session.commit()
+                        return True
+                    else:
+                        server_status.loaded_status = False
+                        server_status.loaded_result = 0
+                        server_status.training_message = 'Failed'
+                        db.session.commit()
+                        return False
+                except Exception as e:
+                    server_status.loaded_status = False
+                    server_status.loaded_result = 0
+                    server_status.training_message = str(e)
+                    db.session.commit()
+                    return False
             else:
-                return 400, None, 'Can not connect to Rasa API server.'
-        else:
-            return 400, None, 'Please provide RASA_API_URL.'
+                server_status.loaded_result = 0
+                server_status.training_message = 'Can not connect to Rasa API server.'
+                db.session.commit()
+                return False
 
     def save(self, content) -> None:
         with open(self.model_file, 'wb') as t:
