@@ -3,6 +3,7 @@ Flask[async]
 Flask-Cors
 Flask-JWT-Extended
 Flask-SQLAlchemy
+Flask-Executor
 jieba
 pydantic
 requests
