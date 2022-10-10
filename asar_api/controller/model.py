@@ -26,13 +26,13 @@ class ModelAPI(MethodView):
 
     def post(self):
         """Train a model"""
-
+        debug = False
         # Receive
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
         prj.compile()
-        status_code, msg = prj.models.train(debug=True)
+        status_code, msg = prj.models.train(debug=debug)
         return jsonify({'msg': msg}), status_code
 
     def put(self):

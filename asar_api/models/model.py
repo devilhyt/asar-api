@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from typing import Tuple
-from datetime import datetime, timezone
+from datetime import datetime
 import requests
 from ruamel.yaml import YAML
 from ..config import OUTPUT_DIR_NAME, TRAINING_DATA_FILE_NAME
@@ -47,9 +47,11 @@ class Model:
             server_status.training_result = 1
             server_status.training_message = 'debug mode'
             server_status.training_project = self.prj_name
-            server_status.training_time = datetime.now(timezone.utc)
+            server_status.training_time = datetime.now()
             db.session.commit()
             return 200, 'debug mode'
+        elif server_status.loaded_status:
+            return 400, f'Still performing previous loading task.'
         elif server_status.training_status:
             return 400, f'Still performing previous training. (Project: {server_status.training_project})'
         elif rasa_api_url and asar_api_url:
@@ -70,7 +72,7 @@ class Model:
                 server_status.training_status = True
                 server_status.training_result = -1
                 server_status.training_project = self.prj_name
-                server_status.training_time = datetime.now(timezone.utc)
+                server_status.training_time = datetime.now()
                 server_status.training_message = None
                 db.session.commit()
                 return 200, 'OK'
@@ -106,7 +108,7 @@ class Model:
             server_status.loaded_result = 1
             server_status.loaded_message = 'debug mode'
             server_status.loaded_project = self.prj_name
-            server_status.loaded_time = datetime.now(timezone.utc)
+            server_status.loaded_time = datetime.now()
             db.session.commit()
             return True
         elif not rasa_api_url:
@@ -122,7 +124,7 @@ class Model:
                 server_status.loaded_result = -1
                 server_status.loaded_message = None
                 server_status.loaded_project = None
-                server_status.loaded_time = datetime.now(timezone.utc)
+                server_status.loaded_time = datetime.now()
                 db.session.commit()
                 
                 try:
@@ -132,25 +134,25 @@ class Model:
                     if resq.status_code == 204:
                         server_status.loaded_status = False
                         server_status.loaded_result = 1
-                        server_status.training_message = 'OK'
+                        server_status.loaded_message = 'OK'
                         server_status.loaded_project = self.prj_name
                         db.session.commit()
                         return True
                     else:
                         server_status.loaded_status = False
                         server_status.loaded_result = 0
-                        server_status.training_message = 'Failed'
+                        server_status.loaded_message = 'Failed'
                         db.session.commit()
                         return False
                 except Exception as e:
                     server_status.loaded_status = False
                     server_status.loaded_result = 0
-                    server_status.training_message = str(e)
+                    server_status.loaded_message = str(e)
                     db.session.commit()
                     return False
             else:
                 server_status.loaded_result = 0
-                server_status.training_message = 'Can not connect to Rasa API server.'
+                server_status.loaded_message = 'Can not connect to Rasa API server.'
                 db.session.commit()
                 return False
 
