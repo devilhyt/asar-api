@@ -1,6 +1,6 @@
 from pathlib import Path
 from flask import Flask
-from .extensions import cors, db, jwt
+from .extensions import cors, db, jwt, executor
 from .config import DevelopmentConfig, ASAR_DATA_ROOT
 import asar_api.public
 from .controller.auth import AuthAPI
@@ -19,6 +19,7 @@ def create_app(config=DevelopmentConfig):
     db.init_app(app)
     jwt.init_app(app)
     cors.init_app(app)
+    executor.init_app(app)
 
     # database
     with app.app_context():
