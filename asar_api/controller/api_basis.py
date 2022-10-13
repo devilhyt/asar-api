@@ -38,6 +38,8 @@ class ApiBasis(MethodView):
             r = objs.select(name)
         elif mode == 'name':
             r = objs.names
+        elif mode == 'builtin':
+            r = getattr(objs, 'builtin_names', [])
         elif mode == 'schema':
             r = objs.object_schema.schema_json()
         else:
