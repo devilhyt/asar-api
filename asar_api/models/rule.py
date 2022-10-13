@@ -1,6 +1,5 @@
-from typing import Optional
 from pathlib import Path
-from pydantic import BaseModel, conlist
+from pydantic import BaseModel, Extra
 from ..config import RULES_FILE_NAME
 from .file_basis import FileBasis
 
@@ -12,8 +11,5 @@ class Rule(FileBasis):
                          object_schema=RuleObjectSchema)
 
 
-class RuleObjectSchema(BaseModel):
-    nodes: Optional[conlist(dict, max_items=1)]
-    edges: Optional[list]
-    position: Optional[list]
-    zoom: Optional[int]
+class RuleObjectSchema(BaseModel, extra=Extra.allow):
+    pass
