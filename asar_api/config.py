@@ -30,6 +30,7 @@ GCONFIG_FILE_NAME = 'gconfig.json'
 LCONFIG_FILE_NAME = 'lconfig.yml'
 ACTIONS_J2_NAME = 'action.j2'
 SYNONYMS_FILE_NAME ='synonyms.json'
+FORMS_FILE_NAME = 'forms.json'
 
 class DevelopmentConfig(object):
     """Flask Config"""

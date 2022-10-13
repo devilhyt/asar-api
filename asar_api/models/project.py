@@ -15,6 +15,8 @@ from .model import Model
 from .lconfig import LConfig
 from .responese import Response
 from .synonym import Synonym
+from .form import Form
+
 
 
 class Project:
@@ -38,6 +40,7 @@ class Project:
         self.models = Model(self.prj_path, self.prj_name)
         self.lconfigs = LConfig(self.prj_path)
         self.synonyms = Synonym(self.prj_path)
+        self.forms = Form(self.prj_path)
         # Tools
         self.yaml = YAML()
 
@@ -58,6 +61,7 @@ class Project:
         self.models.init()
         self.lconfigs.init(self.tokens.jieba_dir_path)
         self.synonyms.init()
+        self.forms.init()
 
     def rename(self, new_project_name) -> None:
         # Validate

@@ -44,6 +44,7 @@ def create_app(config=DevelopmentConfig):
     ApiBasis.init_app(app, 'rules')
     ApiBasis.init_app(app, 'tokens')
     ApiBasis.init_app(app, 'synonyms')
+    ApiBasis.init_app(app, 'forms')
     TokenizerAPI.init_app(app)
     ModelAPI.init_app(app)
     ModelCallbackAPI.init_app(app)
