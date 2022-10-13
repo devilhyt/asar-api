@@ -57,6 +57,8 @@ class Model:
                 if self.prj_name == server_status.loaded_project:
                     # unload model
                     _ = requests.delete(url=f'{rasa_api_url}/model')
+                    server_status.loaded_project = None
+                    db.session.commit()
 
                 with open(self.training_data_file, 'r', encoding="utf-8") as f:
                     data = f.read()
