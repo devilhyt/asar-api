@@ -25,7 +25,7 @@ class SlotNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
         if name:
-            if not re.match(r"^\w+$", name):
+            if not re.match(r"^[A-Za-z0-9_]+$", name):
                 raise ValueError('Invalid name')
         return name
 
