@@ -51,7 +51,7 @@ def decode_story(story_name: str, input_nodes: dict, input_paths: list) -> list:
             step = None
             if node != 'start' and node != 'end':
                 step_type = input_nodes[node]['type']
-                if step_type == 'intent' or step_type == 'action':
+                if step_type == 'intent':
                     step = {step_type: input_nodes[node]['name']}
 
                     # entity
@@ -68,17 +68,22 @@ def decode_story(story_name: str, input_nodes: dict, input_paths: list) -> list:
                                 entities.append(entity)
                         if entities:
                             step.update({'entities': entities})
+                elif step_type == 'action':
+                    step = {step_type: input_nodes[node]['name']}
+                elif step_type == 'response':
+                    step = {'action': f'utter_{input_nodes[node]["name"]}'}
                 elif step_type == 'slot_was_set':
-                    step = {step_type: []}
-
-                    # slot
-                    if input_nodes[node].get('slots'):
+                    ss: list
+                    if ss := input_nodes[node].get('slots'):
                         slots = []
                         s: dict
-                        for s in input_nodes[node]['slots']:
+                        for s in ss:
                             if k := s.get('slot'):
-                                slot = {k: s.get('value')}
-                                slots.append(slot)
+                                if 'value' in s:
+                                    v = s.get('value')
+                                    slots.append({k: v})
+                                else:
+                                    slots.append(k)
                         if slots:
                             step = {step_type: slots}
             if step:
