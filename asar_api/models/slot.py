@@ -10,16 +10,19 @@ class Slot(FileBasis):
     def __init__(self, prj_path: Path) -> None:
         self.default_content = {'influence_conversation': False,
                                 'type': 'any',
-                                'mappings':[{'type':'custom'}]}
+                                'mappings': [{'type': 'custom'}]}
         super().__init__(prj_path=prj_path,
                          file_name=SLOTS_FILE_NAME,
                          default_content=self.default_content,
                          name_schema=SlotNameSchema,
                          object_schema=SlotObjectSchema)
+        self.builtin_names = ['requested_slot']
+
     def compile(self) -> dict:
         domain = {'slots': []}
         domain['slots'] = self.content
         return domain
+
 
 class SlotNameSchema(GeneralNameSchema):
     @validator('*')
