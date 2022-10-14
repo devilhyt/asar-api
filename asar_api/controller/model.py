@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from ..models.project import Project
 import shutil
+import time
 from ..config import RASA_APP_ROOT, ACTIONS_PY_NAME
 from ..models.server_status import ServerStatus
 from ..extensions import db, executor
@@ -26,18 +27,21 @@ class ModelAPI(MethodView):
 
     def post(self):
         """Train a model"""
-        debug = False
+        debug = True
         # Receive
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
         prj.compile()
         status_code, msg = prj.models.train(debug=debug)
+        
+        if debug:
+            executor.submit(self.train_simulate_callback)
         return jsonify({'msg': msg}), status_code
 
     def put(self):
         """Load a model"""
-        debug = False
+        debug = True
         # Receive
         project_name = request.json.get('project_name')
         # Implement
@@ -55,6 +59,14 @@ class ModelAPI(MethodView):
         if result and not debug:
             shutil.copy(prj.actions.action_py_file,
                         f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
+    
+    def train_simulate_callback(self):
+        time.sleep(10)
+        server_status = ServerStatus.query.first()
+        server_status.training_status = False
+        server_status.training_result = 1
+        server_status.training_message = 'debug mode'
+        db.session.commit()
 
     @classmethod
     def init_app(cls, app: Flask):

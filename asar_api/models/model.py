@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 from typing import Tuple
 from datetime import datetime
@@ -34,76 +35,88 @@ class Model:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         asar_api_url = custom_asar_api_url or self.env_asar_api_url
         server_status = ServerStatus.query.first()
+        msg_prefix = '[debug mode]' if debug else ''
 
-        if debug:
-            server_status.training_result = 1
-            server_status.training_message = 'debug mode'
-            server_status.training_project = self.prj_name
-            server_status.training_time = datetime.now()
-            db.session.commit()
-            return 200, 'debug mode'
-        elif server_status.loaded_status:
-            return 400, f'Still performing previous loading task.'
+        if server_status.loaded_status:
+            return 400, f'{msg_prefix} Still performing previous loading task.'
         elif server_status.training_status:
-            return 400, f'Still performing previous training. (Project: {server_status.training_project})'
+            return 400, f'{msg_prefix} Still performing previous training. (Project: {server_status.training_project})'
         elif not (rasa_api_url and asar_api_url):
-            return 400, 'Please provide RASA_API_URL and ASAR_API_URL.'
+            return 400, f'{msg_prefix} Please provide RASA_API_URL and ASAR_API_URL.'
         else:
             params = {'save_to_default_model_directory': 'false',
                       'force_training': 'true',
                       'callback_url': f'{asar_api_url}/projects/{self.prj_name}/models'}
 
-            if self.check_health(rasa_api_url):
-                if self.prj_name == server_status.loaded_project:
-                    # unload model
-                    _ = requests.delete(url=f'{rasa_api_url}/model')
-                    server_status.loaded_project = None
-                    db.session.commit()
-
-                with open(self.training_data_file, 'r', encoding="utf-8") as f:
-                    data = f.read()
-                _ = requests.post(url=f'{rasa_api_url}/model/train',
-                                  params=params,
-                                  data=data.encode('utf-8'))
-
+            if debug:
                 server_status.training_status = True
                 server_status.training_result = -1
                 server_status.training_project = self.prj_name
                 server_status.training_time = datetime.now()
                 server_status.training_message = None
                 db.session.commit()
-                return 200, 'OK'
+                return 200, f'{msg_prefix} OK'
             else:
-                return 400, 'Can not connect to Rasa API server.'
-            
+                if self.check_health(rasa_api_url):
+                    if self.prj_name == server_status.loaded_project:
+                        # unload model
+                        _ = requests.delete(url=f'{rasa_api_url}/model')
+                        server_status.loaded_project = None
+                        db.session.commit()
+
+                    with open(self.training_data_file, 'r', encoding="utf-8") as f:
+                        data = f.read()
+                    _ = requests.post(url=f'{rasa_api_url}/model/train',
+                                      params=params,
+                                      data=data.encode('utf-8'))
+
+                    server_status.training_status = True
+                    server_status.training_result = -1
+                    server_status.training_project = self.prj_name
+                    server_status.training_time = datetime.now()
+                    server_status.training_message = None
+                    db.session.commit()
+                    return 200, 'OK'
+                else:
+                    return 400, 'Can not connect to Rasa API server.'
 
     def load_checker(self, debug=False, custom_rasa_api_url=None) -> Tuple[int, str]:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         server_status = ServerStatus.query.first()
-
-        if debug:
-            return 200, 'debug mode'
-        elif not rasa_api_url:
-            return 400, 'Please provide RASA_API_URL.'
+        msg_prefix = '[debug mode]' if debug else ''
+        
+        if not rasa_api_url:
+            return 400, f'{msg_prefix} Please provide RASA_API_URL.'
         elif server_status.loaded_status:
-            return 400, f'Still performing previous loading task.'
+            return 400, f'{msg_prefix} Still performing previous loading task.'
         elif server_status.training_project == self.prj_name and server_status.training_status:
-            return 400, f'Can not load a project which is training.'
+            return 400, f'{msg_prefix} Can not load a project which is training.'
         else:
-            if self.check_health(rasa_api_url):
-                return 200, 'OK'
+            if debug:
+                return 200, f'{msg_prefix} OK'
             else:
-                return 400, 'Can not connect to Rasa API server.'
+                if self.check_health(rasa_api_url):
+                    return 200, 'OK'
+                else:
+                    return 400, 'Can not connect to Rasa API server.'
 
     def load_bg(self, debug=False, custom_rasa_api_url=None) -> bool:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         server_status = ServerStatus.query.first()
 
         if debug:
+            server_status.loaded_status = True
+            server_status.loaded_result = -1
+            server_status.loaded_message = None
+            server_status.loaded_project = None
+            server_status.loaded_time = datetime.now()
+            db.session.commit()
+
+            time.sleep(10)
+            server_status.loaded_status = False
             server_status.loaded_result = 1
             server_status.loaded_message = 'debug mode'
             server_status.loaded_project = self.prj_name
-            server_status.loaded_time = datetime.now()
             db.session.commit()
             return True
         else:
