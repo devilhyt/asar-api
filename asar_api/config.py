@@ -2,6 +2,7 @@ from flask import Flask
 import datetime
 from pathlib import Path
 import os
+import secrets
 
 ASAR_ROOT = '.'
 ASAR_DATA_ROOT = '/data'
@@ -35,10 +36,9 @@ FORMS_FILE_NAME = 'forms.json'
 class DevelopmentConfig(object):
     """Flask Config"""
 
-    SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
+    SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_hex())
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(ASAR_DATA_ROOT).resolve()}/asar.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = 'b0cf91e59567ee4951077964046cb574bddc5d9e461613d9c328f7089d448269'
     JWT_TOKEN_LOCATION = ['headers', 'cookies', 'query_string', 'json']
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_CSRF_PROTECT = False
