@@ -28,16 +28,18 @@ class ModelAPI(MethodView):
     def post(self):
         """Train a model"""
         debug = True
+
         # Receive
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
         prj.compile()
-        status_code, msg = prj.models.train(debug=debug)
-        
-        if debug:
+        status_code, msg, msgCode = prj.models.train(debug=debug)
+
+        if status_code == 200 and debug:
             executor.submit(self.train_simulate_callback)
-        return jsonify({'msg': msg}), status_code
+        
+        return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
     def put(self):
         """Load a model"""
@@ -46,22 +48,22 @@ class ModelAPI(MethodView):
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
-        status_code, msg = prj.models.load_checker(debug=debug)
-        
+        status_code, msg, msgCode = prj.models.load_checker(debug=debug)
+
         if status_code == 200:
             executor.submit(self.load_bg, project_name, debug)
-            
-        return jsonify({'msg': msg}), status_code
-    
-    def load_bg(self, project_name:str, debug:bool):
+
+        return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
+
+    def load_bg(self, project_name: str, debug: bool):
         prj = Project(project_name)
         result = prj.models.load_bg(debug=debug)
         if result and not debug:
             shutil.copy(prj.actions.action_py_file,
                         f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
-    
+
     def train_simulate_callback(self):
-        time.sleep(10)
+        time.sleep(3)
         server_status = ServerStatus.query.first()
         server_status.training_status = False
         server_status.training_result = 1

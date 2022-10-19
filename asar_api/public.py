@@ -47,4 +47,4 @@ def request_info():
 def handle_exception(e: Exception):
     """flask error handler"""
     current_app.logger.error(e)
-    return jsonify({"Error message": str(e)}), 400
+    return jsonify({'msgCode': 'unexpectedError', 'msg': str(e)}), 400

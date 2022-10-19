@@ -31,18 +31,20 @@ class Model:
         except:
             return False
 
-    def train(self, debug=False, custom_rasa_api_url=None, custom_asar_api_url=None) -> Tuple[int, str]:
+    def train(self, debug=False, custom_rasa_api_url=None, custom_asar_api_url=None) -> Tuple[int, str, str]:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
         asar_api_url = custom_asar_api_url or self.env_asar_api_url
         server_status = ServerStatus.query.first()
         msg_prefix = '[debug mode]' if debug else ''
 
         if server_status.loaded_status:
-            return 400, f'{msg_prefix} Still performing previous loading task.'
+            return 400, f'{msg_prefix} Still performing previous loading task.', 'stillLoadingPreviousModel'
         elif server_status.training_status:
-            return 400, f'{msg_prefix} Still performing previous training. (Project: {server_status.training_project})'
-        elif not (rasa_api_url and asar_api_url):
-            return 400, f'{msg_prefix} Please provide RASA_API_URL and ASAR_API_URL.'
+            return 400, f'{msg_prefix} Still performing previous training (Project: {server_status.training_project}).', 'stillTrainingPreviousModel'
+        elif not (rasa_api_url):
+            return 400, f'{msg_prefix} Please provide RASA_API_URL.', 'noRasaApiUrlProvided' 
+        elif not (asar_api_url):
+            return 400, f'{msg_prefix} Please provide ASAR_API_URL.', 'noAsarApiUrlProvided' 
         else:
             params = {'save_to_default_model_directory': 'false',
                       'force_training': 'true',
@@ -55,7 +57,7 @@ class Model:
                 server_status.training_time = datetime.now()
                 server_status.training_message = None
                 db.session.commit()
-                return 200, f'{msg_prefix} OK'
+                return 200, f'{msg_prefix} OK', 'success'
             else:
                 if self.check_health(rasa_api_url):
                     if self.prj_name == server_status.loaded_project:
@@ -76,9 +78,9 @@ class Model:
                     server_status.training_time = datetime.now()
                     server_status.training_message = None
                     db.session.commit()
-                    return 200, 'OK'
+                    return 200, 'OK', 'success'
                 else:
-                    return 400, 'Can not connect to Rasa API server.'
+                    return 400, 'Cannot connect to Rasa API server.', 'rasaApiConnectionError'
 
     def load_checker(self, debug=False, custom_rasa_api_url=None) -> Tuple[int, str]:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
@@ -86,19 +88,19 @@ class Model:
         msg_prefix = '[debug mode]' if debug else ''
         
         if not rasa_api_url:
-            return 400, f'{msg_prefix} Please provide RASA_API_URL.'
+            return 400, f'{msg_prefix} Please provide RASA_API_URL.', 'noRasaUrlProvided'
         elif server_status.loaded_status:
-            return 400, f'{msg_prefix} Still performing previous loading task.'
+            return 400, f'{msg_prefix} Still performing previous loading task.', 'stillLoadingPreviousModel'
         elif server_status.training_project == self.prj_name and server_status.training_status:
-            return 400, f'{msg_prefix} Can not load a project which is training.'
+            return 400, f'{msg_prefix} Cannot load a project which is training.', 'projectIsTraining'
         else:
             if debug:
-                return 200, f'{msg_prefix} OK'
+                return 200, f'{msg_prefix} OK', 'success'
             else:
                 if self.check_health(rasa_api_url):
-                    return 200, 'OK'
+                    return 200, 'OK', 'success'
                 else:
-                    return 400, 'Can not connect to Rasa API server.'
+                    return 400, 'Cannot connect to Rasa API server.', 'rasaApiConnectionError'
 
     def load_bg(self, debug=False, custom_rasa_api_url=None) -> bool:
         rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
@@ -112,7 +114,7 @@ class Model:
             server_status.loaded_time = datetime.now()
             db.session.commit()
 
-            time.sleep(10)
+            time.sleep(3)
             server_status.loaded_status = False
             server_status.loaded_result = 1
             server_status.loaded_message = 'debug mode'
