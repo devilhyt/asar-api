@@ -46,7 +46,7 @@ class GConfig():
             valid_content = self.object_schema.parse_obj(self.default_content)
             content = valid_content.dict(by_alias=True, exclude_unset=True)
             self.write_json(content)
-            # Todo: optimize required
+            # TODO: optimize required
             # self.compile()
 
     def update(self, input_content) -> None:
@@ -55,11 +55,11 @@ class GConfig():
         # Implement
         content = valid_content.dict(by_alias=True, exclude_unset=True)
         self.write_json(content)
-        # Todo: optimize required
+        # TODO: optimize required
         # self.compile()
 
     # def compile(self) -> None:
-    #     # Todo: optimize required
+    #     # TODO: optimize required
     #     content = self.content
     #     with open(file=Path(ASAR_DATA_ROOT).joinpath('credentials.yml'),
     #               mode='w',
