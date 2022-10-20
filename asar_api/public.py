@@ -1,5 +1,9 @@
+from typing import Union
 from flask import Flask, jsonify, current_app, request
-import asyncio, logging, time
+import asyncio
+import logging
+import time
+import pydantic
 
 
 def init_app(app: Flask):
@@ -20,11 +24,12 @@ def init_app(app: Flask):
     async def test_async():
         await asyncio.sleep(5)
         return jsonify('async')
-    
+
     @app.route("/delay")
     def test_block():
         time.sleep(5)
         return jsonify('delay')
+
 
 def request_info():
     """Debugger for request info"""
@@ -44,7 +49,16 @@ def request_info():
         pass
 
 
-def handle_exception(e: Exception):
+def handle_exception(e: Union[Exception, pydantic.error_wrappers.ValidationError]):
     """flask error handler"""
     current_app.logger.error(e)
-    return jsonify({'msgCode': 'unexpectedError', 'msg': str(e)}), 400
+    # current_app.logger.error(e.args)
+    if type(e) == pydantic.error_wrappers.ValidationError:
+        error_dict: dict = {}
+        if l := e.args[0][0].exc.args:
+            error_dict = l[0]
+        msgCode = error_dict.get('msgCode', 'unexpectedError')
+        msg = error_dict.get('msg', str(e))
+        return jsonify({'msgCode': msgCode, 'msg': msg}), 400
+    else:
+        return jsonify({'msgCode': 'unexpectedError', 'msg': str(e)}), 400
