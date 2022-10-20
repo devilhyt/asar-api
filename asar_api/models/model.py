@@ -18,9 +18,23 @@ class Model:
         self.model_file = self.dir.joinpath(f'{prj_name}.tar.gz')
         self.training_data_file = self.dir.joinpath(TRAINING_DATA_FILE_NAME)
         # env var
-        self.env_rasa_api_url = os.getenv("RASA_API_URL")
-        self.env_asar_api_url = os.getenv("ASAR_API_URL")
-
+        self.rasa_api_protocol = os.getenv('RASA_API_PROTOCOL')
+        self.rasa_api_host = os.getenv('RASA_API_HOST')
+        self.rasa_api_port = os.getenv('RASA_API_PORT')
+        self.asar_api_protocol = os.getenv('ASAR_API_PROTOCOL')
+        self.asar_api_host = os.getenv('ASAR_API_HOST')
+        self.asar_api_port = os.getenv('ASAR_API_PORT')
+        
+        if self.rasa_api_protocol and self.rasa_api_host and self.rasa_api_port:
+            self.env_rasa_api_url = f'{self.rasa_api_protocol}://{self.rasa_api_host}:{self.rasa_api_port}'
+        else: 
+            self.env_rasa_api_url = None
+            
+        if self.asar_api_protocol and self.asar_api_host and self.asar_api_port:
+            self.env_asar_api_url = f'{self.asar_api_protocol}://{self.asar_api_host}:{self.asar_api_port}'
+        else: 
+            self.env_asar_api_url = None
+            
     def init(self) -> None:
         self.dir.mkdir(parents=True, exist_ok=True)
 
