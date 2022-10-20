@@ -1,6 +1,7 @@
 import shutil
 import re
 from pathlib import Path
+from typing import Tuple
 from ruamel.yaml import YAML
 from pydantic import BaseModel, validator
 from ..config import ASAR_PRJ_DIR, TRAINING_DATA_FILE_NAME
@@ -16,7 +17,6 @@ from .lconfig import LConfig
 from .responese import Response
 from .synonym import Synonym
 from .form import Form
-
 
 
 class Project:
@@ -48,30 +48,45 @@ class Project:
     def names() -> tuple:
         return tuple([d.stem for d in Project.prj_root.iterdir() if d.is_dir()])
 
-    def create(self) -> None:
-        self.prj_path.mkdir(parents=True, exist_ok=False)
-        self.intents.init()
-        self.responses.init()
-        self.actions.init()
-        self.entities.init()
-        self.slots.init()
-        self.stories.init()
-        self.rules.init()
-        self.tokens.init()
-        self.models.init()
-        self.lconfigs.init(self.tokens.jieba_dir_path)
-        self.synonyms.init()
-        self.forms.init()
+    def create(self) -> Tuple[int, str, str]:
+        if self.prj_path.exists():
+            return 400, 'duplicateNames', 'Duplicate names are not allowed'
+        else:
+            self.prj_path.mkdir(parents=True, exist_ok=False)
+            self.intents.init()
+            self.responses.init()
+            self.actions.init()
+            self.entities.init()
+            self.slots.init()
+            self.stories.init()
+            self.rules.init()
+            self.tokens.init()
+            self.models.init()
+            self.lconfigs.init(self.tokens.jieba_dir_path)
+            self.synonyms.init()
+            self.forms.init()
+            return 200, 'success', 'OK'
 
-    def rename(self, new_project_name) -> None:
+    def rename(self, new_name) -> Tuple[int, str, str]:
         # Validate
-        _ = ProjectNameSchema(name=new_project_name)
+        if not self.prj_path.exists():
+            return 400, 'targetDoesNotExist', 'Target does not exist.'
+        
+        _ = ProjectNameSchema(name=new_name)
+        target = self.prj_root.joinpath(new_name)
+        if target.exists():
+            return 400, 'duplicateNames', 'Duplicate names are not allowed.'
+        
         # Implement
-        target = self.prj_root.joinpath(new_project_name)
         self.prj_path.rename(target)
+        return 200, 'success', 'OK'
 
-    def delete(self) -> None:
-        shutil.rmtree(self.prj_path)
+    def delete(self) -> Tuple[int, str, str]:
+        if self.prj_path.exists():
+            shutil.rmtree(self.prj_path)
+            return 200, 'success', 'OK'
+        else:
+            return 400, 'targetDoesNotExist', 'Target does not exist.'
 
     def compile(self) -> None:
         nlu = {'nlu': []}
@@ -92,7 +107,7 @@ class Project:
 
         entities_domain = self.entities.compile()
         domain.update(entities_domain)
-        
+
         slots_domain = self.slots.compile()
         domain.update(slots_domain)
 
@@ -101,7 +116,7 @@ class Project:
 
         compiled_stories = self.stories.compile()
         stories.update(compiled_stories)
-        
+
         lconfig = self.lconfigs.content_dict
 
         # gen yaml
@@ -121,5 +136,6 @@ class ProjectNameSchema(BaseModel):
     @validator('name')
     def check_name(cls, name: str):
         if not re.match(r"^\w+$", name):
-            raise ValueError('Invalid name')
+            raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
         return name
+
