@@ -3,7 +3,7 @@ from flask import Flask, jsonify, current_app, request
 import asyncio
 import logging
 import time
-import pydantic
+from pydantic import ValidationError
 
 
 def init_app(app: Flask):
@@ -49,16 +49,19 @@ def request_info():
         pass
 
 
-def handle_exception(e: Union[Exception, pydantic.error_wrappers.ValidationError]):
+def handle_exception(e: Union[Exception, ValidationError]):
     """flask error handler"""
     current_app.logger.error(e)
     # current_app.logger.error(e.args)
-    if type(e) == pydantic.error_wrappers.ValidationError:
-        error_dict: dict = {}
-        if l := e.args[0][0].exc.args:
-            error_dict = l[0]
-        msgCode = error_dict.get('msgCode', 'unexpectedError')
-        msg = error_dict.get('msg', str(e))
+    if type(e) == ValidationError:
+        arg: dict
+        if (len(raw_errors := e.raw_errors) == 1):
+            if (args := raw_errors[0].exc.args):
+                arg = args[0]
+        else:
+            arg = {}
+        msgCode = arg.get('msgCode', 'validationError')
+        msg = arg.get('msg', str(e))
         return jsonify({'msgCode': msgCode, 'msg': msg}), 400
     else:
         return jsonify({'msgCode': 'unexpectedError', 'msg': str(e)}), 400
