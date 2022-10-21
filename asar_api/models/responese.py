@@ -30,7 +30,7 @@ class ResponseNameSchema(GeneralNameSchema):
     def check_name(cls, name: str):
         if name:
             if not re.match(r"^\w+/?\w+$", name):
-                raise ValueError('Invalid name')
+                raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
         return name
 
 

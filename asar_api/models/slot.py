@@ -29,7 +29,7 @@ class SlotNameSchema(GeneralNameSchema):
     def check_name(cls, name: str):
         if name:
             if not re.match(r"^[A-Za-z0-9_]+$", name):
-                raise ValueError('Invalid name')
+                raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
         return name
 
 
