@@ -29,13 +29,13 @@ class AuthAPI(MethodView):
             username=valid_data.username).one_or_none()
 
         if not user.check_password(valid_data.password):
-            return jsonify({'msgCode': 'loginFailed', 'msg': 'Wrong username or password.', }), 400
+            return jsonify({'msgCode': 'loginFailed', 'msg': 'Wrong username or password.'}), 400
 
         access_token = create_access_token(identity=user.id)
         response = jsonify({'access_token': access_token,
-                           'msgCode': 'loggedIn', 'msg': 'Logged in.', })
+                           'msgCode': 'success', 'msg': 'Logged in.'})
         set_access_cookies(response, access_token)
-        return response
+        return response, 200
 
     @jwt_required()
     def put(self):
@@ -49,7 +49,7 @@ class AuthAPI(MethodView):
             username=current_user.username).one_or_none()
 
         if not user.check_password(valid_data.password):
-            return jsonify({'msgCode': 'wrongPassword', 'msg': 'Wrong password.', }), 400
+            return jsonify({'msgCode': 'wrongPassword', 'msg': 'Wrong password.'}), 400
 
         user.set_password(valid_data.new_password)
         db.session.commit()
@@ -58,15 +58,15 @@ class AuthAPI(MethodView):
         # response = jsonify(access_token=access_token)
         # set_access_cookies(response, access_token)
         response = jsonify(
-            {'msgCode': 'changedPassword', 'msg': 'Your password has been successfully changed.', })
-        return response
+            {'msgCode': 'success', 'msg': 'Your password has been successfully changed.'})
+        return response, 200
 
     @jwt_required()
     def delete(self):
         """logout"""
-        response = jsonify({'msgCode': 'loggedOut', 'msg': 'Logged out.', })
+        response = jsonify({'msgCode': 'success', 'msg': 'Logged out.'})
         unset_jwt_cookies(response)
-        return response
+        return response, 200
 
     @classmethod
     def init_app(cls, app: Flask):
