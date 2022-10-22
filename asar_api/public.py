@@ -54,12 +54,10 @@ def handle_exception(e: Union[Exception, ValidationError]):
     current_app.logger.error(e)
     # current_app.logger.error(e.args)
     if type(e) == ValidationError:
-        arg: dict
+        arg: dict = {}
         if (len(raw_errors := e.raw_errors) == 1):
             if (args := raw_errors[0].exc.args):
                 arg = args[0]
-        else:
-            arg = {}
         msgCode = arg.get('msgCode', 'validationError')
         msg = arg.get('msg', str(e))
         return jsonify({'msgCode': msgCode, 'msg': msg}), 400
