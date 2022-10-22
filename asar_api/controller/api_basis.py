@@ -54,8 +54,8 @@ class ApiBasis(MethodView):
         # Implement
         prj = Project(project_name)
         objs: file_types = getattr(prj, self.attr_name)
-        objs.create(name, content)
-        return jsonify({"msg": "OK"}), 200
+        status_code, msgCode, msg = objs.create(name, content)
+        return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
     def put(self, project_name, name):
         """Update an object"""
@@ -65,16 +65,16 @@ class ApiBasis(MethodView):
         # Implement
         prj = Project(project_name)
         objs: file_types = getattr(prj, self.attr_name)
-        objs.update(name, new_name, content)
-        return jsonify({"msg": "OK"}), 200
+        status_code, msgCode, msg = objs.update(name, new_name, content)
+        return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
     def delete(self, project_name, name):
         """Delete an object"""
         # Implement
         prj = Project(project_name)
         objs: file_types = getattr(prj, self.attr_name)
-        objs.delete(name)
-        return jsonify({"msg": "OK"}), 200
+        status_code, msgCode, msg = objs.delete(name)
+        return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
     @classmethod
     def init_app(cls, app: Flask, name: str, name_type: str = 'string'):

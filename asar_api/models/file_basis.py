@@ -1,5 +1,5 @@
 import json
-from typing import Optional
+from typing import Optional, Tuple
 from pathlib import Path
 from pydantic import BaseModel
 
@@ -44,42 +44,51 @@ class FileBasis():
         # Implement
         return self.content[name]
 
-    def create(self, name: str, input_content: dict) -> None:
+    def create(self, name: str, input_content: dict) -> Tuple[int, str, str]:
         # Validate
         _ = self.name_schema(name=name)
         valid_content = self.object_schema.parse_obj(
             input_content or self.default_content)
         content = self.content
         if name in content:
-            raise ValueError(f'{name} already exists')
+            return 400, 'duplicateNames', 'Duplicate names are not allowed'
         # Implement
-        content[name] = json.loads(valid_content.json(exclude_unset=True, exclude_none=True)) # TODO: follow https://github.com/pydantic/pydantic/issues/1409
+        # TODO: follow https://github.com/pydantic/pydantic/issues/1409
+        content[name] = json.loads(valid_content.json(
+            exclude_unset=True, exclude_none=True))
         self.write_json(content)
+        return 200, 'success', 'ok'
 
-    def update(self, name, new_name, input_content) -> None:
+    def update(self, name, new_name, input_content) -> Tuple[int, str, str]:
         # Validate
         _ = self.name_schema(name=name, new_name=new_name)
         if input_content is not None:
             valid_content = self.object_schema.parse_obj(input_content)
         content = self.content
         if name not in content:
-            raise ValueError(f'{name} does not exist')
+            return 400, 'targetDoesNotExist', 'Target does not exist.'
         elif new_name in content:
-            raise ValueError('Duplicate names are not allowed')
+            return 400, 'duplicateNames', 'Duplicate names are not allowed'
         # Implement
         if input_content is not None:
-            content[name] = json.loads(valid_content.json(exclude_unset=True)) # TODO: follow https://github.com/pydantic/pydantic/issues/1409
+            # TODO: follow https://github.com/pydantic/pydantic/issues/1409
+            content[name] = json.loads(valid_content.json(exclude_unset=True))
         if new_name:
             content[new_name] = content.pop(name)
         self.write_json(content)
+        return 200, 'success', 'ok'
 
-    def delete(self, name) -> None:
+    def delete(self, name) -> Tuple[int, str, str]:
         # Validate
         _ = self.name_schema(name=name)
         # Implement
         content = self.content
-        del content[name]
-        self.write_json(content)
+        if name in content:
+            del content[name]
+            self.write_json(content)
+            return 200, 'success', 'ok'
+        else:
+            return 400, 'targetDoesNotExist', 'Target does not exist.'
 
     def read_json(self) -> dict:
         with open(self.file, 'r', encoding="utf-8") as f:
