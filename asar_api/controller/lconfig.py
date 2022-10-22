@@ -12,9 +12,9 @@ class LConfigAPI(MethodView):
 
         # Implement
         prj = Project(project_name)
-        r = make_response(prj.lconfigs.content)
-        r.mimetype = 'text/x-yaml'
-        return r
+        resp = make_response(prj.lconfigs.content)
+        resp.mimetype = 'text/x-yaml'
+        return resp
     
     def put(self, project_name):
         """Update local config"""
@@ -23,7 +23,7 @@ class LConfigAPI(MethodView):
         # Implement
         prj = Project(project_name)
         prj.lconfigs.update(content)
-        return jsonify({"msg": "OK"}), 200
+        return jsonify({'msgCode': 'success', 'msg': 'OK'}), 200
 
     @classmethod
     def init_app(cls, app: Flask):
