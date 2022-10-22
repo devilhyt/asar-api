@@ -28,6 +28,9 @@ class AuthAPI(MethodView):
         user: User = User.query.filter_by(
             username=valid_data.username).one_or_none()
 
+        if user is None:
+            return jsonify({'msgCode': 'loginFailed', 'msg': 'Wrong username or password.'}), 400
+        
         if not user.check_password(valid_data.password):
             return jsonify({'msgCode': 'loginFailed', 'msg': 'Wrong username or password.'}), 400
 
