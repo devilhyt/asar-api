@@ -11,7 +11,6 @@ from .entity import Entity
 from .slot import Slot
 from .story import Story
 from .rule import Rule
-from .token import Token
 from .model import Model
 from .lconfig import LConfig
 from .responese import Response
@@ -36,7 +35,6 @@ class Project:
         self.slots = Slot(self.prj_path)
         self.stories = Story(self.prj_path)
         self.rules = Rule(self.prj_path)
-        self.tokens = Token(self.prj_path)
         self.models = Model(self.prj_path, self.prj_name)
         self.lconfigs = LConfig(self.prj_path)
         self.synonyms = Synonym(self.prj_path)

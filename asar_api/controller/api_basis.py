@@ -9,11 +9,10 @@ from ..models.entity import Entity
 from ..models.slot import Slot
 from ..models.story import Story
 from ..models.rule import Rule
-from ..models.token import Token
 from typing import Union
 
 file_types = Union[FileBasis, Intent, Action,
-                   Entity, Entity, Slot, Story, Rule, Token]
+                   Entity, Entity, Slot, Story, Rule]
 
 
 class ApiBasis(MethodView):

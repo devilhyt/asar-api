@@ -103,16 +103,3 @@ def compile_stories(vueflow_stories: dict) -> dict:
             if decoded_story:
                 stories += decoded_story
     return {'stories': stories}
-
-
-def convert_words_to_tokens(words: List[str], text: str) -> List[dict]:
-    running_offset = 0
-    tokens = []
-
-    for word in words:
-        word_offset = text.index(word, running_offset)
-        word_len = len(word)
-        running_offset = word_offset + word_len
-        tokens.append({'token': word, 'start': word_offset, 'end': running_offset})
-
-    return tokens

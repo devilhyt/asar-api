@@ -10,11 +10,9 @@ ASAR_PRJ_DIR_NAME = 'asar_projects'
 
 ASAR_PRJ_DIR = f'{ASAR_DATA_ROOT}/{ASAR_PRJ_DIR_NAME}'
 ASAR_TEMPLATES_DIR = f'{ASAR_ROOT}/asar_api/assets/templates'
-ALBERT_BASE_CHINESE_WS_DIR = f'{ASAR_ROOT}/asar_api/assets/albert-base-chinese-ws'
 RASA_APP_ROOT = os.getenv('RASA_APP_ROOT', '/rasa-app')
 
 OUTPUT_DIR_NAME = 'output'
-JIEBA_DIR_NAME = 'jieba'
 
 INTENTS_FILE_NAME = 'intents.json'
 RESPONSES_FILE_NAME = 'responses.json'
@@ -23,8 +21,6 @@ ENTITIES_FILE_NAME = 'entities.json'
 SLOTS_FILE_NAME = 'slots.json'
 STORIES_FILE_NAME = 'stories.json'
 RULES_FILE_NAME = 'rules.json'
-TOKENS_FILE_NAME = 'tokens.json'
-JIEBA_DICT_NAME = 'jieba_dict.txt'
 TRAINING_DATA_FILE_NAME = 'training_data.yml'
 ACTIONS_PY_NAME = 'actions.py'
 GCONFIG_FILE_NAME = 'gconfig.json'
