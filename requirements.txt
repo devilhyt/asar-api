@@ -4,8 +4,6 @@ Flask-Cors
 Flask-JWT-Extended
 Flask-SQLAlchemy
 Flask-Executor
-jieba
 pydantic
 requests
 ruamel.yaml
-ckip-transformers
