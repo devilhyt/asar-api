@@ -39,10 +39,10 @@ class DevelopmentConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_hex())
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(ASAR_DATA_ROOT).resolve()}/asar.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_TOKEN_LOCATION = ['headers', 'cookies', 'query_string', 'json']
+    JWT_TOKEN_LOCATION = ['cookies']
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_CSRF_PROTECT = False
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=12)
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=7)
     
     @classmethod
     def init_app(cls, app:Flask):
