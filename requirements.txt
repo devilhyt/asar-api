@@ -1,4 +1,4 @@
-gunicorn[gevent]
+gunicorn[gthread]
 Flask[async]
 Flask-Cors
 Flask-JWT-Extended
@@ -8,5 +8,4 @@ jieba
 pydantic
 requests
 ruamel.yaml
-docker
 ckip-transformers
