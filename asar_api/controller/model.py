@@ -38,26 +38,30 @@ class ModelAPI(MethodView):
 
         if status_code == 200 and debug:
             executor.submit(self.train_simulate_callback)
-        
+
         return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
     def put(self):
         """Load a model"""
         debug = True
         # Receive
+        mode = request.args.get('mode')
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
         status_code, msg, msgCode = prj.models.load_checker(debug=debug)
 
         if status_code == 200:
-            executor.submit(self.load_bg, project_name, debug)
+            executor.submit(self.load_bg, project_name, mode, debug)
 
         return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
-    def load_bg(self, project_name: str, debug: bool):
+    def load_bg(self, project_name: str, mode: str, debug: bool):
         prj = Project(project_name)
-        result = prj.models.load_bg(debug=debug)
+        if mode == 'actionOnly':
+            result = True
+        else:
+            result = prj.models.load_bg(debug=debug)
         if result and not debug:
             shutil.copy(prj.actions.action_py_file,
                         f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
