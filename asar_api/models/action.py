@@ -52,7 +52,7 @@ class ActionNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
         if name:
-            if not re.match(r"^\w+/?\w+$", name):
+            if re.match(r"^\w+/?\w+$", name) is None:
                 raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
         return name
 

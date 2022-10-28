@@ -24,7 +24,7 @@ class FormNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
         if name:
-            if not re.match(r"^[A-Za-z0-9_]+$", name):
+            if re.match(r"^[A-Za-z0-9_]+$", name) is None:
                 raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
         return name
 
