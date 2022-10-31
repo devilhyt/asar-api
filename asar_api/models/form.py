@@ -14,10 +14,11 @@ class Form(FileBasis):
                          default_content=self.default_content,
                          name_schema=FormNameSchema,
                          object_schema=FormObjectSchema)
-    # def compile(self) -> dict:
-    #     domain = {'slots': []}
-    #     domain['slots'] = self.content
-    #     return domain
+
+    def compile(self) -> dict:
+        domain = {'forms': []}
+        domain['forms'] = self.content
+        return domain
 
 
 class FormNameSchema(GeneralNameSchema):
@@ -25,7 +26,8 @@ class FormNameSchema(GeneralNameSchema):
     def check_name(cls, name: str):
         if name:
             if re.match(r"^[A-Za-z0-9_]+$", name) is None:
-                raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
+                raise ValueError(
+                    {'msgCode': 'invalidName', 'msg': 'Invalid name.'})
         return name
 
 
