@@ -19,13 +19,8 @@ class LConfig():
     def content_dict(self) -> dict:
         return self.yaml.load(self.content)
 
-    def init(self, jieba_dir_path:Path) -> None:
+    def init(self) -> None:
         shutil.copy(f'{ASAR_TEMPLATES_DIR}/{LCONFIG_FILE_NAME}', self.file)
-
-        data = self.content_dict
-        data['pipeline'][0].update({'dictionary_path': str(jieba_dir_path.resolve())})
-        with open(file=self.file, mode='w', encoding="utf-8") as y:
-            self.yaml.dump(data=data, stream=y)
 
     def update(self, input_content) -> None:
         self.write_file(input_content)

@@ -58,9 +58,8 @@ class Project:
             self.slots.init()
             self.stories.init()
             self.rules.init()
-            self.tokens.init()
             self.models.init()
-            self.lconfigs.init(self.tokens.jieba_dir_path)
+            self.lconfigs.init()
             self.synonyms.init()
             self.forms.init()
             return 200, 'success', 'OK'
@@ -69,12 +68,12 @@ class Project:
         # Validate
         if not self.prj_path.exists():
             return 400, 'targetDoesNotExist', 'Target does not exist.'
-        
+
         _ = ProjectNameSchema(name=new_name)
         target = self.prj_root.joinpath(new_name)
         if target.exists():
             return 400, 'duplicateNames', 'Duplicate names are not allowed.'
-        
+
         # Implement
         self.prj_path.rename(target)
         return 200, 'success', 'OK'
@@ -89,7 +88,8 @@ class Project:
     def compile(self) -> None:
         nlu = {'nlu': []}
         domain = {'intents': [], 'entities': [],
-                  'responses': {}, 'actions': [], 'slots': {}}
+                  'responses': {}, 'actions': [],
+                  'slots': {}, 'forms': {}}
         stories = {}
         lconfig = {}
 
@@ -108,6 +108,9 @@ class Project:
 
         slots_domain = self.slots.compile()
         domain.update(slots_domain)
+        
+        forms_domain = self.forms.compile()
+        domain.update(forms_domain)
 
         synonyms_nlu = self.synonyms.compile()
         nlu['nlu'] += synonyms_nlu
@@ -124,8 +127,6 @@ class Project:
                   encoding="utf-8") as y:
             self.yaml.dump(data=training_data, stream=y)
 
-        # gen jieba dict
-        # self.tokens.gen_jieba_dict()
 
 
 class ProjectNameSchema(BaseModel):
@@ -134,6 +135,6 @@ class ProjectNameSchema(BaseModel):
     @validator('name')
     def check_name(cls, name: str):
         if re.match(r"^\w+$", name) is None:
-            raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
+            raise ValueError(
+                {'msgCode': 'invalidName', 'msg': 'Invalid name.'})
         return name
-
