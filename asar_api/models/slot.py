@@ -19,7 +19,7 @@ class Slot(FileBasis):
         self.builtin_names = ['requested_slot']
 
     def compile(self) -> dict:
-        domain = {'slots': []}
+        domain = {'slots': {}}
         domain['slots'] = self.content
         return domain
 
@@ -28,7 +28,7 @@ class SlotNameSchema(GeneralNameSchema):
     @validator('*')
     def check_name(cls, name: str):
         if name:
-            if re.match(r"^[A-Za-z0-9_]+$", name) is None:
+            if re.match(r"^[A-Za-z0-9_]+$", name) is None or name == 'requested_slot':
                 raise ValueError({'msgCode':'invalidName', 'msg':'Invalid name.'})
         return name
 
@@ -115,6 +115,7 @@ class SlotMappingSchema(BaseModel):
 class SlotTypeBase(BaseModel):
     influence_conversation: Optional[bool]
     initial_value: Optional[Any]
+    auto_fill: Optional[bool]
     mappings: conlist(SlotMappingSchema, min_items=1)
 
 
