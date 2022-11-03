@@ -16,8 +16,12 @@ class Form(FileBasis):
                          object_schema=FormObjectSchema)
 
     def compile(self) -> dict:
-        domain = {'forms': []}
-        domain['forms'] = self.content
+        content = self.content
+        domain = {'forms': {}}
+
+        for form_name, form in content.items():
+            domain['forms'].update({f'{form_name}_form': form})
+
         return domain
 
 
