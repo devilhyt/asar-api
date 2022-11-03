@@ -43,7 +43,7 @@ def decode_story_paths(tree: dict, current_node: str = 'start', visited: list = 
     return path
 
 
-def decode_story(story_name: str, input_nodes: dict, input_paths: list) -> list:
+def decode_story(story_name: str, input_nodes: dict, input_paths: list, rule_mode: bool = False) -> list:
     ret = []
     for subpath_cnt, path in enumerate(input_paths):
         steps = []
@@ -86,20 +86,64 @@ def decode_story(story_name: str, input_nodes: dict, input_paths: list) -> list:
                                     slots.append(k)
                         if slots:
                             step = {step_type: slots}
+                elif step_type == 'form':
+                    step = {'action': f'{input_nodes[node]["name"]}_form'}
+                elif step_type == 'active_loop':
+                    if n := input_nodes[node].get('name'):
+                        step = {'active_loop': f'{n}_form'}
+                    else:
+                        step = {'active_loop': None}
             if step:
                 steps.append(step)
-        ret.append({'story': f'{story_name}_{subpath_cnt}', 'steps': steps})
+                
+        if rule_mode:
+            rule = {'rule': f'{story_name}_{subpath_cnt}'}
+            rule.update(
+                {'conversation_start': input_nodes['start'].get('conversation_start', False)})
+            rule.update(
+                {'wait_for_user_input': input_nodes['start'].get('wait_for_user_input', True)})
+
+            condition = []
+            if conditions := input_nodes['start'].get('condition'):
+                c:dict
+                for c in conditions:
+                    c_type = c['type']
+                    if c_type == 'slot_was_set':
+                        slots = []
+                        if k := c.get('slot'):
+                            if 'value' in c:
+                                v = c.get('value')
+                                slots.append({k: v})
+                            else:
+                                slots.append(k)
+                        if slots:
+                            condition.append({c_type: slots})
+                    elif c_type == 'active_loop':
+                        if v := c.get('value'):
+                            condition.append({c_type: f'{v}_form'})
+                        else:
+                            condition.append({c_type: None})
+            rule.update({'condition': condition})
+            rule.update({'steps': steps})
+            ret.append(rule)
+        else:
+            ret.append(
+                {'story': f'{story_name}_{subpath_cnt}', 'steps': steps})
 
     return ret
 
 
-def compile_stories(vueflow_stories: dict) -> dict:
+def compile_stories(vueflow_stories: dict, rule_mode: bool = False) -> dict:
     stories = []
     for story_name, vueflow in vueflow_stories.items():
         if vueflow:
             story_nodes = decode_story_nodes(vueflow)
             story_paths = decode_story_paths(story_nodes)
-            decoded_story = decode_story(story_name, story_nodes, story_paths)
+            decoded_story = decode_story(
+                story_name, story_nodes, story_paths, rule_mode)
             if decoded_story:
                 stories += decoded_story
-    return {'stories': stories}
+    if rule_mode:
+        return {'rules': stories}
+    else:
+        return {'stories': stories}

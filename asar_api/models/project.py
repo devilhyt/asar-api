@@ -91,6 +91,7 @@ class Project:
                   'responses': {}, 'actions': [],
                   'slots': {}, 'forms': {}}
         stories = {}
+        rules = {}
         lconfig = {}
 
         intents_nlu, intents_domain = self.intents.compile()
@@ -107,8 +108,21 @@ class Project:
         domain.update(entities_domain)
 
         slots_domain = self.slots.compile()
+        requested_slot = {
+            'requested_slot': {
+                "influence_conversation": True,
+                "mappings": [
+                    {
+                        "type": "custom"
+                    }
+                ],
+                "type": "categorical",
+                "values": self.slots.names
+            }
+        }
+        slots_domain['slots'].update(requested_slot)
         domain.update(slots_domain)
-        
+
         forms_domain = self.forms.compile()
         domain.update(forms_domain)
 
@@ -118,15 +132,17 @@ class Project:
         compiled_stories = self.stories.compile()
         stories.update(compiled_stories)
 
+        compiled_rules = self.rules.compile()
+        rules.update(compiled_rules)
+
         lconfig = self.lconfigs.content_dict
 
         # gen yaml
-        training_data = nlu | domain | stories | lconfig
+        training_data = nlu | domain | stories | rules | lconfig
         with open(file=self.models.dir.joinpath(TRAINING_DATA_FILE_NAME),
                   mode='w',
                   encoding="utf-8") as y:
             self.yaml.dump(data=training_data, stream=y)
-
 
 
 class ProjectNameSchema(BaseModel):
