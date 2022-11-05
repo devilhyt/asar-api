@@ -7,7 +7,6 @@ from .routes.auth import AuthAPI
 from .routes.project import ProjectAPI
 from .routes.model import ModelAPI, ModelCallbackAPI
 from .routes.api_basis import ApiBasis
-from .routes.gconfig import GConfigAPI
 from .routes.lconfig import LConfigAPI
 
 
@@ -31,7 +30,6 @@ def create_app(config=DevelopmentConfig):
 
     asar_api.public.init_app(app)
     AuthAPI.init_app(app)
-    GConfigAPI.init_app(app)
     ProjectAPI.init_app(app)
     LConfigAPI.init_app(app)
     ApiBasis.init_app(app, 'intents', 'path')
