@@ -44,7 +44,10 @@ class Project:
 
     @staticmethod
     def names() -> tuple:
-        return tuple([d.stem for d in Project.prj_root.iterdir() if d.is_dir()])
+        if Project.prj_root.exists():
+            return tuple([d.stem for d in Project.prj_root.iterdir() if d.is_dir()])
+        else:
+            return tuple()
 
     def create(self) -> Tuple[int, str, str]:
         if self.prj_path.exists():
