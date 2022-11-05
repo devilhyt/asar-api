@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from ..models.project import Project
 import shutil
 import time
-from ..config import RASA_APP_ROOT, ACTIONS_PY_NAME
+from ..config import RASA_ACTIONS_ROOT, ACTIONS_PY_NAME
 from ..models.server_status import ServerStatus
 from ..extensions import db, executor
 
@@ -64,7 +64,7 @@ class ModelAPI(MethodView):
             result = prj.models.load_bg(debug=debug)
         if result and not debug:
             shutil.copy(prj.actions.action_py_file,
-                        f'{RASA_APP_ROOT}/actions/{ACTIONS_PY_NAME}')
+                        f'{RASA_ACTIONS_ROOT}/{ACTIONS_PY_NAME}')
 
     def train_simulate_callback(self):
         time.sleep(3)

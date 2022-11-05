@@ -10,7 +10,7 @@ ASAR_PRJ_DIR_NAME = 'asar_projects'
 
 ASAR_PRJ_DIR = f'{ASAR_DATA_ROOT}/{ASAR_PRJ_DIR_NAME}'
 ASAR_TEMPLATES_DIR = f'{ASAR_ROOT}/asar_api/assets/templates'
-RASA_APP_ROOT = os.getenv('RASA_APP_ROOT', '/rasa-app')
+RASA_ACTIONS_ROOT = os.getenv('RASA_ACTIONS_ROOT', '/actions')
 
 OUTPUT_DIR_NAME = 'output'
 
