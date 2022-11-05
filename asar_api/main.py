@@ -3,12 +3,12 @@ from flask import Flask
 from .extensions import cors, db, jwt, executor
 from .config import DevelopmentConfig, ASAR_DATA_ROOT
 import asar_api.public
-from .controller.auth import AuthAPI
-from .controller.project import ProjectAPI
-from .controller.model import ModelAPI, ModelCallbackAPI
-from .controller.api_basis import ApiBasis
-from .controller.gconfig import GConfigAPI
-from .controller.lconfig import LConfigAPI
+from .routes.auth import AuthAPI
+from .routes.project import ProjectAPI
+from .routes.model import ModelAPI, ModelCallbackAPI
+from .routes.api_basis import ApiBasis
+from .routes.gconfig import GConfigAPI
+from .routes.lconfig import LConfigAPI
 
 
 def create_app(config=DevelopmentConfig):
