@@ -111,19 +111,19 @@ class Project:
         domain.update(entities_domain)
 
         slots_domain = self.slots.compile()
-        requested_slot = {
-            'requested_slot': {
-                "influence_conversation": True,
-                "mappings": [
-                    {
-                        "type": "custom"
-                    }
-                ],
-                "type": "categorical",
-                "values": self.slots.names
-            }
-        }
-        slots_domain['slots'].update(requested_slot)
+        # requested_slot = {
+        #     'requested_slot': {
+        #         "influence_conversation": True,
+        #         "mappings": [
+        #             {
+        #                 "type": "custom"
+        #             }
+        #         ],
+        #         "type": "categorical",
+        #         "values": self.slots.names
+        #     }
+        # }
+        # slots_domain['slots'].update(requested_slot)
         domain.update(slots_domain)
 
         forms_domain = self.forms.compile()
