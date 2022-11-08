@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from ..models.project import Project
 import shutil
 import time
-from ..config import RASA_ACTIONS_ROOT, ACTIONS_PY_NAME
+from ..config import RASA_ACTIONS_ROOT, ACTIONS_PY_NAME, DEBUG
 from ..models.server_status import ServerStatus
 from ..extensions import db, executor
 
@@ -27,32 +27,31 @@ class ModelAPI(MethodView):
 
     def post(self):
         """Train a model"""
-        debug = True
 
         # Receive
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
         prj.compile()
-        status_code, msg, msgCode = prj.models.train(debug=debug)
+        status_code, msg, msgCode = prj.models.train(debug=DEBUG)
 
-        if status_code == 200 and debug:
+        if status_code == 200 and DEBUG:
             executor.submit(self.train_simulate_callback)
 
         return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
     def put(self):
         """Load a model"""
-        debug = True
+
         # Receive
         mode = request.args.get('mode')
         project_name = request.json.get('project_name')
         # Implement
         prj = Project(project_name)
-        status_code, msg, msgCode = prj.models.load_checker(debug=debug)
+        status_code, msg, msgCode = prj.models.load_checker(debug=DEBUG)
 
         if status_code == 200:
-            executor.submit(self.load_bg, project_name, mode, debug)
+            executor.submit(self.load_bg, project_name, mode, DEBUG)
 
         return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
 
@@ -60,6 +59,7 @@ class ModelAPI(MethodView):
         prj = Project(project_name)
         if mode == 'actionOnly':
             result = True
+            prj.actions.compile()
         else:
             result = prj.models.load_bg(debug=debug)
         if result and not debug:

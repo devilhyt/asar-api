@@ -4,6 +4,8 @@ from pathlib import Path
 import os
 import secrets
 
+DEBUG = False
+
 ASAR_ROOT = '.'
 ASAR_DATA_ROOT = '/data'
 ASAR_PRJ_DIR_NAME = 'asar_projects'
