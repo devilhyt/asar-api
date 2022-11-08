@@ -19,8 +19,17 @@ class Slot(FileBasis):
         self.builtin_names = ['requested_slot']
 
     def compile(self) -> dict:
+        content = self.content
         domain = {'slots': {}}
-        domain['slots'] = self.content
+        
+        for _, slot_content in content.items():
+            if mappings:=slot_content.get('mappings'):
+                for m in mappings:
+                    if conditions:=m.get('conditions'):
+                        for c in conditions:
+                            if active_loop:=c.get('active_loop'):
+                                c.update({'active_loop':f'{active_loop}_form'})
+        domain['slots'] = content
         return domain
 
 
