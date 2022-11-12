@@ -24,17 +24,33 @@ class Model:
         self.asar_api_protocol = os.getenv('ASAR_API_PROTOCOL')
         self.asar_api_host = os.getenv('ASAR_API_HOST')
         self.asar_api_port = os.getenv('ASAR_API_PORT')
-        
+        self.rasa_api_agent_protocol = os.getenv('RASA_API_AGENT_PROTOCOL')
+        self.rasa_api_agent_host = os.getenv('RASA_API_AGENT_HOST')
+        self.rasa_api_agent_port = os.getenv('RASA_API_AGENT_PORT')
+        self.asar_api_agent_protocol = os.getenv('ASAR_API_AGENT_PROTOCOL')
+        self.asar_api_agent_host = os.getenv('ASAR_API_AGENT_HOST')
+        self.asar_api_agent_port = os.getenv('ASAR_API_AGENT_PORT')
+
         if self.rasa_api_protocol and self.rasa_api_host and self.rasa_api_port:
             self.env_rasa_api_url = f'{self.rasa_api_protocol}://{self.rasa_api_host}:{self.rasa_api_port}'
-        else: 
+        else:
             self.env_rasa_api_url = None
-            
+
         if self.asar_api_protocol and self.asar_api_host and self.asar_api_port:
             self.env_asar_api_url = f'{self.asar_api_protocol}://{self.asar_api_host}:{self.asar_api_port}'
-        else: 
+        else:
             self.env_asar_api_url = None
+
+        if self.rasa_api_agent_protocol and self.rasa_api_agent_host and self.rasa_api_agent_port:
+            self.env_rasa_api_agent_url = f'{self.rasa_api_agent_protocol}://{self.rasa_api_agent_host}:{self.rasa_api_agent_port}'
+        else:
+            self.env_rasa_api_agent_url = None
             
+        if self.asar_api_agent_protocol and self.asar_api_agent_host and self.asar_api_agent_port:
+            self.env_asar_api_agent_url = f'{self.asar_api_agent_protocol}://{self.asar_api_agent_host}:{self.asar_api_agent_port}'
+        else:
+            self.env_asar_api_agent_url = None
+
     def init(self) -> None:
         self.dir.mkdir(parents=True, exist_ok=True)
 
@@ -45,9 +61,9 @@ class Model:
         except:
             return False
 
-    def train(self, debug=False, custom_rasa_api_url=None, custom_asar_api_url=None) -> Tuple[int, str, str]:
-        rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
-        asar_api_url = custom_asar_api_url or self.env_asar_api_url
+    def train(self, debug=False) -> Tuple[int, str, str]:
+        rasa_api_url = self.env_rasa_api_agent_url or self.env_rasa_api_url
+        asar_api_url = self.env_asar_api_agent_url or self.env_asar_api_url
         server_status = ServerStatus.query.first()
         msg_prefix = '[debug mode]' if debug else ''
 
@@ -56,9 +72,9 @@ class Model:
         elif server_status.training_status:
             return 400, f'{msg_prefix} Still performing previous training (Project: {server_status.training_project}).', 'stillTrainingPreviousModel'
         elif not (rasa_api_url):
-            return 400, f'{msg_prefix} Please provide RASA_API_URL.', 'noRasaApiUrlProvided' 
+            return 400, f'{msg_prefix} Please provide RASA_API_URL.', 'noRasaApiUrlProvided'
         elif not (asar_api_url):
-            return 400, f'{msg_prefix} Please provide ASAR_API_URL.', 'noAsarApiUrlProvided' 
+            return 400, f'{msg_prefix} Please provide ASAR_API_URL.', 'noAsarApiUrlProvided'
         else:
             params = {'save_to_default_model_directory': 'false',
                       'force_training': 'true',
@@ -74,11 +90,11 @@ class Model:
                 return 200, f'{msg_prefix} OK', 'success'
             else:
                 if self.check_health(rasa_api_url):
-                    if self.prj_name == server_status.loaded_project:
-                        # unload model
-                        _ = requests.delete(url=f'{rasa_api_url}/model')
-                        server_status.loaded_project = None
-                        db.session.commit()
+                    # if self.prj_name == server_status.loaded_project:
+                    #     # unload model
+                    #     _ = requests.delete(url=f'{rasa_api_url}/model')
+                    #     server_status.loaded_project = None
+                    #     db.session.commit()
 
                     with open(self.training_data_file, 'r', encoding="utf-8") as f:
                         data = f.read()
@@ -96,11 +112,11 @@ class Model:
                 else:
                     return 400, 'Cannot connect to Rasa API server.', 'rasaApiConnectionError'
 
-    def load_checker(self, debug=False, custom_rasa_api_url=None) -> Tuple[int, str]:
-        rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
+    def load_checker(self, debug=False) -> Tuple[int, str]:
+        rasa_api_url = self.env_rasa_api_url
         server_status = ServerStatus.query.first()
         msg_prefix = '[debug mode]' if debug else ''
-        
+
         if not rasa_api_url:
             return 400, f'{msg_prefix} Please provide RASA_API_URL.', 'noRasaUrlProvided'
         elif server_status.loaded_status:
@@ -116,8 +132,8 @@ class Model:
                 else:
                     return 400, 'Cannot connect to Rasa API server.', 'rasaApiConnectionError'
 
-    def load_bg(self, debug=False, custom_rasa_api_url=None) -> bool:
-        rasa_api_url = custom_rasa_api_url or self.env_rasa_api_url
+    def load_bg(self, debug=False) -> bool:
+        rasa_api_url = self.env_rasa_api_url
         server_status = ServerStatus.query.first()
 
         if debug:
@@ -171,5 +187,18 @@ class Model:
                 return False
 
     def save(self, content) -> None:
+        self.unload_model()
         with open(self.model_file, 'wb') as t:
             t.write(content)
+
+    def unload_model(self) -> None:
+        """unload model only if required"""
+        
+        rasa_api_url = self.env_rasa_api_url
+        server_status = ServerStatus.query.first()
+        if self.prj_name == server_status.loaded_project:
+            if self.check_health(rasa_api_url):
+                # unload model
+                _ = requests.delete(url=f'{rasa_api_url}/model')
+                server_status.loaded_project = None
+                # db.session.commit()
