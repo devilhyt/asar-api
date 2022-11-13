@@ -1,4 +1,4 @@
-from typing import List
+import ast
 from ruamel.yaml import YAML
 from ruamel.yaml.compat import StringIO
 
@@ -80,7 +80,11 @@ def decode_story(story_name: str, input_nodes: dict, input_paths: list, rule_mod
                         for s in ss:
                             if k := s.get('slot'):
                                 if 'value' in s:
-                                    v = s.get('value')
+                                    raw_v = s.get('value')
+                                    try:
+                                        v = ast.literal_eval(raw_v)
+                                    except:
+                                        v = s.get(raw_v)
                                     slots.append({k: v})
                                 else:
                                     slots.append(k)
@@ -112,7 +116,11 @@ def decode_story(story_name: str, input_nodes: dict, input_paths: list, rule_mod
                         slots = []
                         if k := c.get('slot'):
                             if 'value' in c:
-                                v = c.get('value')
+                                raw_v = s.get('value')
+                                try:
+                                    v = ast.literal_eval(raw_v)
+                                except:
+                                    v = s.get(raw_v)
                                 slots.append({k: v})
                             else:
                                 slots.append(k)
