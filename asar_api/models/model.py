@@ -45,7 +45,7 @@ class Model:
             self.env_rasa_api_agent_url = f'{self.rasa_api_agent_protocol}://{self.rasa_api_agent_host}:{self.rasa_api_agent_port}'
         else:
             self.env_rasa_api_agent_url = None
-            
+
         if self.asar_api_agent_protocol and self.asar_api_agent_host and self.asar_api_agent_port:
             self.env_asar_api_agent_url = f'{self.asar_api_agent_protocol}://{self.asar_api_agent_host}:{self.asar_api_agent_port}'
         else:
@@ -56,7 +56,7 @@ class Model:
 
     def check_health(self, rasa_api_url) -> bool:
         try:
-            resp = requests.get(url=f'{rasa_api_url}')
+            resp = requests.get(url=f'{rasa_api_url}', timeout=5)
             return resp.status_code == requests.codes.ok
         except:
             return False
@@ -193,7 +193,7 @@ class Model:
 
     def unload_model(self) -> None:
         """unload model only if required"""
-        
+
         rasa_api_url = self.env_rasa_api_url
         server_status = ServerStatus.query.first()
         if self.prj_name == server_status.loaded_project:
