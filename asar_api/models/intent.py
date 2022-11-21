@@ -16,6 +16,7 @@ class Intent(FileBasis):
                          default_content=self.default_content,
                          name_schema=IntentNameSchema,
                          object_schema=IntentObjectSchema)
+        self.builtin_names = ["nlu_fallback"]
 
     def compile(self) -> Tuple[list, dict]:
         content = self.content
