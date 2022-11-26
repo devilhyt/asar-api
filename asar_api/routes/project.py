@@ -36,7 +36,7 @@ class ProjectAPI(MethodView):
         # Implement
         prj = Project(project_name)
         # TODO: delete this
-        if project_name in ['居家管家', '餐飲服務機器人']:
+        if project_name in ['居家管家', '餐飲服務機器人', '個人助理']:
             raise ValueError('展示用專案，禁止刪除！')
         status_code, msgCode, msg = prj.delete()
         return jsonify({'msgCode': msgCode, 'msg': msg}), status_code
