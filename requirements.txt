@@ -4,6 +4,6 @@ Flask-Cors
 Flask-JWT-Extended
 Flask-SQLAlchemy
 Flask-Executor
-pydantic
+pydantic<=1.10.12
 requests
 ruamel.yaml
