@@ -17,9 +17,11 @@ class User(db.Model):
     
     @classmethod
     def init(cls):
-        if User.query.filter_by(username="admin").first() is None:
-            user = User(username='admin')
-            user.set_password('admin')
+        username: str = os.getenv('ASAR_USERNAME')
+        password: str = os.getenv('ASAR_PASSWORD')
+        if User.query.filter_by(username=username).first() is None:
+            user = User(username=username)
+            user.set_password(password)
             db.session.add(user)
             db.session.commit()
 
