@@ -1,9 +1,9 @@
 gunicorn[gthread]
-Flask[async]
+Flask[async]==2.3.3
 Flask-Cors
 Flask-JWT-Extended
 Flask-SQLAlchemy
 Flask-Executor
-pydantic<=1.10.12
+pydantic==1.10.12
 requests
 ruamel.yaml
